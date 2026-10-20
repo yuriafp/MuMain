@@ -1155,6 +1155,23 @@
       "material": {
         "specular": 0.6
       }
+    },
+    {
+      "number": 104,
+      "file": "Data/Player/HelmMale19.bmd",
+      "textureFolders": ["Player"],
+      "inventory": {
+        "anchor": [0.5, 0.8],
+        "scale": 0.0039,
+        "bodyHeight": -160
+      },
+      "ground": {
+        "bodyHeight": -160
+      },
+      "glow": {
+        "color": "pink",
+        "shineColor": "blue"
+      }
     }
   ]
 }

@@ -1865,7 +1865,7 @@
     {
       "number": 100,
       "name": {
-        "en": "Embroidered Pants"
+        "en": "Embroidered Pants [Clássico]"
       },
       "width": 2,
       "height": 2,
@@ -1886,7 +1886,7 @@
     {
       "number": 101,
       "name": {
-        "en": "Magus Pants"
+        "en": "Magus Pants [Clássico]"
       },
       "width": 2,
       "height": 2,
@@ -1908,7 +1908,7 @@
     {
       "number": 102,
       "name": {
-        "en": "Adamantine Pants"
+        "en": "Adamantine Pants [Clássico]"
       },
       "width": 2,
       "height": 2,
@@ -1929,7 +1929,7 @@
     {
       "number": 103,
       "name": {
-        "en": "Storm Pants"
+        "en": "Storm Pants [Clássico]"
       },
       "width": 2,
       "height": 2,
@@ -1945,6 +1945,69 @@
       },
       "classRequirements": {
         "darkWizard": 1,
+        "magicGladiator": 1
+      }
+    },
+    {
+      "number": 104,
+      "name": {
+        "en": "Grand Soul Pants [Clássico]"
+      },
+      "width": 2,
+      "height": 2,
+      "slot": "pants",
+      "statProfile": "armor",
+      "level": 86,
+      "durability": 67,
+      "defense": 30,
+      "attackType": 4,
+      "requirements": {
+        "strength": 59,
+        "dexterity": 20
+      },
+      "classRequirements": {
+        "darkWizard": 2
+      }
+    },
+    {
+      "number": 105,
+      "name": {
+        "en": "Thunder Pants [Clássico]"
+      },
+      "width": 2,
+      "height": 2,
+      "slot": "pants",
+      "statProfile": "armor",
+      "level": 99,
+      "durability": 82,
+      "defense": 49,
+      "attackType": 4,
+      "requirements": {
+        "strength": 150,
+        "dexterity": 70
+      },
+      "classRequirements": {
+        "magicGladiator": 1
+      }
+    },
+    {
+      "number": 106,
+      "name": {
+        "en": "Hurricane Pants [Clássico]"
+      },
+      "width": 2,
+      "height": 2,
+      "slot": "pants",
+      "statProfile": "armor",
+      "level": 122,
+      "durability": 90,
+      "defense": 61,
+      "attackType": 4,
+      "requirements": {
+        "strength": 162,
+        "dexterity": 66
+      },
+      "classRequirements": {
         "magicGladiator": 1
       }
     }

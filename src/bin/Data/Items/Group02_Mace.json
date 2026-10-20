@@ -602,7 +602,7 @@
     {
       "number": 30,
       "name": {
-        "en": "Skeleton Mace"
+        "en": "Skeleton Mace [Clássico]"
       },
       "width": 1,
       "height": 3,
@@ -620,14 +620,13 @@
         "dexterity": 17
       },
       "classRequirements": {
-        "darkKnight": 1,
-        "magicGladiator": 1
+        "darkKnight": 2
       }
     },
     {
       "number": 31,
       "name": {
-        "en": "Slayer's Mace"
+        "en": "Slayer's Mace [Clássico]"
       },
       "width": 1,
       "height": 3,
@@ -645,14 +644,13 @@
         "dexterity": 18
       },
       "classRequirements": {
-        "darkKnight": 2,
-        "magicGladiator": 1
+        "darkKnight": 2
       }
     },
     {
       "number": 32,
       "name": {
-        "en": "Stalker's Mace"
+        "en": "Stalker's Mace [Clássico]"
       },
       "width": 1,
       "height": 4,
@@ -670,14 +668,13 @@
         "dexterity": 21
       },
       "classRequirements": {
-        "darkKnight": 2,
-        "magicGladiator": 1
+        "darkKnight": 2
       }
     },
     {
       "number": 33,
       "name": {
-        "en": "Mace of Gimli"
+        "en": "Mace of Gimli [Clássico]"
       },
       "width": 1,
       "height": 4,
@@ -695,14 +692,13 @@
         "dexterity": 23
       },
       "classRequirements": {
-        "darkKnight": 2,
-        "magicGladiator": 1
+        "darkKnight": 2
       }
     },
     {
       "number": 34,
       "name": {
-        "en": "Phantom Mace"
+        "en": "Phantom Mace [Clássico]"
       },
       "width": 1,
       "height": 4,
@@ -720,14 +716,13 @@
         "dexterity": 20
       },
       "classRequirements": {
-        "darkKnight": 2,
-        "magicGladiator": 1
+        "darkKnight": 2
       }
     },
     {
       "number": 35,
       "name": {
-        "en": "Mace of the King"
+        "en": "Mace of the King [Clássico]"
       },
       "width": 1,
       "height": 4,
@@ -746,8 +741,7 @@
         "dexterity": 20
       },
       "classRequirements": {
-        "darkKnight": 2,
-        "magicGladiator": 1
+        "darkKnight": 2
       }
     }
   ]

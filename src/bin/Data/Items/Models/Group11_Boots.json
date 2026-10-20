@@ -952,6 +952,51 @@
       "material": {
         "specular": 0.6
       }
+    },
+    {
+      "number": 104,
+      "file": "Data/Player/BootMale19.bmd",
+      "textureFolders": ["Player"],
+      "inventory": {
+        "anchor": [0.5, 0.9],
+        "scale": 0.0032
+      },
+      "glow": {
+        "color": "pink",
+        "shineColor": "blue"
+      }
+    },
+    {
+      "number": 105,
+      "file": "Data/Player/BootMale21.bmd",
+      "textureFolders": ["Player"],
+      "inventory": {
+        "anchor": [0.5, 0.9],
+        "scale": 0.0032
+      },
+      "glow": {
+        "color": "gold"
+      },
+      "material": {
+        "specular": 0.6
+      },
+      "renderStyle": "thunderHawk"
+    },
+    {
+      "number": 106,
+      "file": "Data/Player/BootMale24.bmd",
+      "textureFolders": ["Player"],
+      "inventory": {
+        "anchor": [0.5, 0.9],
+        "scale": 0.0032
+      },
+      "glow": {
+        "color": "gold"
+      },
+      "material": {
+        "specular": 0.6
+      },
+      "renderStyle": "hurricane"
     }
   ]
 }

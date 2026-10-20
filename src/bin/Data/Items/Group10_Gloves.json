@@ -1773,7 +1773,7 @@
     {
       "number": 100,
       "name": {
-        "en": "Embroidered Gloves"
+        "en": "Embroidered Gloves [Clássico]"
       },
       "width": 2,
       "height": 2,
@@ -1795,7 +1795,7 @@
     {
       "number": 101,
       "name": {
-        "en": "Magus Gloves"
+        "en": "Magus Gloves [Clássico]"
       },
       "width": 2,
       "height": 2,
@@ -1818,7 +1818,7 @@
     {
       "number": 102,
       "name": {
-        "en": "Adamantine Gloves"
+        "en": "Adamantine Gloves [Clássico]"
       },
       "width": 2,
       "height": 2,
@@ -1840,7 +1840,7 @@
     {
       "number": 103,
       "name": {
-        "en": "Storm Gloves"
+        "en": "Storm Gloves [Clássico]"
       },
       "width": 2,
       "height": 2,
@@ -1857,6 +1857,72 @@
       },
       "classRequirements": {
         "darkWizard": 1,
+        "magicGladiator": 1
+      }
+    },
+    {
+      "number": 104,
+      "name": {
+        "en": "Grand Soul Gloves [Clássico]"
+      },
+      "width": 2,
+      "height": 2,
+      "slot": "gloves",
+      "statProfile": "armor",
+      "level": 70,
+      "durability": 67,
+      "defense": 20,
+      "attackSpeed": 5,
+      "attackType": 4,
+      "requirements": {
+        "strength": 49,
+        "dexterity": 10
+      },
+      "classRequirements": {
+        "darkWizard": 2
+      }
+    },
+    {
+      "number": 105,
+      "name": {
+        "en": "Thunder Gloves [Clássico]"
+      },
+      "width": 2,
+      "height": 2,
+      "slot": "gloves",
+      "statProfile": "armor",
+      "level": 88,
+      "durability": 82,
+      "defense": 34,
+      "attackSpeed": 7,
+      "attackType": 4,
+      "requirements": {
+        "strength": 150,
+        "dexterity": 70
+      },
+      "classRequirements": {
+        "magicGladiator": 1
+      }
+    },
+    {
+      "number": 106,
+      "name": {
+        "en": "Hurricane Gloves [Clássico]"
+      },
+      "width": 2,
+      "height": 2,
+      "slot": "gloves",
+      "statProfile": "armor",
+      "level": 102,
+      "durability": 90,
+      "defense": 45,
+      "attackSpeed": 7,
+      "attackType": 4,
+      "requirements": {
+        "strength": 162,
+        "dexterity": 66
+      },
+      "classRequirements": {
         "magicGladiator": 1
       }
     }
