@@ -1709,6 +1709,27 @@
       "classRequirements": {
         "darkWizard": 1
       }
+    },
+    {
+      "number": 103,
+      "name": {
+        "en": "Storm Helm"
+      },
+      "width": 2,
+      "height": 2,
+      "slot": "helm",
+      "statProfile": "armor",
+      "level": 66,
+      "durability": 56,
+      "defense": 23,
+      "attackType": 4,
+      "requirements": {
+        "strength": 45,
+        "dexterity": 10
+      },
+      "classRequirements": {
+        "darkWizard": 1
+      }
     }
   ]
 }

@@ -1836,6 +1836,29 @@
       "classRequirements": {
         "darkWizard": 1
       }
+    },
+    {
+      "number": 103,
+      "name": {
+        "en": "Storm Gloves"
+      },
+      "width": 2,
+      "height": 2,
+      "slot": "gloves",
+      "statProfile": "armor",
+      "level": 57,
+      "durability": 56,
+      "defense": 16,
+      "attackSpeed": 3,
+      "attackType": 4,
+      "requirements": {
+        "strength": 35,
+        "dexterity": 5
+      },
+      "classRequirements": {
+        "darkWizard": 1,
+        "magicGladiator": 1
+      }
     }
   ]
 }

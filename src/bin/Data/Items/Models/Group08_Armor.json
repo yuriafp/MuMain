@@ -1344,6 +1344,26 @@
       "material": {
         "specular": 0.6
       }
+    },
+    {
+      "number": 103,
+      "file": "Data/Player/ArmorMale27.bmd",
+      "textureFolders": ["Player"],
+      "inventory": {
+        "anchor": [0.5, 0.8],
+        "scale": 0.0039,
+        "bodyHeight": -100
+      },
+      "ground": {
+        "rotation": [270, 0, -45],
+        "bodyHeight": -100
+      },
+      "glow": {
+        "color": "sage"
+      },
+      "material": {
+        "specular": 0.6
+      }
     }
   ]
 }

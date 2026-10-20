@@ -1925,6 +1925,28 @@
       "classRequirements": {
         "darkWizard": 1
       }
+    },
+    {
+      "number": 103,
+      "name": {
+        "en": "Storm Armor"
+      },
+      "width": 2,
+      "height": 3,
+      "slot": "armor",
+      "statProfile": "armor",
+      "level": 78,
+      "durability": 56,
+      "defense": 29,
+      "attackType": 4,
+      "requirements": {
+        "strength": 52,
+        "dexterity": 13
+      },
+      "classRequirements": {
+        "darkWizard": 1,
+        "magicGladiator": 1
+      }
     }
   ]
 }

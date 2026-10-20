@@ -1943,6 +1943,28 @@
       "classRequirements": {
         "darkWizard": 1
       }
+    },
+    {
+      "number": 103,
+      "name": {
+        "en": "Storm Boots"
+      },
+      "width": 2,
+      "height": 2,
+      "slot": "boots",
+      "statProfile": "armor",
+      "level": 60,
+      "durability": 56,
+      "defense": 17,
+      "attackType": 4,
+      "requirements": {
+        "strength": 44,
+        "dexterity": 5
+      },
+      "classRequirements": {
+        "darkWizard": 1,
+        "magicGladiator": 1
+      }
     }
   ]
 }

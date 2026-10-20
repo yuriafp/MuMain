@@ -1925,6 +1925,28 @@
       "classRequirements": {
         "darkWizard": 1
       }
+    },
+    {
+      "number": 103,
+      "name": {
+        "en": "Storm Pants"
+      },
+      "width": 2,
+      "height": 2,
+      "slot": "pants",
+      "statProfile": "armor",
+      "level": 70,
+      "durability": 56,
+      "defense": 25,
+      "attackType": 4,
+      "requirements": {
+        "strength": 50,
+        "dexterity": 10
+      },
+      "classRequirements": {
+        "darkWizard": 1,
+        "magicGladiator": 1
+      }
     }
   ]
 }
