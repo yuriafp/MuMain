@@ -1861,6 +1861,70 @@
       "classRequirements": {
         "rageFighter": 1
       }
+    },
+    {
+      "number": 100,
+      "name": {
+        "en": "Embroidered Armor"
+      },
+      "width": 2,
+      "height": 3,
+      "slot": "armor",
+      "statProfile": "armor",
+      "level": 62,
+      "durability": 42,
+      "defense": 25,
+      "attackType": 4,
+      "requirements": {
+        "strength": 70,
+        "dexterity": 20
+      },
+      "classRequirements": {
+        "darkKnight": 1
+      }
+    },
+    {
+      "number": 101,
+      "name": {
+        "en": "Magus Armor"
+      },
+      "width": 2,
+      "height": 3,
+      "slot": "armor",
+      "statProfile": "armor",
+      "level": 96,
+      "durability": 70,
+      "defense": 43,
+      "attackType": 4,
+      "requirements": {
+        "strength": 84,
+        "dexterity": 22
+      },
+      "classRequirements": {
+        "darkKnight": 1,
+        "magicGladiator": 1
+      }
+    },
+    {
+      "number": 102,
+      "name": {
+        "en": "Adamantine Armor"
+      },
+      "width": 2,
+      "height": 3,
+      "slot": "armor",
+      "statProfile": "armor",
+      "level": 117,
+      "durability": 78,
+      "defense": 51,
+      "attackType": 4,
+      "requirements": {
+        "strength": 80,
+        "dexterity": 21
+      },
+      "classRequirements": {
+        "darkWizard": 1
+      }
     }
   ]
 }

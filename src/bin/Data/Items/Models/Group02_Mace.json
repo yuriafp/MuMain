@@ -278,6 +278,99 @@
         "meshes": [0]
       },
       "renderStyle": "strikerScepter"
+    },
+    {
+      "number": 30,
+      "file": "Data/Item/Mace09.bmd",
+      "textureFolders": ["Item"],
+      "inventory": {
+        "anchor": [0.8, 0.7],
+        "rotation": [180, 270, 15],
+        "scale": 0.003
+      },
+      "ground": {
+        "rotation": [0, 270, -45]
+      },
+      "glow": {
+        "color": "steelBlue"
+      },
+      "renderStyle": "battleScepter"
+    },
+    {
+      "number": 31,
+      "file": "Data/Item/Mace10.bmd",
+      "textureFolders": ["Item"],
+      "inventory": {
+        "anchor": [0.8, 0.7],
+        "rotation": [180, 270, 15],
+        "scale": 0.003
+      },
+      "ground": {
+        "rotation": [0, 270, -45]
+      },
+      "glow": {
+        "color": "sand"
+      },
+      "renderStyle": "masterScepter"
+    },
+    {
+      "number": 32,
+      "file": "Data/Item/Mace11.bmd",
+      "textureFolders": ["Item"],
+      "inventory": {
+        "anchor": [0.8, 0.7],
+        "rotation": [180, 270, 15],
+        "scale": 0.003
+      },
+      "ground": {
+        "rotation": [0, 270, -45]
+      },
+      "glow": {
+        "color": "sage"
+      },
+      "renderStyle": "greatScepter"
+    },
+    {
+      "number": 33,
+      "file": "Data/Item/Mace12.bmd",
+      "textureFolders": ["Item"],
+      "inventory": {
+        "anchor": [0.8, 0.7],
+        "rotation": [180, 270, 15],
+        "scale": 0.003
+      },
+      "ground": {
+        "rotation": [0, 270, -45]
+      },
+      "renderStyle": "lordScepter"
+    },
+    {
+      "number": 34,
+      "file": "Data/Item/Mace13.bmd",
+      "textureFolders": ["Item"],
+      "inventory": {
+        "anchor": [0.8, 0.7],
+        "rotation": [180, 270, 15]
+      },
+      "ground": {
+        "rotation": [0, 270, -45]
+      },
+      "glow": {
+        "color": "copper"
+      },
+      "renderStyle": "greatLordScepter"
+    },
+    {
+      "number": 35,
+      "file": "Data/Item/Mace14.bmd",
+      "textureFolders": ["Item"],
+      "inventory": {
+        "anchor": [0.8, 0.7],
+        "rotation": [180, 270, 15]
+      },
+      "ground": {
+        "rotation": [0, 270, -45]
+      }
     }
   ]
 }

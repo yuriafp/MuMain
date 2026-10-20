@@ -1769,6 +1769,73 @@
       "classRequirements": {
         "summoner": 1
       }
+    },
+    {
+      "number": 100,
+      "name": {
+        "en": "Embroidered Gloves"
+      },
+      "width": 2,
+      "height": 2,
+      "slot": "gloves",
+      "statProfile": "armor",
+      "level": 42,
+      "durability": 42,
+      "defense": 12,
+      "attackSpeed": 7,
+      "attackType": 4,
+      "requirements": {
+        "strength": 70,
+        "dexterity": 20
+      },
+      "classRequirements": {
+        "darkKnight": 1
+      }
+    },
+    {
+      "number": 101,
+      "name": {
+        "en": "Magus Gloves"
+      },
+      "width": 2,
+      "height": 2,
+      "slot": "gloves",
+      "statProfile": "armor",
+      "level": 75,
+      "durability": 70,
+      "defense": 21,
+      "attackSpeed": 5,
+      "attackType": 4,
+      "requirements": {
+        "strength": 84,
+        "dexterity": 22
+      },
+      "classRequirements": {
+        "darkKnight": 1,
+        "magicGladiator": 1
+      }
+    },
+    {
+      "number": 102,
+      "name": {
+        "en": "Adamantine Gloves"
+      },
+      "width": 2,
+      "height": 2,
+      "slot": "gloves",
+      "statProfile": "armor",
+      "level": 89,
+      "durability": 78,
+      "defense": 29,
+      "attackSpeed": 4,
+      "attackType": 4,
+      "requirements": {
+        "strength": 80,
+        "dexterity": 21
+      },
+      "classRequirements": {
+        "darkWizard": 1
+      }
     }
   ]
 }

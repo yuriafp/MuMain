@@ -904,6 +904,51 @@
         "excellentMesh": 0
       },
       "renderStyle": "phoenixSoulBoots"
+    },
+    {
+      "number": 100,
+      "file": "Data/Player/BootMale26.bmd",
+      "textureFolders": ["Player"],
+      "inventory": {
+        "anchor": [0.5, 0.9],
+        "scale": 0.0032
+      },
+      "glow": {
+        "color": "slate"
+      },
+      "material": {
+        "specular": 0.6
+      }
+    },
+    {
+      "number": 101,
+      "file": "Data/Player/BootMale28.bmd",
+      "textureFolders": ["Player"],
+      "inventory": {
+        "anchor": [0.5, 0.9],
+        "scale": 0.0032
+      },
+      "glow": {
+        "color": "sand"
+      },
+      "material": {
+        "specular": 0.6
+      }
+    },
+    {
+      "number": 102,
+      "file": "Data/Player/BootMale29.bmd",
+      "textureFolders": ["Player"],
+      "inventory": {
+        "anchor": [0.5, 0.9],
+        "scale": 0.0032
+      },
+      "glow": {
+        "color": "denim"
+      },
+      "material": {
+        "specular": 0.6
+      }
     }
   ]
 }

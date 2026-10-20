@@ -598,6 +598,157 @@
       "classRequirements": {
         "darkLord": 1
       }
+    },
+    {
+      "number": 30,
+      "name": {
+        "en": "Skeleton Mace"
+      },
+      "width": 1,
+      "height": 3,
+      "slot": "mainHand",
+      "weaponKind": "mace",
+      "statProfile": "weapon",
+      "level": 54,
+      "durability": 40,
+      "damageMin": 41,
+      "damageMax": 52,
+      "attackSpeed": 45,
+      "attackType": 1,
+      "requirements": {
+        "strength": 80,
+        "dexterity": 17
+      },
+      "classRequirements": {
+        "darkKnight": 1,
+        "magicGladiator": 1
+      }
+    },
+    {
+      "number": 31,
+      "name": {
+        "en": "Slayer's Mace"
+      },
+      "width": 1,
+      "height": 3,
+      "slot": "mainHand",
+      "weaponKind": "mace",
+      "statProfile": "weapon",
+      "level": 72,
+      "durability": 45,
+      "damageMin": 57,
+      "damageMax": 68,
+      "attackSpeed": 45,
+      "attackType": 1,
+      "requirements": {
+        "strength": 87,
+        "dexterity": 18
+      },
+      "classRequirements": {
+        "darkKnight": 2,
+        "magicGladiator": 1
+      }
+    },
+    {
+      "number": 32,
+      "name": {
+        "en": "Stalker's Mace"
+      },
+      "width": 1,
+      "height": 4,
+      "slot": "mainHand",
+      "weaponKind": "mace",
+      "statProfile": "weapon",
+      "level": 82,
+      "durability": 65,
+      "damageMin": 74,
+      "damageMax": 85,
+      "attackSpeed": 45,
+      "attackType": 1,
+      "requirements": {
+        "strength": 100,
+        "dexterity": 21
+      },
+      "classRequirements": {
+        "darkKnight": 2,
+        "magicGladiator": 1
+      }
+    },
+    {
+      "number": 33,
+      "name": {
+        "en": "Mace of Gimli"
+      },
+      "width": 1,
+      "height": 4,
+      "slot": "mainHand",
+      "weaponKind": "mace",
+      "statProfile": "weapon",
+      "level": 98,
+      "durability": 72,
+      "damageMin": 91,
+      "damageMax": 102,
+      "attackSpeed": 40,
+      "attackType": 1,
+      "requirements": {
+        "strength": 105,
+        "dexterity": 23
+      },
+      "classRequirements": {
+        "darkKnight": 2,
+        "magicGladiator": 1
+      }
+    },
+    {
+      "number": 34,
+      "name": {
+        "en": "Phantom Mace"
+      },
+      "width": 1,
+      "height": 4,
+      "slot": "mainHand",
+      "weaponKind": "mace",
+      "statProfile": "weapon",
+      "level": 140,
+      "durability": 84,
+      "damageMin": 108,
+      "damageMax": 120,
+      "attackSpeed": 40,
+      "attackType": 1,
+      "requirements": {
+        "strength": 90,
+        "dexterity": 20
+      },
+      "classRequirements": {
+        "darkKnight": 2,
+        "magicGladiator": 1
+      }
+    },
+    {
+      "number": 35,
+      "name": {
+        "en": "Mace of the King"
+      },
+      "width": 1,
+      "height": 4,
+      "slot": "mainHand",
+      "weaponKind": "mace",
+      "statProfile": "weapon",
+      "skill": 22,
+      "level": 135,
+      "durability": 84,
+      "damageMin": 105,
+      "damageMax": 117,
+      "attackSpeed": 40,
+      "attackType": 1,
+      "requirements": {
+        "strength": 90,
+        "dexterity": 20
+      },
+      "classRequirements": {
+        "darkKnight": 2,
+        "magicGladiator": 1
+      }
     }
   ]
 }

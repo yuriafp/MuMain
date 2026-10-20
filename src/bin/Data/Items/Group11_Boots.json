@@ -1879,6 +1879,70 @@
       "classRequirements": {
         "rageFighter": 1
       }
+    },
+    {
+      "number": 100,
+      "name": {
+        "en": "Embroidered Boots"
+      },
+      "width": 2,
+      "height": 2,
+      "slot": "boots",
+      "statProfile": "armor",
+      "level": 45,
+      "durability": 42,
+      "defense": 13,
+      "attackType": 4,
+      "requirements": {
+        "strength": 70,
+        "dexterity": 20
+      },
+      "classRequirements": {
+        "darkKnight": 1
+      }
+    },
+    {
+      "number": 101,
+      "name": {
+        "en": "Magus Boots"
+      },
+      "width": 2,
+      "height": 2,
+      "slot": "boots",
+      "statProfile": "armor",
+      "level": 83,
+      "durability": 70,
+      "defense": 25,
+      "attackType": 4,
+      "requirements": {
+        "strength": 84,
+        "dexterity": 22
+      },
+      "classRequirements": {
+        "darkKnight": 1,
+        "magicGladiator": 1
+      }
+    },
+    {
+      "number": 102,
+      "name": {
+        "en": "Adamantine Boots"
+      },
+      "width": 2,
+      "height": 2,
+      "slot": "boots",
+      "statProfile": "armor",
+      "level": 95,
+      "durability": 78,
+      "defense": 33,
+      "attackType": 4,
+      "requirements": {
+        "strength": 80,
+        "dexterity": 21
+      },
+      "classRequirements": {
+        "darkWizard": 1
+      }
     }
   ]
 }

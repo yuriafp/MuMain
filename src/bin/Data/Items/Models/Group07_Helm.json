@@ -1091,6 +1091,63 @@
         "excellentMesh": 0
       },
       "renderStyle": "phoenixSoulHelmet"
+    },
+    {
+      "number": 100,
+      "file": "Data/Player/HelmMale26.bmd",
+      "textureFolders": ["Player"],
+      "inventory": {
+        "anchor": [0.5, 0.8],
+        "scale": 0.0039,
+        "bodyHeight": -160
+      },
+      "ground": {
+        "bodyHeight": -160
+      },
+      "glow": {
+        "color": "slate"
+      },
+      "material": {
+        "specular": 0.6
+      }
+    },
+    {
+      "number": 101,
+      "file": "Data/Player/HelmMale28.bmd",
+      "textureFolders": ["Player"],
+      "inventory": {
+        "anchor": [0.5, 0.8],
+        "scale": 0.0039,
+        "bodyHeight": -160
+      },
+      "ground": {
+        "bodyHeight": -160
+      },
+      "glow": {
+        "color": "sand"
+      },
+      "material": {
+        "specular": 0.6
+      }
+    },
+    {
+      "number": 102,
+      "file": "Data/Player/HelmMale29.bmd",
+      "textureFolders": ["Player"],
+      "inventory": {
+        "anchor": [0.5, 0.8],
+        "scale": 0.0039,
+        "bodyHeight": -160
+      },
+      "ground": {
+        "bodyHeight": -160
+      },
+      "glow": {
+        "color": "denim"
+      },
+      "material": {
+        "specular": 0.6
+      }
     }
   ]
 }
