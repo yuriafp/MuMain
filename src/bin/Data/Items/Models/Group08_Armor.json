@@ -1298,9 +1298,6 @@
         "rotation": [270, 0, -45],
         "bodyHeight": -100
       },
-      "glow": {
-        "color": "slate"
-      },
       "material": {
         "specular": 0.6
       }
@@ -1318,9 +1315,6 @@
         "rotation": [270, 0, -45],
         "bodyHeight": -100
       },
-      "glow": {
-        "color": "sand"
-      },
       "material": {
         "specular": 0.6
       }
@@ -1337,9 +1331,6 @@
       "ground": {
         "rotation": [270, 0, -45],
         "bodyHeight": -100
-      },
-      "glow": {
-        "color": "denim"
       },
       "material": {
         "specular": 0.6

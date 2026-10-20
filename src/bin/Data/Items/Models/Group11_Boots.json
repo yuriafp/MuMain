@@ -913,9 +913,6 @@
         "anchor": [0.5, 0.9],
         "scale": 0.0032
       },
-      "glow": {
-        "color": "slate"
-      },
       "material": {
         "specular": 0.6
       }
@@ -928,9 +925,6 @@
         "anchor": [0.5, 0.9],
         "scale": 0.0032
       },
-      "glow": {
-        "color": "sand"
-      },
       "material": {
         "specular": 0.6
       }
@@ -942,9 +936,6 @@
       "inventory": {
         "anchor": [0.5, 0.9],
         "scale": 0.0032
-      },
-      "glow": {
-        "color": "denim"
       },
       "material": {
         "specular": 0.6

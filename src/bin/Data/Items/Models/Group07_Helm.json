@@ -1104,9 +1104,6 @@
       "ground": {
         "bodyHeight": -160
       },
-      "glow": {
-        "color": "slate"
-      },
       "material": {
         "specular": 0.6
       }
@@ -1123,9 +1120,6 @@
       "ground": {
         "bodyHeight": -160
       },
-      "glow": {
-        "color": "sand"
-      },
       "material": {
         "specular": 0.6
       }
@@ -1141,9 +1135,6 @@
       },
       "ground": {
         "bodyHeight": -160
-      },
-      "glow": {
-        "color": "denim"
       },
       "material": {
         "specular": 0.6
