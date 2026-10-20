@@ -1161,9 +1161,6 @@
       "ground": {
         "bodyHeight": -160
       },
-      "glow": {
-        "color": "sage"
-      },
       "material": {
         "specular": 0.6
       }

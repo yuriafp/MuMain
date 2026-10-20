@@ -958,9 +958,6 @@
         "anchor": [0.5, 0.9],
         "scale": 0.0032
       },
-      "glow": {
-        "color": "sage"
-      },
       "material": {
         "specular": 0.6
       }

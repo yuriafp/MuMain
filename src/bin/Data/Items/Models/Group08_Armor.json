@@ -1358,9 +1358,6 @@
         "rotation": [270, 0, -45],
         "bodyHeight": -100
       },
-      "glow": {
-        "color": "sage"
-      },
       "material": {
         "specular": 0.6
       }
