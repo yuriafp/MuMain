@@ -13137,6 +13137,7 @@ namespace
         case 578:
         case 579:
         case static_cast<int>(MONSTER_WANDERING_MERCHANT_ZYRO):
+        case static_cast<int>(MONSTER_WORKSHOP):
             return true;
         default:
             return false;
@@ -15062,6 +15063,11 @@ CHARACTER* CreateMonster(EMonsterType Type, int PositionX, int PositionY, int Ke
         c = CreateCharacter(Key, MODEL_BENA, PositionX, PositionY);
         wcscpy(c->ID, L"신녀 베이나");
         c->Object.Position[2] += 145.0f;
+        break;
+    case MONSTER_WORKSHOP:
+        OpenNpc(MODEL_WORKSHOP);
+        c = CreateCharacter(Key, MODEL_WORKSHOP, PositionX, PositionY);
+        wcscpy(c->ID, L"Oficina");
         break;
     case MONSTER_LEINA_THE_GENERAL_GOODS_MERCHANT:
         OpenNpc(MODEL_KARUTAN_NPC_REINA);

@@ -991,6 +991,9 @@ void OpenNpc(int Type)
         gLoadData.AccessModel(MODEL_BENA, L"Data\\Npc\\", L"bena");
         gLoadData.OpenTexture(MODEL_BENA, L"Npc\\");
         break;
+    case MODEL_WORKSHOP:
+        gLoadData.AccessModel(MODEL_WORKSHOP, L"Data\\Npc\\", L"Oficina", 1);
+        break;
 
     }
 

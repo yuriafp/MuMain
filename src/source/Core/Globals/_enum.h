@@ -1343,6 +1343,7 @@ enum
     MODEL_LUCKYITEM_NPC,
     MODEL_TERSIA,
     MODEL_BENA,
+    MODEL_WORKSHOP,
     MODEL_NPC_END,
     // player
     MODEL_PLAYER,
@@ -5111,6 +5112,9 @@ enum EMonsterType : int
     MONSTER_CAPTURED_STONE_STATUE_8 = 666,
     MONSTER_CAPTURED_STONE_STATUE_9 = 667,
     MONSTER_CAPTURED_STONE_STATUE_10 = 668,
+
+    // The NPCs of our server, outside the original numbers.
+    MONSTER_WORKSHOP = 1000,
 
     MONSTER_END = 668
 };
