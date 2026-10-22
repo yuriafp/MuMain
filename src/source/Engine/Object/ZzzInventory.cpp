@@ -1375,6 +1375,30 @@ void GetItemName(int iType, int iLevel, wchar_t* Text)
     }
 }
 
+std::wstring GetItemName(int iType, int iLevel)
+{
+    if (iType < 0 || iType >= MAX_ITEM)
+    {
+        return {};
+    }
+
+    constexpr std::size_t ItemNameCapacity = 128;
+    wchar_t name[ItemNameCapacity]{};
+    GetItemName(iType, iLevel, name);
+    if (name[0] != L'\0')
+    {
+        return name;
+    }
+
+    // Alternate-name switches may not cover every source level.
+    std::wstring fallback(ItemAttribute[iType].Name, wcsnlen(ItemAttribute[iType].Name, MAX_ITEM_NAME));
+    if (iLevel)
+    {
+        fallback += L" +" + std::to_wstring(iLevel);
+    }
+    return fallback;
+}
+
 void GetSpecialOptionText(int Type, wchar_t* Text, WORD Option, BYTE Value, int iMana)
 {
     switch (Option)
@@ -6390,35 +6414,47 @@ bool IsMoneyItem(ITEM* pItem)
     return pItem->Type == ITEM_ZEN;
 }
 
+namespace
+{
+void AppendItemOptionKeywords(const ITEM& item, std::wstring& options)
+{
+    if (item.HasSkill)
+    {
+        options += I18N::Game::Skill;
+    }
+    if (item.OptionLevel)
+    {
+        options += I18N::Game::Option;
+    }
+    if (item.HasLuck)
+    {
+        options += I18N::Game::Luck;
+    }
+}
+} // namespace
+
 std::wstring GetItemDisplayName(ITEM* pItem)
 {
-    // NOTE: 
-    // There may be already another function for this (the one being used for displaying dropped items).
-    // This version currently only applies to ascii names of items
-
-    ITEM_ATTRIBUTE* pAttr = &ItemAttribute[pItem->Type];
-
-    auto nNameLen = wcsnlen(pAttr->Name, MAX_ITEM_NAME);
-    std::wstring strDisplayName(pAttr->Name, nNameLen);
+    std::wstring strDisplayName = GetItemName(pItem->Type, pItem->Level);
     std::wstring strOptions;
 
     if (pItem->Level)
     {
-        strOptions += L"+" + std::to_wstring(pItem->Level);
+        const std::wstring levelSuffix = L" +" + std::to_wstring(pItem->Level);
+        // Keep ordinary equipment keywords contiguous without treating variant levels as upgrades.
+        if (strDisplayName.ends_with(levelSuffix))
+        {
+            strDisplayName.resize(strDisplayName.size() - levelSuffix.size());
+            strOptions = levelSuffix.substr(1);
+        }
     }
-    if (pItem->HasSkill)
+    AppendItemOptionKeywords(*pItem, strOptions);
+    if (!strOptions.empty())
     {
-        strOptions += L"+Skill"; // TODO: Use I18N::Game::Skill
+        strDisplayName += L" ";
+        strDisplayName += strOptions;
     }
-    if (pItem->OptionLevel)
-    {
-        strOptions += L"+Option"; // TODO: Use I18N::Game::Option
-    }
-    if (pItem->HasLuck) {
-        strOptions += L"+Luck"; // TODO: Use I18N::Game::Luck
-    }
-
-    return strDisplayName + (strOptions.empty() ? L"" : L" " + strOptions);
+    return strDisplayName;
 }
 
 OBJECT ObjectSelect;
@@ -6536,179 +6572,8 @@ static void RenderItem3DAt(float sx, float sy, float Width, float Height, int Ty
 
     vec3_t Position;
     CameraProjection::ScreenToWorldRay(g_Camera, (int)(sx), (int)(sy), Position, false);
-    //RenderObjectScreen(Type+MODEL_ITEM,Level,Option1,Position,Success,PickUp);
-    if (Type == ITEM_BOX_OF_LUCK && Level == 1)	// 성탄의별
-    {
-        RenderObjectScreen(MODEL_EVENT + 4, Level, excellentFlags, ancientDiscriminator, Position, Success, PickUp);
-    }
-    else if (Type == ITEM_BOX_OF_LUCK && Level == 2)
-    {
-        RenderObjectScreen(MODEL_EVENT + 5, Level, excellentFlags, ancientDiscriminator, Position, Success, PickUp);
-    }
-    else if (Type == ITEM_BOX_OF_LUCK && Level == 3)
-    {
-        RenderObjectScreen(MODEL_EVENT + 6, Level, excellentFlags, ancientDiscriminator, Position, Success, PickUp);
-    }
-    else if (Type == ITEM_BOX_OF_LUCK && Level == 5)
-    {
-        RenderObjectScreen(MODEL_EVENT + 8, Level, excellentFlags, ancientDiscriminator, Position, Success, PickUp);
-    }
-    else if (Type == ITEM_BOX_OF_LUCK && Level == 6)
-    {
-        RenderObjectScreen(MODEL_EVENT + 9, Level, excellentFlags, ancientDiscriminator, Position, Success, PickUp);
-    }
-    else if (Type == ITEM_BOX_OF_LUCK && 8 <= Level && Level <= 12)
-    {
-        RenderObjectScreen(MODEL_EVENT + 10, Level, excellentFlags, ancientDiscriminator, Position, Success, PickUp);
-    }
-    else if (Type == ITEM_BOX_OF_LUCK && Level == 13)
-    {
-        RenderObjectScreen(MODEL_EVENT + 6, Level, excellentFlags, ancientDiscriminator, Position, Success, PickUp);
-    }
-    else if (Type == ITEM_BOX_OF_LUCK && (Level == 14 || Level == 15))
-    {
-        RenderObjectScreen(MODEL_EVENT + 5, Level, excellentFlags, ancientDiscriminator, Position, Success, PickUp);
-    }
-    else if (Type == ITEM_LOCHS_FEATHER && Level == 1)
-    {
-        RenderObjectScreen(MODEL_EVENT + 16, Level, excellentFlags, ancientDiscriminator, Position, Success, PickUp);
-    }
-    else if (Type == ITEM_ALE && Level == 1)
-    {
-        RenderObjectScreen(MODEL_EVENT + 7, Level, excellentFlags, ancientDiscriminator, Position, Success, PickUp);
-    }
-    else if (Type == ITEM_RENA)
-    {
-        switch (Level)
-        {
-        case 1:
-            RenderObjectScreen(MODEL_EVENT + 11, Level, excellentFlags, ancientDiscriminator, Position, Success, PickUp);
-            break;
-        case 2:
-            RenderObjectScreen(MODEL_EVENT + 11, Level, excellentFlags, ancientDiscriminator, Position, Success, PickUp);
-            break;
-        case 3:
-            RenderObjectScreen(Data::Items::ToModelSlot(Type), Level, excellentFlags, ancientDiscriminator, Position,
-                               Success, PickUp);
-            break;
-        default:
-            RenderObjectScreen(Data::Items::ToModelSlot(Type), Level, excellentFlags, ancientDiscriminator, Position,
-                               Success, PickUp);
-            break;
-        }
-    }
-    else if (Type == ITEM_PUMPKIN_OF_LUCK)
-    {
-        RenderObjectScreen(MODEL_PUMPKIN_OF_LUCK, Level, excellentFlags, ancientDiscriminator, Position, Success, PickUp);
-    }
-    else if (Type >= ITEM_JACK_OLANTERN_BLESSINGS && Type <= ITEM_JACK_OLANTERN_CRY)
-    {
-        RenderObjectScreen(MODEL_JACK_OLANTERN_BLESSINGS, Level, excellentFlags, ancientDiscriminator, Position, Success, PickUp);
-    }
-    else if (Type == ITEM_JACK_OLANTERN_FOOD)
-    {
-        RenderObjectScreen(MODEL_JACK_OLANTERN_FOOD, Level, excellentFlags, ancientDiscriminator, Position, Success, PickUp);
-    }
-    else if (Type == ITEM_JACK_OLANTERN_DRINK)
-    {
-        RenderObjectScreen(MODEL_JACK_OLANTERN_DRINK, Level, excellentFlags, ancientDiscriminator, Position, Success, PickUp);
-    }
-    else if (Type == ITEM_PINK_CHOCOLATE_BOX)
-    {
-        switch (Level)
-        {
-        case 0:
-            RenderObjectScreen(MODEL_PINK_CHOCOLATE_BOX, Level, excellentFlags, ancientDiscriminator, Position, Success, PickUp);
-            break;
-        case 1:
-            RenderObjectScreen(MODEL_EVENT + 21, Level, excellentFlags, ancientDiscriminator, Position, Success, PickUp);
-            break;
-        }
-    }
-    else if (Type == ITEM_RED_CHOCOLATE_BOX)
-    {
-        switch (Level)
-        {
-        case 0:
-            RenderObjectScreen(MODEL_RED_CHOCOLATE_BOX, Level, excellentFlags, ancientDiscriminator, Position, Success, PickUp);
-            break;
-        case 1:
-            RenderObjectScreen(MODEL_EVENT + 22, Level, excellentFlags, ancientDiscriminator, Position, Success, PickUp);
-            break;
-        }
-    }
-    else if (Type == ITEM_BLUE_CHOCOLATE_BOX)
-    {
-        switch (Level)
-        {
-        case 0:
-            RenderObjectScreen(MODEL_BLUE_CHOCOLATE_BOX, Level, excellentFlags, ancientDiscriminator, Position, Success, PickUp);
-            break;
-        case 1:
-            RenderObjectScreen(MODEL_EVENT + 23, Level, excellentFlags, ancientDiscriminator, Position, Success, PickUp);
-            break;
-        }
-    }
-    else if (Type == ITEM_WEAPON_OF_ARCHANGEL)
-    {
-        switch (Level)
-        {
-        case 0:
-            RenderObjectScreen(MODEL_DIVINE_STAFF_OF_ARCHANGEL, -1, excellentFlags, ancientDiscriminator, Position, Success, PickUp);
-            break;
-        case 1:
-            RenderObjectScreen(MODEL_DIVINE_SWORD_OF_ARCHANGEL, -1, excellentFlags, ancientDiscriminator, Position, Success, PickUp);
-            break;
-        case 2:
-            RenderObjectScreen(MODEL_DIVINE_CB_OF_ARCHANGEL, -1, excellentFlags, ancientDiscriminator, Position, Success, PickUp);
-            break;
-        }
-    }
-    else if (Type == ITEM_SCROLL_OF_EMPEROR_RING_OF_HONOR)
-    {
-        switch (Level)
-        {
-        case 0:
-            RenderObjectScreen(Data::Items::ToModelSlot(Type), Level, excellentFlags, ancientDiscriminator, Position,
-                               Success, PickUp);
-            break;
-        case 1:
-            RenderObjectScreen(MODEL_EVENT + 12, -1, excellentFlags, ancientDiscriminator, Position, Success, PickUp);
-            break;
-        }
-    }
-    else if (Type == ITEM_BROKEN_SWORD_DARK_STONE)
-    {
-        switch (Level)
-        {
-        case 0:
-            RenderObjectScreen(Data::Items::ToModelSlot(Type), Level, excellentFlags, ancientDiscriminator, Position,
-                               Success, PickUp);
-            break;
-        case 1:
-            RenderObjectScreen(MODEL_EVENT + 13, -1, excellentFlags, ancientDiscriminator, Position, Success, PickUp);
-            break;
-        }
-    }
-    else if (Type == ITEM_WIZARDS_RING)
-    {
-        switch (Level)
-        {
-        case 0:
-            RenderObjectScreen(MODEL_EVENT + 15, Level, excellentFlags, ancientDiscriminator, Position, Success, PickUp);
-            break;
-        case 1:
-        case 2:
-        case 3:
-            RenderObjectScreen(MODEL_EVENT + 14, Level, excellentFlags, ancientDiscriminator, Position, Success, PickUp);
-            break;
-        }
-    }
-    else if (Type == ITEM_LIFE_STONE_ITEM && Level == 1)
-    {
-        RenderObjectScreen(MODEL_EVENT + 18, Level, excellentFlags, ancientDiscriminator, Position, Success, PickUp);
-    }
-    else if (Type == ITEM_POTION + 100)
+    // The Lucky Coin turns as its registration window says.
+    if (Type == ITEM_POTION + 100)
     {
         bool _Angle;
         if (g_pLuckyCoinRegistration->GetItemRotation())
@@ -6722,10 +6587,11 @@ static void RenderItem3DAt(float sx, float sy, float Width, float Height, int Ty
 
         RenderObjectScreen(MODEL_POTION + 100, Level, excellentFlags, ancientDiscriminator, Position, _Angle, PickUp);
     }
-    else
+    else if (const std::optional<Render::Items::Display::InventoryModel> model =
+                 Render::Items::Display::FindInventoryModel(Type, Level))
     {
-        RenderObjectScreen(Render::Items::Display::GetInventoryModel(Type), Level, excellentFlags, ancientDiscriminator,
-                           Position, Success, PickUp);
+        RenderObjectScreen(model->modelType, model->drawLevel, excellentFlags, ancientDiscriminator, Position, Success,
+                           PickUp);
     }
 }
 
