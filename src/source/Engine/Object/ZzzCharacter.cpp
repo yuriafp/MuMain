@@ -8,9 +8,11 @@
 #include "stdafx.h"
 #include <execution>
 #include <algorithm>
+#include <array>
 #include <span>
 #include "UI/Chat/Chat.h"
 #include "Core/Globals/_enum.h"
+#include "Core/Utilities/Random.h"
 #ifdef _WIN32
 #include <eh.h>
 #endif
@@ -3381,8 +3383,38 @@ void HeroAttributeCalc(CHARACTER* c)
     }
 }
 
+namespace
+{
+// The Alquimista, the Oficina's NPC: one of its lines now and then, never the same twice in a row.
+constexpr std::array<const wchar_t* const*, 6> AlchemistLines{
+    &I18N::Game::AlchemistBringItem, &I18N::Game::AlchemistChoice,      &I18N::Game::AlchemistLuck,
+    &I18N::Game::AlchemistExcellent, &I18N::Game::AlchemistNothingLost, &I18N::Game::AlchemistChaosGoblin};
+// About 12 seconds of silence between two lines, at the reference frame rate.
+constexpr int AlchemistSilenceFrames = 300;
+
+void AlchemistChatProcess(CHARACTER* c)
+{
+    static int lastLine = -1;
+    if (UI::Chat::IsTalking(c) || !rand_fps_check(AlchemistSilenceFrames))
+        return;
+
+    const int lineCount = static_cast<int>(AlchemistLines.size());
+    int line = Random::RangeInt(0, lastLine < 0 ? lineCount - 1 : lineCount - 2);
+    if (lastLine >= 0 && line >= lastLine)
+        ++line;
+    lastLine = line;
+    UI::Chat::CreateChat(c->ID, *AlchemistLines[line], c);
+}
+} // namespace
+
 void OnlyNpcChatProcess(CHARACTER* c, OBJECT* o)
 {
+    if (o->Kind == KIND_NPC && o->Type == MODEL_WORKSHOP)
+    {
+        AlchemistChatProcess(c);
+        return;
+    }
+
     if (o->Kind == KIND_NPC && rand_fps_check(2))
     {
         switch (o->Type)
@@ -15067,7 +15099,7 @@ CHARACTER* CreateMonster(EMonsterType Type, int PositionX, int PositionY, int Ke
     case MONSTER_WORKSHOP:
         OpenNpc(MODEL_WORKSHOP);
         c = CreateCharacter(Key, MODEL_WORKSHOP, PositionX, PositionY);
-        wcscpy(c->ID, L"Oficina");
+        wcscpy(c->ID, L"Alquimista");
         break;
     case MONSTER_LEINA_THE_GENERAL_GOODS_MERCHANT:
         OpenNpc(MODEL_KARUTAN_NPC_REINA);

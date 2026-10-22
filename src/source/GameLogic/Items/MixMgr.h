@@ -182,8 +182,14 @@ namespace SEASON3A
         CMixRecipes() { Reset(); }
         virtual ~CMixRecipes() { Reset(); }
 
+        // The recipe checks take every recipe (ALL_RECIPES), none (NO_RECIPE) or the one with this
+        // m_iMixIndex alone, e.g. the recipe of the option the player chose.
+        static constexpr int ALL_RECIPES = -1;
+        static constexpr int NO_RECIPE = -2;
+
         void Reset();
         void AddRecipe(MIX_RECIPE* pMixRecipe);
+        void SetOnlyRecipe(int iMixIndex) { m_iOnlyMixIndex = iMixIndex; }
         void ClearCheckRecipeResult();
         int CheckRecipe(int iNumMixItems, CMixItem* pMixItems);
         int CheckRecipeSimilarity(int iNumMixItems, CMixItem* pMixItems);
@@ -213,6 +219,11 @@ namespace SEASON3A
 
     protected:
         bool IsOptionItem(MIX_RECIPE_ITEM& rItem) { return (rItem.m_iCountMin == 0); }	// 옵션(안넣어도 되는) 아이템인가
+        bool IsRecipeChecked(const MIX_RECIPE& rRecipe) const
+        {
+            return m_iOnlyMixIndex == ALL_RECIPES || rRecipe.m_iMixIndex == m_iOnlyMixIndex;
+        }
+        size_t GetNumCheckedRecipes() const;
         BOOL CheckRecipeSub(std::vector<MIX_RECIPE*>::iterator iter, int iNumMixItems, CMixItem* pMixItems);
         int CheckRecipeSimilaritySub(std::vector<MIX_RECIPE*>::iterator iter, int iNumMixItems, CMixItem* pMixItems);	// 유사도 비교
         bool CheckItem(MIX_RECIPE_ITEM& rItem, CMixItem& rSource);	// 같은 아이템인지 비교
@@ -237,6 +248,7 @@ namespace SEASON3A
         float MixrateFactor();
     protected:
         std::vector<MIX_RECIPE*> m_Recipes;
+        int m_iOnlyMixIndex = ALL_RECIPES;
         int m_iCurMixIndex;
         int m_iMostSimilarMixIndex;
         int m_iSuccessRate;
@@ -280,6 +292,7 @@ namespace SEASON3A
         void CheckMixInventory();
         void SetMixSubType(int iMixSubType) { this->m_iMixSubType = iMixSubType; }
         int GetMixSubType() { return this->m_iMixSubType; }
+        void SetOnlyRecipe(int iMixIndex) { m_MixRecipe[GetMixInventoryType()].SetOnlyRecipe(iMixIndex); }
 
         BOOL IsMixSource(ITEM* pItem)
         {

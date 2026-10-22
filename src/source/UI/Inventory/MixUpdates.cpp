@@ -35,6 +35,11 @@ void PlaceMovedItem(int slot, std::span<const std::uint8_t> itemData)
         g_pMixInventory->InsertItem(slot, itemData);
 }
 
+const wchar_t* GetWorkshopRequestedOption()
+{
+    return g_pMixInventory->GetWorkshopRequestedOption();
+}
+
 bool IsLuckyItemAwaiting(bool requireVisible)
 {
     if (requireVisible && !UI::Windows::IsVisible(mu::ui::window::INTERFACE_LUCKYITEMWND))

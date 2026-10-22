@@ -37,6 +37,13 @@ mu_add_test(
 )
 
 mu_add_test(
+    NAME workshop_options_tests
+    SOURCES
+        test_workshop_options.cpp
+        ${CMAKE_SOURCE_DIR}/src/source/GameLogic/Items/WorkshopOptions.cpp
+)
+
+mu_add_test(
     NAME buy_option_selection_tests
     SOURCES
         test_buy_option_selection.cpp

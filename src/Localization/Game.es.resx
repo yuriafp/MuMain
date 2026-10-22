@@ -13034,4 +13034,128 @@
   <data name="QuestRequirementBuff" xml:space="preserve">
     <value>Bonus: %ls</value>
   </data>
+  <data name="WorkshopTitle" xml:space="preserve">
+    <value>Oficina</value>
+  </data>
+  <data name="WorkshopChooseOption" xml:space="preserve">
+    <value>Elige la opción:</value>
+  </data>
+  <data name="WorkshopPlaceItem" xml:space="preserve">
+    <value>Coloca un arma, armadura o escudo.</value>
+  </data>
+  <data name="WorkshopChooseInList" xml:space="preserve">
+    <value>Elige la opción en la lista de abajo.</value>
+  </data>
+  <data name="WorkshopOnlyOneItem" xml:space="preserve">
+    <value>Coloca solo un objeto.</value>
+  </data>
+  <data name="WorkshopNoAncient" xml:space="preserve">
+    <value>Los objetos ancient no reciben opciones aquí.</value>
+  </data>
+  <data name="WorkshopNoSocket" xml:space="preserve">
+    <value>Los objetos con socket no reciben opciones aquí.</value>
+  </data>
+  <data name="WorkshopMaximumLevel" xml:space="preserve">
+    <value>Solo objetos hasta +%d.</value>
+  </data>
+  <data name="WorkshopNoOptionLeft" xml:space="preserve">
+    <value>Este objeto no acepta más opciones.</value>
+  </data>
+  <data name="WorkshopFailureLoss" xml:space="preserve">
+    <value>Si falla, se pierden las joyas y el zen,</value>
+  </data>
+  <data name="WorkshopFailureKeepsItem" xml:space="preserve">
+    <value>pero el objeto queda como estaba.</value>
+  </data>
+  <data name="WorkshopRecipeLuck" xml:space="preserve">
+    <value>Oficina: Luck</value>
+    <comment>legacy_id=9001</comment>
+  </data>
+  <data name="WorkshopRecipeExcellent1" xml:space="preserve">
+    <value>Oficina: 1.ª opción excelente</value>
+    <comment>legacy_id=9002</comment>
+  </data>
+  <data name="WorkshopRecipeExcellent2" xml:space="preserve">
+    <value>Oficina: 2.ª opción excelente</value>
+    <comment>legacy_id=9003</comment>
+  </data>
+  <data name="WorkshopRecipeExcellent3" xml:space="preserve">
+    <value>Oficina: 3.ª opción excelente</value>
+    <comment>legacy_id=9004</comment>
+  </data>
+  <data name="WorkshopLuck" xml:space="preserve">
+    <value>Luck</value>
+  </data>
+  <data name="WorkshopManaAfterKill" xml:space="preserve">
+    <value>Maná al matar +Maná/8</value>
+  </data>
+  <data name="WorkshopLifeAfterKill" xml:space="preserve">
+    <value>Vida al matar +Vida/8</value>
+  </data>
+  <data name="WorkshopAttackSpeed" xml:space="preserve">
+    <value>Velocidad de ataque +7</value>
+  </data>
+  <data name="WorkshopDamagePercent" xml:space="preserve">
+    <value>Daño +2%</value>
+  </data>
+  <data name="WorkshopDamageLevel" xml:space="preserve">
+    <value>Daño +Nivel/20</value>
+  </data>
+  <data name="WorkshopWizardryPercent" xml:space="preserve">
+    <value>Daño mágico +2%</value>
+  </data>
+  <data name="WorkshopWizardryLevel" xml:space="preserve">
+    <value>Daño mágico +Nivel/20</value>
+  </data>
+  <data name="WorkshopExcellentDamage" xml:space="preserve">
+    <value>Prob. de daño excelente +10%</value>
+  </data>
+  <data name="WorkshopZenAfterKill" xml:space="preserve">
+    <value>Zen al matar +30%</value>
+  </data>
+  <data name="WorkshopDefenseRate" xml:space="preserve">
+    <value>Tasa de defensa +10%</value>
+  </data>
+  <data name="WorkshopReflectDamage" xml:space="preserve">
+    <value>Refleja daño +5%</value>
+  </data>
+  <data name="WorkshopDamageDecrease" xml:space="preserve">
+    <value>Reduce el daño +4%</value>
+  </data>
+  <data name="WorkshopMaximumMana" xml:space="preserve">
+    <value>Maná máximo +4%</value>
+  </data>
+  <data name="WorkshopMaximumLife" xml:space="preserve">
+    <value>Vida máxima +4%</value>
+  </data>
+  <data name="WorkshopSucceeded" xml:space="preserve">
+    <value>El objeto obtuvo la opción: %s.</value>
+  </data>
+  <data name="WorkshopFailed" xml:space="preserve">
+    <value>La Oficina falló: se perdieron las joyas y el zen.</value>
+  </data>
+  <data name="WorkshopLackingJewels" xml:space="preserve">
+    <value>Faltan joyas para esta opción.</value>
+  </data>
+  <data name="WorkshopIncorrectItems" xml:space="preserve">
+    <value>Estos objetos no sirven para esta opción.</value>
+  </data>
+  <data name="AlchemistBringItem" xml:space="preserve">
+    <value>Tráeme tu arma, armadura o escudo, y despertaré su poder oculto.</value>
+  </data>
+  <data name="AlchemistChoice" xml:space="preserve">
+    <value>¿La Luck o una opción excelente? En mi mesa, tú eliges.</value>
+  </data>
+  <data name="AlchemistLuck" xml:space="preserve">
+    <value>Una Jewel of Soul, y la opción Luck es tuya, sin fallar.</value>
+  </data>
+  <data name="AlchemistExcellent" xml:space="preserve">
+    <value>Las Jewels of Creation compran las opciones excelentes, una a una.</value>
+  </data>
+  <data name="AlchemistNothingLost" xml:space="preserve">
+    <value>En mi mesa no se pierde ningún objeto: como mucho, las joyas y el zen.</value>
+  </data>
+  <data name="AlchemistChaosGoblin" xml:space="preserve">
+    <value>Los objetos terminados aquí prueban suerte con el Duende del Caos.</value>
+  </data>
 </root>

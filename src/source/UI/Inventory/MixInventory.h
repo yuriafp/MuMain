@@ -1,6 +1,7 @@
 
 #pragma once
 
+#include "GameLogic/Items/WorkshopOptions.h"
 #include "UI/Inventory/ItemCameraTarget.h"
 #include "UI/Inventory/ItemGridModel.h"
 #include "Render/RmlUi/RmlUiRuntime.h"
@@ -9,6 +10,7 @@
 #include "UI/Inventory/MyInventory.h"
 #include "UI/Inventory/SocketListSelection.h"
 #include "UI/RmlBridge/RmlThemedView.h"
+#include <optional>
 #include <span>
 #include <vector>
 
@@ -40,6 +42,13 @@ namespace mu::ui::window
         UI::Inventory::SocketListSelection m_SocketSelection;
         std::vector<DWORD> m_SocketItemKeys;
         bool m_SocketTextDirty = true;
+        // The Oficina's options for the item in the box. Its list is the socket list: each row's
+        // seed is the choice.
+        GameLogic::Items::Workshop::Options m_WorkshopOptions;
+        // The key of that item: the choice holds while the item does, whatever jewels come and go.
+        std::optional<DWORD> m_WorkshopItemKey;
+        // The option of the Oficina mix waiting for its result, for the message.
+        const wchar_t* m_WorkshopRequestedOption = nullptr;
 
         struct SocketListLine
         {
@@ -159,6 +168,7 @@ namespace mu::ui::window
 
         CInventoryCtrl* GetInventoryCtrl() const;
 
+        const wchar_t* GetWorkshopRequestedOption() const { return m_WorkshopRequestedOption; }
 
     private:
 
@@ -177,8 +187,13 @@ namespace mu::ui::window
         void SyncMixContentModel();
         void SyncSocketListModel();
         bool RefreshSocketOptions();
+        bool RefreshWorkshopOptions();
+        int GetWorkshopChoice() const;
+        void SyncWorkshopListModel();
+        void SyncSocketLineSelection();
         void SelectSocket(int index);
     bool PrepareSocketMix();
+    bool PrepareWorkshopMix();
     void ConfirmMix(int mixType, int mixId, int socketIndex, const std::vector<DWORD>& itemKeys);
 
         bool CheckMixInventory();

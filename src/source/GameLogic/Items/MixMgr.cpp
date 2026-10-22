@@ -12,6 +12,8 @@
 #include "GameLogic/Items/ItemCategories.h"
 #include "Data/GameData/ItemData/ItemDatabase.h"
 
+#include <algorithm>
+
 using namespace SEASON3A;
 
 CMixRecipeMgr g_MixRecipeMgr;
@@ -330,6 +332,8 @@ int CMixRecipes::CheckRecipe(int iNumMixItems, CMixItem* pMixItems)
     std::vector<MIX_RECIPE*>::iterator iter;
     for (iter = m_Recipes.begin(); iter != m_Recipes.end(); ++iter)
     {
+        if (!IsRecipeChecked(**iter))
+            continue;
         for (int i = 0; i < iNumMixItems; ++i)
         {
             pMixItems[i].m_iTestCount = pMixItems[i].m_iCount;
@@ -349,6 +353,9 @@ int CMixRecipes::CheckRecipe(int iNumMixItems, CMixItem* pMixItems)
             m_dwRequiredZen = 0;
         }
     }
+    // No recipe checked at all (NO_RECIPE) leaves no rate or zen of an earlier match either.
+    m_iSuccessRate = 0;
+    m_dwRequiredZen = 0;
     return (-1);
 }
 
@@ -416,9 +423,17 @@ BOOL CMixRecipes::CheckRecipeSub(std::vector<MIX_RECIPE*>::iterator iter, int iN
     return TRUE;
 }
 
+size_t CMixRecipes::GetNumCheckedRecipes() const
+{
+    if (m_iOnlyMixIndex == ALL_RECIPES)
+        return m_Recipes.size();
+    return static_cast<size_t>(std::count_if(m_Recipes.begin(), m_Recipes.end(),
+        [this](const MIX_RECIPE* pRecipe) { return IsRecipeChecked(*pRecipe); }));
+}
+
 int CMixRecipes::CheckRecipeSimilarity(int iNumMixItems, CMixItem* pMixItems)
 {
-    if (iNumMixItems == 0 && m_Recipes.size() == 1)
+    if (iNumMixItems == 0 && m_Recipes.size() == 1 && m_iOnlyMixIndex == ALL_RECIPES)
     {
         m_iMostSimilarMixIndex = 1;
         for (int i = 0; i < (*m_Recipes.begin())->m_iNumMixSoruces; ++i)
@@ -433,9 +448,13 @@ int CMixRecipes::CheckRecipeSimilarity(int iNumMixItems, CMixItem* pMixItems)
     memset(m_iMostSimilarMixSourceTest, 0, sizeof(int) * MAX_MIX_SOURCES);
     memset(m_iMixSourceTest, 0, sizeof(int) * MAX_MIX_SOURCES);
 
+    // One matching source alone predicts nothing while other recipes share it.
+    const size_t numCheckedRecipes = GetNumCheckedRecipes();
     int iSimilarityPoint;
     for (auto iter = m_Recipes.begin(); iter != m_Recipes.end(); ++iter)
     {
+        if (!IsRecipeChecked(**iter))
+            continue;
         memset(m_iMixSourceTest, 0, sizeof(int) * MAX_MIX_SOURCES);
         for (int i = 0; i < (*iter)->m_iNumMixSoruces; ++i)
             m_iMixSourceTest[i] = (*iter)->m_MixSources[i].m_iCountMax;
@@ -444,7 +463,7 @@ int CMixRecipes::CheckRecipeSimilarity(int iNumMixItems, CMixItem* pMixItems)
             pMixItems[i].m_iTestCount = pMixItems[i].m_iCount;
 
         iSimilarityPoint = CheckRecipeSimilaritySub(iter, iNumMixItems, pMixItems);
-        if (iSimilarityPoint == 1 && m_Recipes.size() > 1) iSimilarityPoint = 0;
+        if (iSimilarityPoint == 1 && numCheckedRecipes > 1) iSimilarityPoint = 0;
         if (iSimilarityPoint > iMostSimiliarityPoint ||
             (iSimilarityPoint == iMostSimiliarityPoint && iSimilarityPoint > 0 && m_iCurMixIndex == (*iter)->m_iMixIndex + 1))
         {

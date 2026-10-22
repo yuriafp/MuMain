@@ -510,6 +510,16 @@ void CreateChat(wchar_t* character_name, const wchar_t* chat_text, CHARACTER* Ow
     }
 }
 
+bool IsTalking(const CHARACTER* owner)
+{
+    for (const CHAT& chat : Chat)
+    {
+        if (chat.Owner == owner)
+            return chat.LifeTime[0] > 0;
+    }
+    return false;
+}
+
 int CreateChat(wchar_t* character_name, const wchar_t* chat_text, OBJECT* Owner, int Flag, int SetColor)
 {
     OBJECT* o = Owner;

@@ -2,6 +2,7 @@
 #include "stdafx.h"
 #include "UI/Inventory/MixInventory.h"
 #include "UI/Inventory/HeldItemPlacement.h"
+#include "UI/Inventory/WorkshopMix.h"
 #include "UI/Core/WindowSystem.h"
 #include "UI/RmlBridge/RmlElementBox.h"
 #include "UI/RmlBridge/RmlPointer.h"
@@ -264,7 +265,6 @@ bool CMixInventory::ClosingProcess()
     case SEASON3A::MIXTYPE_OSBOURNE:
     case SEASON3A::MIXTYPE_JERRIDON:
     case SEASON3A::MIXTYPE_ELPIS:
-    case SEASON3A::MIXTYPE_CHAOS_CARD:
     case SEASON3A::MIXTYPE_CHERRYBLOSSOM:
     case SEASON3A::MIXTYPE_EXTRACT_SEED:
     case SEASON3A::MIXTYPE_SEED_SPHERE:
@@ -273,9 +273,11 @@ bool CMixInventory::ClosingProcess()
     case SEASON3A::MIXTYPE_TRAINER:
         SocketClient->ToGameServer()->SendCloseNpcRequest();
         break;
+    case SEASON3A::MIXTYPE_CHAOS_CARD:
     case SEASON3A::MIXTYPE_ATTACH_SOCKET:
     case SEASON3A::MIXTYPE_DETACH_SOCKET:
         m_SocketSelection.ClearSelection();
+        m_WorkshopItemKey.reset();
         SocketClient->ToGameServer()->SendCraftingDialogCloseRequest();
         break;
     default:
@@ -389,7 +391,7 @@ void CMixInventory::SyncRmlModel()
     case SEASON3A::MIXTYPE_OSBOURNE:         titleText = I18N::Game::Refine; break;
     case SEASON3A::MIXTYPE_JERRIDON:         titleText = I18N::Game::Restore; break;
     case SEASON3A::MIXTYPE_ELPIS:            titleText = I18N::Game::Refine; break;
-    case SEASON3A::MIXTYPE_CHAOS_CARD:       titleText = I18N::Game::ChaosCardCombination; break;
+    case SEASON3A::MIXTYPE_CHAOS_CARD:       titleText = I18N::Game::WorkshopTitle; break;
     case SEASON3A::MIXTYPE_CHERRYBLOSSOM:    titleText = I18N::Game::SpiritOfCherryBlossoms; break;
     case SEASON3A::MIXTYPE_EXTRACT_SEED:     titleText = I18N::Game::Extraction; break;
     case SEASON3A::MIXTYPE_SEED_SPHERE:      titleText = I18N::Game::Assembly; break;
@@ -427,6 +429,9 @@ void CMixInventory::SyncRmlModel()
 
 bool CMixInventory::RefreshSocketOptions()
 {
+    // The Oficina's list follows the items, before their recipe check (CheckMixInventory()).
+    if (UI::Mix::Workshop::IsOpen())
+        return false;
     const int mixType = g_MixRecipeMgr.GetMixInventoryType();
     const bool shown = mixType == SEASON3A::MIXTYPE_ATTACH_SOCKET || mixType == SEASON3A::MIXTYPE_DETACH_SOCKET;
     const int count = shown ? std::clamp(g_MixRecipeMgr.GetFirstItemSocketCount(), 0, MAX_SOCKETS) : 0;
@@ -436,6 +441,40 @@ bool CMixInventory::RefreshSocketOptions()
     const bool changed = m_SocketSelection.Update(mixType, {options.data(), static_cast<size_t>(count)});
     m_SocketTextDirty |= changed;
     return changed;
+}
+
+// The Oficina's options for the item in the box, and the recipe of the chosen one alone for the
+// recipe check: the jewels it shows are the ones that option takes.
+bool CMixInventory::RefreshWorkshopOptions()
+{
+    m_WorkshopOptions = UI::Mix::Workshop::GetOptions(*m_pNewInventoryCtrl);
+    const ITEM* item = UI::Mix::Workshop::FindItem(*m_pNewInventoryCtrl);
+    const std::optional<DWORD> itemKey = item != nullptr ? std::optional<DWORD>(item->Key) : std::nullopt;
+    if (itemKey != m_WorkshopItemKey)
+    {
+        // Another item: its options have other names, even where the list is the same.
+        m_WorkshopItemKey = itemKey;
+        m_SocketSelection.ClearSelection();
+        m_SocketTextDirty = true;
+    }
+    const auto choices = m_WorkshopOptions.Choices();
+    std::array<UI::Inventory::SocketListSelection::Option, 1 + GameLogic::Items::Workshop::ExcellentOptionCount> rows{};
+    for (size_t i = 0; i < choices.size(); ++i)
+        rows[i] = {choices[i], 0};
+    const bool changed = m_SocketSelection.Update(SEASON3A::MIXTYPE_CHAOS_CARD, {rows.data(), choices.size()});
+    m_SocketTextDirty |= changed;
+
+    const int choice = GetWorkshopChoice();
+    g_MixRecipeMgr.SetOnlyRecipe(choice < 0 ? SEASON3A::CMixRecipes::NO_RECIPE
+                                            : GameLogic::Items::Workshop::GetRecipeIndex(choice, m_WorkshopOptions.ExcellentCount()));
+    return changed;
+}
+
+// The chosen option of the Oficina, or -1.
+int CMixInventory::GetWorkshopChoice() const
+{
+    const int selected = m_SocketSelection.Selected();
+    return selected < 0 ? -1 : m_SocketSelection.Options()[selected].seed;
 }
 
 void CMixInventory::SelectSocket(int index)
@@ -462,6 +501,11 @@ CInventoryCtrl* CMixInventory::GetInventoryCtrl() const
 
 void CMixInventory::SyncSocketListModel()
 {
+    if (UI::Mix::Workshop::IsOpen())
+    {
+        SyncWorkshopListModel();
+        return;
+    }
     auto& model = m_RmlView.GetModel();
     const int mixType = g_MixRecipeMgr.GetMixInventoryType();
     const bool shown = mixType == SEASON3A::MIXTYPE_ATTACH_SOCKET || mixType == SEASON3A::MIXTYPE_DETACH_SOCKET;
@@ -484,6 +528,32 @@ void CMixInventory::SyncSocketListModel()
         m_SocketTextDirty = false;
         m_RmlView.MarkDirty("socket_lines");
     }
+    SyncSocketLineSelection();
+}
+
+void CMixInventory::SyncWorkshopListModel()
+{
+    auto& model = m_RmlView.GetModel();
+    const bool shown = m_WorkshopOptions.GetStatus() == GameLogic::Items::Workshop::Status::Ready;
+    SyncField(m_RmlView.Binder(), &MixInventoryRmlModel::showSocketList, "show_socket_list", shown);
+    if (m_SocketTextDirty)
+    {
+        model.socketLines.clear();
+        const auto choices = m_WorkshopOptions.Choices();
+        for (size_t i = 0; i < choices.size(); ++i)
+        {
+            const wchar_t* name = UI::Mix::Workshop::GetOptionName(*m_pNewInventoryCtrl, choices[i]);
+            model.socketLines.push_back({StringUtils::WideToNarrow(name != nullptr ? name : L""), static_cast<int>(i), false});
+        }
+        m_SocketTextDirty = false;
+        m_RmlView.MarkDirty("socket_lines");
+    }
+    SyncSocketLineSelection();
+}
+
+void CMixInventory::SyncSocketLineSelection()
+{
+    auto& model = m_RmlView.GetModel();
     for (auto& row : model.socketLines)
     {
         const bool selected = row.index == m_SocketSelection.Selected();
@@ -601,6 +671,7 @@ void CMixInventory::SyncMixContentModel()
     case SEASON3A::MIXTYPE_TRAINER:
     case SEASON3A::MIXTYPE_EXTRACT_SEED:
     case SEASON3A::MIXTYPE_SEED_SPHERE:
+    case SEASON3A::MIXTYPE_CHAOS_CARD:
         showSuccess = true;
         if (g_MixRecipeMgr.IsReadyToMix() &&
             g_MixRecipeMgr.GetPlusChaosRate() > 0 && g_MixRecipeMgr.GetCurRecipe()->m_bMixOption == 'F')
@@ -618,6 +689,7 @@ void CMixInventory::SyncMixContentModel()
             case SEASON3A::MIXTYPE_GOBLIN_ADD380:
             case SEASON3A::MIXTYPE_EXTRACT_SEED:
             case SEASON3A::MIXTYPE_SEED_SPHERE:
+            case SEASON3A::MIXTYPE_CHAOS_CARD:
                 mu_swprintf(szText, I18N::Game::SSuccessRateD, I18N::Game::Combining, g_MixRecipeMgr.GetSuccessRate());
                 break;
             case SEASON3A::MIXTYPE_TRAINER:
@@ -654,6 +726,7 @@ void CMixInventory::SyncMixContentModel()
     case SEASON3A::MIXTYPE_JERRIDON:
     case SEASON3A::MIXTYPE_EXTRACT_SEED:
     case SEASON3A::MIXTYPE_SEED_SPHERE:
+    case SEASON3A::MIXTYPE_CHAOS_CARD:
     case SEASON3A::MIXTYPE_ATTACH_SOCKET:
     case SEASON3A::MIXTYPE_DETACH_SOCKET:
     {
@@ -685,7 +758,12 @@ void CMixInventory::SyncMixContentModel()
     bool showPrediction = false;
     wchar_t predictionText[256] = {};
 
-    if (g_MixRecipeMgr.GetMostSimilarRecipe() != NULL)
+    if (UI::Mix::Workshop::IsOpen() &&
+        UI::Mix::Workshop::FormatStatus(m_WorkshopOptions, GetWorkshopChoice() >= 0, szText, std::size(szText)))
+    {
+        statusLines.push_back({ StringUtils::WideToNarrow(szText), "missing" });
+    }
+    else if (g_MixRecipeMgr.GetMostSimilarRecipe() != NULL)
     {
         wchar_t szName[100] = {};
         if (!g_MixRecipeMgr.IsReadyToMix() && g_MixRecipeMgr.GetMostSimilarRecipeName(szName, 1) == TRUE)
@@ -794,10 +872,10 @@ void CMixInventory::SyncMixContentModel()
         describe(I18N::Game::GemstoneWillGiveMorePower, white, 2);
         break;
     case SEASON3A::MIXTYPE_CHAOS_CARD:
-        describe(I18N::Game::Warning2223, warning, 4);
-        describe(I18N::Game::CombinationsCanBeUsedOnceAtATime, white, 6, true);
-        describe(I18N::Game::MoreThan2X4SpaceInInventoryIsNeeded, white, 7, true);
-        describe(I18N::Game::YouCanAchieveSpecialItemsWithCombinations, white, 8, true);
+        describe(I18N::Game::WorkshopFailureLoss, warning, 0);
+        describe(I18N::Game::WorkshopFailureKeepsItem, white, 1);
+        showSocketPrompt = m_WorkshopOptions.GetStatus() == GameLogic::Items::Workshop::Status::Ready;
+        mu_swprintf(socketPromptText, L"%ls", I18N::Game::WorkshopChooseOption);
         break;
     case SEASON3A::MIXTYPE_CHERRYBLOSSOM:
         describe(I18N::Game::Warning2223, warning, 0);
@@ -831,6 +909,8 @@ int CMixInventory::Rtn_MixRequireZen(int _nMixZen, int _nTax)
 
 bool CMixInventory::PrepareSocketMix()
 {
+    if (UI::Mix::Workshop::IsOpen())
+        return PrepareWorkshopMix();
     if (g_MixRecipeMgr.GetMixInventoryType() == SEASON3A::MIXTYPE_ATTACH_SOCKET)
     {
         const int iSelectedLine = m_SocketSelection.Selected();
@@ -883,6 +963,22 @@ bool CMixInventory::PrepareSocketMix()
     return true;
 }
 
+// The Oficina's option goes in the socket slot byte of the mix request.
+bool CMixInventory::PrepareWorkshopMix()
+{
+    const int choice = GetWorkshopChoice();
+    if (choice < 0)
+    {
+        // The status line says what is missing: a fitting item, or the choice.
+        wchar_t status[128] = {};
+        UI::Mix::Workshop::FormatStatus(m_WorkshopOptions, false, status, std::size(status));
+        g_pSystemLogBox->AddText(status, mu::ui::window::TYPE_ERROR_MESSAGE);
+        return false;
+    }
+    g_MixRecipeMgr.SetMixSubType(choice);
+    return true;
+}
+
 void CMixInventory::ConfirmMix(int mixType, int mixId, int socketIndex, const std::vector<DWORD>& itemKeys)
 {
     if (!IsVisible() || GetMixState() != MIX_READY)
@@ -891,11 +987,15 @@ void CMixInventory::ConfirmMix(int mixType, int mixId, int socketIndex, const st
     RefreshSocketOptions();
     if (g_MixRecipeMgr.GetMixInventoryType() != mixType || g_MixRecipeMgr.GetCurMixID() != mixId)
         return;
-    if (mixType == SEASON3A::MIXTYPE_ATTACH_SOCKET || mixType == SEASON3A::MIXTYPE_DETACH_SOCKET)
+    if (mixType == SEASON3A::MIXTYPE_ATTACH_SOCKET || mixType == SEASON3A::MIXTYPE_DETACH_SOCKET ||
+        mixType == SEASON3A::MIXTYPE_CHAOS_CARD)
     {
         if (itemKeys != m_SocketItemKeys || socketIndex != m_SocketSelection.Selected() || !PrepareSocketMix())
             return;
     }
+    m_WorkshopRequestedOption = UI::Mix::Workshop::IsOpen()
+        ? UI::Mix::Workshop::GetOptionName(*m_pNewInventoryCtrl, GetWorkshopChoice())
+        : nullptr;
     SetMixState(MIX_REQUESTED);
     SocketClient->ToGameServer()->SendChaosMachineMixRequest(
         static_cast<ChaosMachineMixType>(mixId), g_MixRecipeMgr.GetMixSubType());
@@ -907,6 +1007,10 @@ bool CMixInventory::Mix()
     RefreshSocketOptions();
 
     PlayBuffer(SOUND_CLICK01);
+
+    // Without the Oficina's option no recipe is checked, so the option comes first.
+    if (UI::Mix::Workshop::IsOpen() && !PrepareWorkshopMix())
+        return false;
 
     DWORD dwGold = CharacterMachine->Gold;
     int	  nMixZen = g_MixRecipeMgr.GetReqiredZen();
@@ -1068,7 +1172,9 @@ bool CMixInventory::CheckMixInventory()
         m_SocketItemKeys[i] = item->Key;
         g_MixRecipeMgr.AddItemToMixItemInventory(item);
     }
-    if (changed)
+    if (UI::Mix::Workshop::IsOpen())
+        changed |= RefreshWorkshopOptions();
+    else if (changed)
         m_SocketSelection.ClearSelection();
     g_MixRecipeMgr.CheckMixInventory();
     return changed;

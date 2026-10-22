@@ -69,6 +69,7 @@
 #include "UI/Inventory/TradeUpdates.h"
 #include "UI/Inventory/StorageUpdates.h"
 #include "UI/Inventory/MixUpdates.h"
+#include "UI/Inventory/WorkshopMix.h"
 #include "UI/Inventory/ShopUpdates.h"
 #include "Guild/GuildUpdates.h"
 #include "UI/HUD/HudUpdates.h"
@@ -1724,7 +1725,13 @@ void ReceiveTradeInventoryExtended(std::span<const BYTE> ReceiveBuffer)
     // SubCode 3 and 5: a combination result (5: a failed resurrection) whose items refill the mix
     // grid; anything else lists the open NPC shop's or vault's contents.
     const bool isMixResult = Data->SubCode == 3 || Data->SubCode == 5;
-    if (Data->SubCode == 3)
+    // The Oficina's item stays in its box, ready for the next option, whatever the result was.
+    const bool isWorkshopResult = Data->SubCode == 3 && UI::Mix::Workshop::IsOpen();
+    if (isWorkshopResult)
+    {
+        UI::Mix::ClearItems();
+    }
+    else if (Data->SubCode == 3)
     {
         UI::Mix::SetFinished();
         PlayBuffer(SOUND_MIX01);
@@ -1776,6 +1783,8 @@ void ReceiveTradeInventoryExtended(std::span<const BYTE> ReceiveBuffer)
 
     if (!isMixResult)
         UI::Storage::ContainerListed(listed);
+    if (isWorkshopResult)
+        UI::Mix::SetReady();
 
     g_ConsoleDebug->Write(MCD_RECEIVE, L"0x31 [ReceiveTradeInventoryExtended]");
 }
@@ -6582,14 +6591,44 @@ MixResultText GetMixResultText(int mixType, bool succeeded)
     case SEASON3A::MIXTYPE_ELPIS:
         return {succeeded ? I18N::Game::SWasSuccessful : I18N::Game::SHasFailed2112, I18N::Game::OperationRefining};
     case SEASON3A::MIXTYPE_CHAOS_CARD:
-        return {succeeded ? I18N::Game::SWasSuccessful : I18N::Game::SHasFailed2112,
-                I18N::Game::OperationChaosCardCombination};
+        if (!succeeded)
+            return {I18N::Game::WorkshopFailed, nullptr};
+        if (UI::Mix::GetWorkshopRequestedOption() == nullptr)
+            return {I18N::Game::ChaosCombinationHasSucceeded, nullptr};
+        return {I18N::Game::WorkshopSucceeded, UI::Mix::GetWorkshopRequestedOption()};
     case SEASON3A::MIXTYPE_CHERRYBLOSSOM:
         return {succeeded ? I18N::Game::SWasSuccessful : I18N::Game::SHasFailed2112,
                 I18N::Game::OperationCherryBlossomAssembly};
     default:
         return {nullptr, nullptr};
     }
+}
+
+// Why the server refused an Oficina mix, which the window's checks didn't foresee.
+void AddWorkshopRefusalMessage(int result)
+{
+    constexpr int LackingMixItems = 6;
+    constexpr int IncorrectMixItems = 7;
+    constexpr int InvalidItemLevel = 8;
+    if (!UI::Mix::Workshop::IsOpen())
+        return;
+
+    wchar_t szText[256] = {};
+    switch (result)
+    {
+    case LackingMixItems:
+        mu_swprintf(szText, L"%ls", I18N::Game::WorkshopLackingJewels);
+        break;
+    case IncorrectMixItems:
+        mu_swprintf(szText, L"%ls", I18N::Game::WorkshopIncorrectItems);
+        break;
+    case InvalidItemLevel:
+        mu_swprintf(szText, I18N::Game::WorkshopMaximumLevel, GameLogic::Items::Workshop::MaximumItemLevel);
+        break;
+    default:
+        return;
+    }
+    UI::Chat::PostSystem(szText, mu::ui::window::TYPE_ERROR_MESSAGE);
 }
 
 void AddMixResultMessage(bool succeeded)
@@ -6638,6 +6677,12 @@ void ReceiveMixExtended(std::span<const BYTE> ReceiveBuffer)
         }
         UI::Mix::SetFinished();
         AddMixResultMessage(false);
+        // The Oficina keeps the item: its list of the mix box has no failure sound (ReceiveTradeInventoryExtended()).
+        if (UI::Mix::Workshop::IsOpen())
+        {
+            PlayBuffer(SOUND_MIX01);
+            PlayBuffer(SOUND_BREAK01);
+        }
     }
     break;
     case 1:
@@ -6692,6 +6737,7 @@ void ReceiveMixExtended(std::span<const BYTE> ReceiveBuffer)
     case 0x0A:
     default:
         UI::Mix::SetFinished();
+        AddWorkshopRefusalMessage(Data->Index);
         break;
     }
 

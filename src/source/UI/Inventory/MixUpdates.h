@@ -14,6 +14,8 @@ void ClearItems();
 void InsertItem(int slot, std::span<const std::uint8_t> itemData);
 // An item the player moved into the mix grid: drops the picked item, then places it in range.
 void PlaceMovedItem(int slot, std::span<const std::uint8_t> itemData);
+// The name of the option the Oficina mix waiting for its result adds, or nullptr.
+const wchar_t* GetWorkshopRequestedOption();
 
 // Whether the lucky-item window is waiting for a result; `requireVisible` also needs it open.
 bool IsLuckyItemAwaiting(bool requireVisible);
