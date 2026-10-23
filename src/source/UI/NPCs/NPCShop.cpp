@@ -385,7 +385,7 @@ bool mu::ui::window::CNPCShop::InventoryProcess()
 
             return true;
         }
-        if (pItem && GameLogic::Items::IsHighValueItem(pItem) == true)
+        if (pItem && GameLogic::Items::AsksBeforeSellingToNpc(pItem))
         {
             mu::ui::window::GenericDialogConfig cfg;
             cfg.showCancel = true;

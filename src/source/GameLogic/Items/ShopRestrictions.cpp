@@ -68,4 +68,12 @@ namespace GameLogic::Items
     {
         return !IsAllowed(pItem, ItemAction::Repair);
     }
+
+    bool AsksBeforeSellingToNpc(const ITEM* pItem)
+    {
+        // A rented item is no expensive item (IsHighValueItem), but our server's rented items,
+        // the starter kit, sell for 0 zen and are gone for good.
+        const bool isRented = pItem->bPeriodItem && !pItem->bExpiredPeriod;
+        return isRented || IsHighValueItem(pItem);
+    }
 }

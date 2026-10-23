@@ -124,6 +124,12 @@ bool Valuable(int itemType, const ItemState& state = {})
     const ITEM item = MakeItem(itemType, state);
     return IsHighValueItem(&item);
 }
+
+bool SaleAsks(int itemType, const ItemState& state = {})
+{
+    const ITEM item = MakeItem(itemType, state);
+    return AsksBeforeSellingToNpc(&item);
+}
 } // namespace
 
 TEST_CASE("A normal weapon allows every action [data][items][rules]")
@@ -243,6 +249,20 @@ TEST_CASE("Valuable items ask for confirmation [data][items][rules]")
     CHECK_FALSE(Valuable(ITEM_JEWEL_OF_BLESS, {0, true}));
     CHECK_FALSE(Valuable(ITEM_DEMON));
     CHECK(Valuable(ITEM_DEMON, {0, true, true}));
+}
+
+TEST_CASE("Selling to an NPC asks first for valuable and rented items [data][items][rules]")
+{
+    ShippedItemsScope items;
+
+    CHECK_FALSE(SaleAsks(KrisType));
+    CHECK(SaleAsks(KrisType, {7}));
+
+    // The starter kit of our server sells for 0 zen, so a rented item asks
+    // while its rental time runs, valuable or not.
+    CHECK(SaleAsks(KrisType, {0, true}));
+    CHECK(SaleAsks(ITEM_JEWEL_OF_BLESS, {0, true}));
+    CHECK_FALSE(SaleAsks(KrisType, {0, true, true}));
 }
 
 TEST_CASE("Item categories come from the item data [data][items][rules]")

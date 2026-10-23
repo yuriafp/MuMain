@@ -267,7 +267,7 @@ bool CInventoryActionController::HandleSellToNPC(CInventoryCtrl* targetControl) 
         return false;
     }
 
-    if (GameLogic::Items::IsHighValueItem(pItem))
+    if (GameLogic::Items::AsksBeforeSellingToNpc(pItem))
     {
         GenericDialogConfig cfg;
         cfg.showCancel = true;

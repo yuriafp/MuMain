@@ -213,6 +213,10 @@ keeps the expiry when the player moves the item in the inventory or equips
 it. When the server sends the item anew (the inventory list, an item a
 jewel or a mix changed), it has to send the packet again.
 
+Selling a rented item to an NPC asks the player first while its rental time
+runs, like selling an expensive item: the original client sold it at once,
+but our server's starter kit sells for 0 zen and is gone for good.
+
 An item the client does not know (no definition for its group and number)
 allows no action.
 
