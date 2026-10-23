@@ -671,7 +671,7 @@
         "level": 400
       },
       "classRequirements": {
-        "darkKnight": 2
+        "darkKnight": 3
       }
     },
     {
@@ -695,7 +695,7 @@
         "level": 400
       },
       "classRequirements": {
-        "darkWizard": 2
+        "darkWizard": 3
       }
     },
     {
@@ -719,7 +719,7 @@
         "level": 400
       },
       "classRequirements": {
-        "fairyElf": 2
+        "fairyElf": 3
       }
     },
     {
@@ -743,7 +743,7 @@
         "level": 400
       },
       "classRequirements": {
-        "magicGladiator": 1
+        "magicGladiator": 3
       }
     },
     {
@@ -767,7 +767,7 @@
         "level": 400
       },
       "classRequirements": {
-        "darkLord": 1
+        "darkLord": 3
       }
     },
     {
