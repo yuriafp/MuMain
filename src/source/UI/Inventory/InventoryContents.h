@@ -20,6 +20,8 @@ bool ReceivePlayerTransfer(int index, std::span<const std::uint8_t> itemData);
 void RejectTransfer();
 bool HasPickedItem();
 ITEM* FindPlayerItem(int index);
+// The equipment slot (Type -1 when empty) or the inventory item at a slot; nullptr elsewhere.
+ITEM* FindEquippedOrPlayerItem(int index);
 // The main grid only, without the extension or equipment.
 ITEM* FindMainInventoryItem(int index);
 void DeleteMainInventoryItem(int index);

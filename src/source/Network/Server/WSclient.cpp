@@ -13167,8 +13167,7 @@ bool ReceivePeriodItemList(const BYTE* pReceiveBuffer)
 {
     auto Data = (LPPMSG_PERIODITEMEX_ITEMLIST)pReceiveBuffer;
 
-    ITEM* pItem = Data->wItemSlotIndex < MAX_EQUIPMENT_INDEX ? &CharacterMachine->Equipment[Data->wItemSlotIndex]
-                                                             : UI::Inventory::FindPlayerItem(Data->wItemSlotIndex);
+    ITEM* pItem = UI::Inventory::FindEquippedOrPlayerItem(Data->wItemSlotIndex);
 
     // The slot may hold another item by now; the expiry belongs to the one the server named.
     if (pItem == nullptr || pItem->Type != Data->wItemCode)

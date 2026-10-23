@@ -94,8 +94,7 @@ std::optional<RentalPeriod> PickedRentalPeriod()
 // Only onto the same item: a slot the move did not fill keeps what it holds.
 void KeepRentalPeriod(int index, const RentalPeriod& period)
 {
-    ITEM* placed =
-        index >= 0 && index < MAX_EQUIPMENT_INDEX ? &CharacterMachine->Equipment[index] : FindPlayerItem(index);
+    ITEM* placed = FindEquippedOrPlayerItem(index);
     if (placed == nullptr || placed->Type != period.type)
         return;
 
@@ -161,6 +160,14 @@ ITEM* FindPlayerItem(int index)
         return g_pMyInventory != nullptr ? g_pMyInventory->FindItem(index) : nullptr;
 
     return g_pMyInventoryExt != nullptr ? g_pMyInventoryExt->FindItem(index) : nullptr;
+}
+
+ITEM* FindEquippedOrPlayerItem(int index)
+{
+    if (index >= 0 && index < MAX_EQUIPMENT_INDEX)
+        return &CharacterMachine->Equipment[index];
+
+    return FindPlayerItem(index);
 }
 
 ITEM* FindMainInventoryItem(int index)
