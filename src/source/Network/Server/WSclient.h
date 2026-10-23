@@ -3538,8 +3538,11 @@ typedef struct
 
     WORD				wItemCode;
     WORD				wItemSlotIndex;
-    long				lExpireDate;
+    int32_t				lExpireDate;
 }PMSG_PERIODITEMEX_ITEMLIST, * LPPMSG_PERIODITEMEX_ITEMLIST;
+
+// C1 0C D2 12: the 4-byte header, the item code, the slot and the expiry as a Unix time.
+static_assert(sizeof(PMSG_PERIODITEMEX_ITEMLIST) == 12, "C1 D2 12 is 12 bytes");
 
 #endif // KJH_ADD_PERIOD_ITEM_SYSTEM
 

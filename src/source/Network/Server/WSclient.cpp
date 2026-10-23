@@ -13167,19 +13167,17 @@ bool ReceivePeriodItemList(const BYTE* pReceiveBuffer)
 {
     auto Data = (LPPMSG_PERIODITEMEX_ITEMLIST)pReceiveBuffer;
 
-    if (Data->wItemSlotIndex < MAX_EQUIPMENT_INDEX)
-    {
-        CharacterMachine->Equipment[Data->wItemSlotIndex].lExpireTime = (long)Data->lExpireDate;
-    }
-    else
-    {
-        ITEM* pItem = UI::Inventory::FindMainInventoryItem(Data->wItemSlotIndex);
+    ITEM* pItem = Data->wItemSlotIndex < MAX_EQUIPMENT_INDEX ? &CharacterMachine->Equipment[Data->wItemSlotIndex]
+                                                             : UI::Inventory::FindPlayerItem(Data->wItemSlotIndex);
 
-        if (pItem == nullptr)
-            return false;
+    // The slot may hold another item by now; the expiry belongs to the one the server named.
+    if (pItem == nullptr || pItem->Type != Data->wItemCode)
+        return false;
 
-        pItem->lExpireTime = (long)Data->lExpireDate;
-    }
+    // The server's item data has no expiration flag, so this packet marks the item as rented.
+    pItem->bPeriodItem = true;
+    pItem->bExpiredPeriod = false;
+    pItem->lExpireTime = Data->lExpireDate;
 
     return true;
 }

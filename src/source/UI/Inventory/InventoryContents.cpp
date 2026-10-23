@@ -2,9 +2,12 @@
 
 #include "UI/Inventory/InventoryContents.h"
 
+#include "Engine/Object/ZzzInfomation.h"
 #include "GameLogic/Items/InventoryUtils.h"
 #include "UI/Core/WindowSystem.h"
 #include "UI/Inventory/InventoryCtrl.h"
+
+#include <optional>
 
 namespace UI::Inventory
 {
@@ -67,10 +70,42 @@ int TransferSourceIndex()
     return g_pMyShopInventory->GetSourceIndex();
 }
 
-bool ReceivePlayerTransfer(int index, std::span<const std::uint8_t> itemData)
+namespace
 {
-    DiscardPickedItem();
+// What the client knows of a rented item. The server's item data carries no expiry (C1 D2 12
+// announces it), so an item the server moves would lose it without this.
+struct RentalPeriod
+{
+    short type = -1;
+    bool expired = false;
+    long expireTime = 0;
+};
 
+std::optional<RentalPeriod> PickedRentalPeriod()
+{
+    const auto* pickedItem = mu::ui::window::CInventoryCtrl::GetPickedItem();
+    const ITEM* item = pickedItem != nullptr ? pickedItem->GetItem() : nullptr;
+    if (item == nullptr || !item->bPeriodItem)
+        return std::nullopt;
+
+    return RentalPeriod{item->Type, item->bExpiredPeriod, item->lExpireTime};
+}
+
+// Only onto the same item: a slot the move did not fill keeps what it holds.
+void KeepRentalPeriod(int index, const RentalPeriod& period)
+{
+    ITEM* placed =
+        index >= 0 && index < MAX_EQUIPMENT_INDEX ? &CharacterMachine->Equipment[index] : FindPlayerItem(index);
+    if (placed == nullptr || placed->Type != period.type)
+        return;
+
+    placed->bPeriodItem = true;
+    placed->bExpiredPeriod = period.expired;
+    placed->lExpireTime = period.expireTime;
+}
+
+bool PlaceTransferredItem(int index, std::span<const std::uint8_t> itemData)
+{
     if (index >= 0 && index < MAX_EQUIPMENT_INDEX)
     {
         g_pMyInventory->EquipItem(index, itemData);
@@ -88,6 +123,19 @@ bool ReceivePlayerTransfer(int index, std::span<const std::uint8_t> itemData)
         return g_pMyShopInventory->InsertItem(index, itemData);
 
     return true;
+}
+} // namespace
+
+bool ReceivePlayerTransfer(int index, std::span<const std::uint8_t> itemData)
+{
+    const std::optional<RentalPeriod> rentalPeriod = PickedRentalPeriod();
+    DiscardPickedItem();
+
+    const bool placed = PlaceTransferredItem(index, itemData);
+    if (rentalPeriod)
+        KeepRentalPeriod(index, *rentalPeriod);
+
+    return placed;
 }
 
 void RejectTransfer()

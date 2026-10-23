@@ -48,3 +48,10 @@ mu_add_test(
     LINK_LIBS
         MuClient
 )
+
+mu_add_test(
+    NAME test_item_expiry
+    SOURCES
+        test_item_expiry.cpp
+        ${CMAKE_SOURCE_DIR}/src/source/GameLogic/Items/ItemExpiry.cpp
+)

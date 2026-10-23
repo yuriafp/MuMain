@@ -37,6 +37,7 @@
 #include "GameLogic/Events/Cinematic/CDirection.h"
 #include "GameLogic/Items/ChangeRingManager.h"
 #include "GameLogic/Items/ItemCategories.h"
+#include "GameLogic/Items/ItemExpiry.h"
 #include "GameLogic/Items/ItemStats.h"
 #include "Render/Items/ItemDisplay.h"
 #include "Data/GameData/ItemData/ItemModelSlots.h"
@@ -1623,6 +1624,37 @@ void GetSpecialOptionText(int Type, wchar_t* Text, WORD Option, BYTE Value, int 
     }
 }
 
+// A rented item says it expired, or when it expires; without the server's expiry time it shows
+// neither date nor label.
+static void AddRentalPeriodLines(const ITEM* ip)
+{
+    if (ip->bPeriodItem == false)
+        return;
+
+    if (ip->bExpiredPeriod == true)
+    {
+        mu_swprintf(TextList[TextNum], I18N::Game::ExpiredItem);
+        TextListColor[TextNum] = TEXT_COLOR_RED;
+        TextNum++;
+        return;
+    }
+
+    _tzset();
+    const std::optional<tm> expireTime = GameLogic::Items::LocalExpiryTime(ip->lExpireTime);
+    if (!expireTime)
+        return;
+
+    mu_swprintf(TextList[TextNum], I18N::Game::ExpirationDay);
+    TextListColor[TextNum] = TEXT_COLOR_ORANGE;
+    TextNum++;
+    SkipNum++;
+
+    mu_swprintf(TextList[TextNum], L"%d-%02d-%02d  %02d:%02d", expireTime->tm_year + 1900, expireTime->tm_mon + 1,
+                expireTime->tm_mday, expireTime->tm_hour, expireTime->tm_min);
+    TextListColor[TextNum] = TEXT_COLOR_BLUE;
+    TextNum++;
+}
+
 // (sx, sy) in the screen's 640x480 stretch, `screen`.
 static void RenderItemInfo(const UI::Scaling::Transform& screen, int sx, int sy, ITEM* ip, bool Sell, int Inventype,
                            bool bItemTextListBoxUse)
@@ -1636,16 +1668,6 @@ static void RenderItemInfo(const UI::Scaling::Transform& screen, int sx, int sy,
 
     if (ip->Type == -1)
         return;
-
-    tm* ExpireTime;
-    if (ip->bPeriodItem == true && ip->bExpiredPeriod == false)
-    {
-        _tzset();
-        if (ip->lExpireTime == 0)
-            return;
-
-        ExpireTime = localtime((time_t*)&(ip->lExpireTime));
-    }
 
     ITEM_ATTRIBUTE* p = &ItemAttribute[ip->Type];
     TextNum = 0;
@@ -5102,27 +5124,7 @@ static void RenderItemInfo(const UI::Scaling::Transform& screen, int sx, int sy,
         TextNum++;
     }
 
-    if (ip->bPeriodItem == true)
-    {
-        if (ip->bExpiredPeriod == true)
-        {
-            mu_swprintf(TextList[TextNum], I18N::Game::ExpiredItem);
-            TextListColor[TextNum] = TEXT_COLOR_RED;
-        }
-        else
-        {
-            mu_swprintf(TextList[TextNum], I18N::Game::ExpirationDay);
-            TextListColor[TextNum] = TEXT_COLOR_ORANGE;
-            TextNum++;
-            SkipNum++;
-
-            mu_swprintf(TextList[TextNum], L"%d-%02d-%02d  %02d:%02d", ExpireTime->tm_year + 1900, ExpireTime->tm_mon + 1,
-                ExpireTime->tm_mday, ExpireTime->tm_hour, ExpireTime->tm_min);
-            TextListColor[TextNum] = TEXT_COLOR_BLUE;
-        }
-
-        TextNum++;
-    }
+    AddRentalPeriodLines(ip);
 
     if (!bItemTextListBoxUse)
     {

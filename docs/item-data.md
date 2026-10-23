@@ -204,6 +204,15 @@ Rented items (items with a rental time) can never be stored. For the rest:
 | `personalShopSellableWhileRented` | `true` | `false`: the item cannot be sold in a personal shop while it is rented |
 | `sellableWhenRentalExpired` | `false` | `true`: the item can be sold to an NPC once its rental time ran out, even when `sellable` is `false` |
 
+The tooltip of a rented item shows the date and time its rental runs out,
+in the player's local time, and no durability. The server makes an item
+rented with the expiration bit of the classic item data or with the packet
+`C1 0C D2 12` (item code, slot, expiry as a Unix time in UTC); OpenMU's
+extended item data has no such bit, so it needs the packet. The client
+keeps the expiry when the player moves the item in the inventory or equips
+it. When the server sends the item anew (the inventory list, an item a
+jewel or a mix changed), it has to send the packet again.
+
 An item the client does not know (no definition for its group and number)
 allows no action.
 
