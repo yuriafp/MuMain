@@ -9,6 +9,7 @@
 #include "Dotnet/PacketFunctions_ConnectServer.h"
 #include "Network/Server/CSMapServer.h"
 #include "UI/Combat/CastleSiegePhase.h"
+#include <cstddef>
 #include <span>
 #include <typeinfo>
 
@@ -3541,8 +3542,12 @@ typedef struct
     int32_t				lExpireDate;
 }PMSG_PERIODITEMEX_ITEMLIST, * LPPMSG_PERIODITEMEX_ITEMLIST;
 
-// C1 0C D2 12: the 4-byte header, the item code, the slot and the expiry as a Unix time.
+// The packets of our server's period items, outside the packed structs above, so their layout
+// is checked here: C1 05 D2 11, the 4-byte header and the count; C1 0C D2 12, the 4-byte header,
+// the item code, the slot and the expiry as a Unix time.
+static_assert(sizeof(PMSG_PERIODITEMEX_ITEMCOUNT) == 5, "C1 D2 11 is 5 bytes");
 static_assert(sizeof(PMSG_PERIODITEMEX_ITEMLIST) == 12, "C1 D2 12 is 12 bytes");
+static_assert(offsetof(PMSG_PERIODITEMEX_ITEMLIST, lExpireDate) == 8, "C1 D2 12 has the expiry at byte 8");
 
 #endif // KJH_ADD_PERIOD_ITEM_SYSTEM
 
