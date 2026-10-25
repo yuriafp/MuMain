@@ -1919,6 +1919,24 @@
         "rotation": [90, 0, -45],
         "scale": 0.2
       }
+    },
+    {
+      "number": 162,
+      "file": "Data/Item/Mbag.bmd",
+      "textureFolders": ["Item"],
+      "inventory": {
+        "anchor": [0.5, 0.95],
+        "scale": 0.0035
+      }
+    },
+    {
+      "number": 163,
+      "file": "Data/Item/EXbond.bmd",
+      "textureFolders": ["Item"],
+      "inventory": {
+        "anchor": [0.5, 0.95],
+        "scale": 0.0035
+      }
     }
   ]
 }
