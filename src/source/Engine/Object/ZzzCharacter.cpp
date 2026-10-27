@@ -57,6 +57,7 @@
 #include "GameLogic/Monsters/MonsterAttackPlay.h"
 #include "GameLogic/Monsters/MonsterSoundEvents.h"
 #include "GameLogic/Monsters/MonsterNames.h"
+#include "Engine/Object/ServerMonsters.h"
 
 // DevEditor function declarations
 #ifdef _EDITOR
@@ -1261,6 +1262,7 @@ void SetPlayerAttack(CHARACTER* c)
             if (SEASON3C::GMSwampOfQuiet::SetCurrentActionMonster(c, o) == true) Success = false;
 
             if (TheMapProcess().SetCurrentActionMonster(c, o) == true) Success = false;
+            if (Engine::Object::ServerMonsters::SetAttackAction(*c, *o)) Success = false;
 
             if (Success)
             {
@@ -12852,6 +12854,7 @@ void Setting_Monster(CHARACTER* c, EMonsterType Type, int PositionX, int Positio
         c->Object.ExtState = 0;
         c->TargetCharacter = HeroIndex;
         o->Kind = Data::Monsters::GetMonsterObjectKind(Type);
+        Engine::Object::ServerMonsters::ScaleInvasionBoss(*c);
     }
 }
 
@@ -12966,6 +12969,13 @@ CHARACTER* CreateMonster(EMonsterType Type, int PositionX, int PositionY, int Ke
     }
 
     c = TheMapProcess().CreateMonster(Type, PositionX, PositionY, Key);
+    if (c != NULL)
+    {
+        Setting_Monster(c, Type, PositionX, PositionY);
+        return c;
+    }
+
+    c = Engine::Object::ServerMonsters::Create(Type, PositionX, PositionY, Key);
     if (c != NULL)
     {
         Setting_Monster(c, Type, PositionX, PositionY);
@@ -14655,11 +14665,6 @@ CHARACTER* CreateMonster(EMonsterType Type, int PositionX, int PositionY, int Ke
         c = CreateCharacter(Key, MODEL_BENA, PositionX, PositionY);
         wcscpy(c->ID, L"신녀 베이나");
         c->Object.Position[2] += 145.0f;
-        break;
-    case MONSTER_WORKSHOP:
-        OpenNpc(MODEL_WORKSHOP);
-        c = CreateCharacter(Key, MODEL_WORKSHOP, PositionX, PositionY);
-        wcscpy(c->ID, L"Alquimista");
         break;
     case MONSTER_LEINA_THE_GENERAL_GOODS_MERCHANT:
         OpenNpc(MODEL_KARUTAN_NPC_REINA);

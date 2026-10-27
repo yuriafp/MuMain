@@ -470,6 +470,103 @@ static void RenderLostTowerFireBlock(BMD* b, OBJECT* o, int streamMesh)
     b->StreamMesh = -1;
 }
 
+// The height of the glow over a reward box of the Doppelganger, and over our treasure chests,
+// while it opens.
+static constexpr float kBoxGlowHeight = 50.f;
+static constexpr float kGoldenBoxGlowHeight = 80.f;
+static constexpr float kTreasureChestGlowHeight = 60.f;
+static constexpr float kGoldenTreasureChestGlowHeight = 85.f;
+
+// The golden treasure chest is the normal one with a golden shine on it.
+static const vec3_t kGoldenTreasureChestShine = {1.f, 0.8f, 0.3f};
+
+// The share of the fall of an opened treasure chest after which it starts to fade out.
+static constexpr float kTreasureChestFadeStart = 0.5f;
+
+// The smoke, sparkles and glow of a box which is being opened (its death).
+static void CreateBoxOpeningEffects(OBJECT* o, float glowHeight)
+{
+    vec3_t vPos, vLight;
+    for (int i = 0; i < 1; ++i)
+    {
+        vPos[0] = o->Position[0] + rand() % 120 - 60;
+        vPos[1] = o->Position[1] + rand() % 120 - 60;
+        vPos[2] = o->Position[2];
+        Vector(0.3f, 0.3f, 0.3f, vLight);
+        CreateParticleFpsChecked(BITMAP_SMOKE, vPos, o->Angle, vLight, 54, 2.0f);
+        Vector(0.3f, 0.3f, 0.3f, vLight);
+        CreateParticleFpsChecked(BITMAP_SMOKE, vPos, o->Angle, vLight, 66, 2.0f, o);
+    }
+
+    if (rand_fps_check(2))
+    {
+        vPos[0] = o->Position[0] + rand() % 80 - 40;
+        vPos[1] = o->Position[1] + rand() % 80 - 40;
+        vPos[2] = o->Position[2] + rand() % 50 + 10;
+        Vector(0.2f, 0.5f, 1.0f, vLight);
+        CreateParticle(BITMAP_PIN_LIGHT, vPos, o->Angle, vLight, 2, 1.0f, o);
+        vPos[2] = o->Position[2] + rand() % 50 + 10;
+        Vector(1.0f, 0.8f, 0.5f, vLight);
+        CreateParticle(BITMAP_PIN_LIGHT, vPos, o->Angle, vLight, 3, 0.2f, o);
+    }
+
+    Vector(0.9f, 0.7f, 0.0f, vLight);
+    CreateParticleFpsChecked(BITMAP_SHINY, vPos, o->Angle, vLight, 3, 0.5f, o);
+    CreateParticleFpsChecked(BITMAP_SHINY, vPos, o->Angle, vLight, 3, 0.5f, o);
+
+    vPos[0] = o->Position[0];
+    vPos[1] = o->Position[1];
+    vPos[2] = o->Position[2] + glowHeight;
+    Vector(1.0f, 1.0f, 1.0f, vLight);
+    float fRot = (WorldTime * 0.0006f) * 360.0f;
+    CreateSprite(BITMAP_DS_EFFECT, vPos, 2.5f, vLight, o, fRot);
+    Vector(0.9f, 0.7f, 0.0f, vLight);
+    CreateSprite(BITMAP_SHINY + 5, vPos, 0.8f, vLight, o, -fRot);
+    float fLight = (sinf(WorldTime * 0.01f) + 1.0f) * 0.5f * 0.9f + 0.1f;
+    Vector(1.0f * fLight, 1.0f * fLight, 1.0f * fLight, vLight);
+    CreateSprite(BITMAP_FLARE, vPos, 1.5f, vLight, o);
+}
+
+// The visibility of an opened treasure chest at a frame of its fall: whole, then fading out.
+static float GetOpenedTreasureChestAlpha(float frame, float lastFrame)
+{
+    const float fadeStart = lastFrame * kTreasureChestFadeStart;
+    if (frame <= fadeStart)
+        return 1.f;
+
+    const float fadeLength = lastFrame - fadeStart;
+    return std::clamp((lastFrame - frame) / fadeLength, 0.f, 1.f);
+}
+
+// Our treasure chest, the model of Mu Kronus. Unlike the reward boxes, it has no lid: its death
+// throws it back onto its side, and it fades out in the second half of that fall.
+static void RenderTreasureChest(BMD* b, OBJECT* o)
+{
+    const bool isGolden = o->Type == MODEL_GOLDEN_TREASURE_CHEST_NPC;
+    const bool isOpening = o->CurrentAction == MONSTER01_DIE;
+    const float lastFrame = static_cast<float>(b->Actions[MONSTER01_DIE].NumAnimationKeys - 1);
+    if (isOpening)
+    {
+        o->AnimationFrame = std::min<float>(o->AnimationFrame, lastFrame);
+        o->Alpha = GetOpenedTreasureChestAlpha(o->AnimationFrame, lastFrame);
+    }
+
+    b->RenderBody(RENDER_TEXTURE, o->Alpha, o->BlendMesh, o->BlendMeshLight, o->BlendMeshTexCoordU, o->BlendMeshTexCoordV, o->HiddenMesh);
+    if (isGolden)
+    {
+        vec3_t bodyLight;
+        VectorCopy(b->BodyLight, bodyLight);
+        VectorCopy(kGoldenTreasureChestShine, b->BodyLight);
+        b->RenderBody(RENDER_CHROME | RENDER_BRIGHT, o->Alpha, o->BlendMesh, o->BlendMeshLight, o->BlendMeshTexCoordU, o->BlendMeshTexCoordV, o->HiddenMesh);
+        VectorCopy(bodyLight, b->BodyLight);
+    }
+
+    if (isOpening && o->AnimationFrame > 0.f && o->AnimationFrame < lastFrame)
+    {
+        CreateBoxOpeningEffects(o, isGolden ? kGoldenTreasureChestGlowHeight : kTreasureChestGlowHeight);
+    }
+}
+
 void Draw_RenderObject(OBJECT* o, bool Translate, int Select, int ExtraMon)
 {
     BMD* b = &Models[o->Type];
@@ -2349,49 +2446,13 @@ void Draw_RenderObject(OBJECT* o, bool Translate, int Select, int ExtraMon)
 
                     if (o->CurrentAction == MONSTER01_DIE && o->AnimationFrame > 1 && o->AnimationFrame < 9)
                     {
-                        vec3_t vPos, vLight;
-                        for (int i = 0; i < 1; ++i)
-                        {
-                            vPos[0] = o->Position[0] + rand() % 120 - 60;
-                            vPos[1] = o->Position[1] + rand() % 120 - 60;
-                            vPos[2] = o->Position[2];
-                            Vector(0.3f, 0.3f, 0.3f, vLight);
-                            CreateParticleFpsChecked(BITMAP_SMOKE, vPos, o->Angle, vLight, 54, 2.0f);
-                            Vector(0.3f, 0.3f, 0.3f, vLight);
-                            CreateParticleFpsChecked(BITMAP_SMOKE, vPos, o->Angle, vLight, 66, 2.0f, o);
-                        }
-
-                        if (rand_fps_check(2))
-                        {
-                            vPos[0] = o->Position[0] + rand() % 80 - 40;
-                            vPos[1] = o->Position[1] + rand() % 80 - 40;
-                            vPos[2] = o->Position[2] + rand() % 50 + 10;
-                            Vector(0.2f, 0.5f, 1.0f, vLight);
-                            CreateParticle(BITMAP_PIN_LIGHT, vPos, o->Angle, vLight, 2, 1.0f, o);
-                            vPos[2] = o->Position[2] + rand() % 50 + 10;
-                            Vector(1.0f, 0.8f, 0.5f, vLight);
-                            CreateParticle(BITMAP_PIN_LIGHT, vPos, o->Angle, vLight, 3, 0.2f, o);
-                        }
-
-                        Vector(0.9f, 0.7f, 0.0f, vLight);
-                        CreateParticleFpsChecked(BITMAP_SHINY, vPos, o->Angle, vLight, 3, 0.5f, o);
-                        CreateParticleFpsChecked(BITMAP_SHINY, vPos, o->Angle, vLight, 3, 0.5f, o);
-
-                        vPos[0] = o->Position[0];
-                        vPos[1] = o->Position[1];
-                        if (o->Type == MODEL_DOPPELGANGER_NPC_GOLDENBOX)
-                            vPos[2] = o->Position[2] + 80;
-                        else
-                            vPos[2] = o->Position[2] + 50;
-                        Vector(1.0f, 1.0f, 1.0f, vLight);
-                        float fRot = (WorldTime * 0.0006f) * 360.0f;
-                        CreateSprite(BITMAP_DS_EFFECT, vPos, 2.5f, vLight, o, fRot);
-                        Vector(0.9f, 0.7f, 0.0f, vLight);
-                        CreateSprite(BITMAP_SHINY + 5, vPos, 0.8f, vLight, o, -fRot);
-                        float fLight = (sinf(WorldTime * 0.01f) + 1.0f) * 0.5f * 0.9f + 0.1f;
-                        Vector(1.0f * fLight, 1.0f * fLight, 1.0f * fLight, vLight);
-                        CreateSprite(BITMAP_FLARE, vPos, 1.5f, vLight, o);
+                        const float glowHeight = o->Type == MODEL_DOPPELGANGER_NPC_GOLDENBOX ? kGoldenBoxGlowHeight : kBoxGlowHeight;
+                        CreateBoxOpeningEffects(o, glowHeight);
                     }
+                }
+                else if (o->Type == MODEL_TREASURE_CHEST_NPC || o->Type == MODEL_GOLDEN_TREASURE_CHEST_NPC)
+                {
+                    RenderTreasureChest(b, o);
                 }
                 else if (o->Type == MODEL_DOPPELGANGER_SLIME_CHIP)
                 {

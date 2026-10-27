@@ -31,9 +31,21 @@ namespace
 {
 const std::filesystem::path ClientData = MU_TEST_DATA_DIR;
 
-// Our models from Mu Kronus: their files are only in the local client, never
-// in the public fork, so a clean checkout has no file for them.
-const std::set<std::string> LocalOnlyModels = {"MODEL_WORKSHOP"};
+// Our models from Mu Kronus and the Season 8 client: their files are only in
+// the local client, never in the public fork, so a clean checkout has no file
+// for them.
+const std::set<std::string> LocalOnlyModels = {
+    "MODEL_WORKSHOP",
+    "MODEL_TREASURE_CHEST_NPC",
+    "MODEL_GOLDEN_TREASURE_CHEST_NPC",
+    "MONSTER_MODEL_LORD_SILVESTER",
+    "MONSTER_MODEL_SELLIHODEN",
+    "MONSTER_MODEL_UKANVA",
+    "MONSTER_MODEL_SILLA",
+    "MONSTER_MODEL_NORMUS",
+    "MONSTER_MODEL_MUFF",
+    "MONSTER_MODEL_REAPER",
+};
 
 std::string Messages(const std::vector<ItemDataIssue>& issues)
 {
@@ -170,7 +182,7 @@ TEST_CASE("Monster models: the shipped model list loads; its only warning is Mol
     REQUIRE(issues.size() == 1);
     CHECK(issues[0].severity == ItemDataIssueSeverity::Warning);
     CHECK(issues[0].field == "model MONSTER_MODEL_MOLT file");
-    CHECK(result.models.size() == 296);
+    CHECK(result.models.size() == 305);
 }
 
 TEST_CASE("Monster models: the shipped model list is written as its writer writes it [data][monsters]")

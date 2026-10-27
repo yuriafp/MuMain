@@ -98,7 +98,7 @@ TEST_CASE("Shipped monster list: loads, with only the warning about 252's empty 
     REQUIRE_MESSAGE(loaded.issues.size() == 1, Messages(loaded.issues));
     CHECK(loaded.issues[0].severity == ItemDataIssueSeverity::Warning);
     CHECK(loaded.issues[0].number == 252);
-    CHECK(loaded.monsters.size() == 548);
+    CHECK(loaded.monsters.size() == 557);
 }
 
 TEST_CASE("Shipped monster list: written in the writer's format [data][monsters]")
@@ -188,6 +188,36 @@ TEST_CASE("Shipped monster list: our Alquimista (1000) is the Oficina's NPC [dat
     REQUIRE(alchemist != nullptr);
     CHECK(alchemist->kind == Data::Monsters::MonsterKind::Npc);
     CHECK(alchemist->model == "MODEL_WORKSHOP");
+}
+
+TEST_CASE("Shipped monster list: our treasure chests (1001, golden 1002) are NPCs [data][monsters]")
+{
+    const Data::Monsters::MonsterDataLoadResult loaded =
+        Data::Monsters::LoadMonstersFile(ClientData / "Monsters" / "Monsters.json");
+
+    const MonsterDefinition* chest = FindMonster(loaded.monsters, 1001);
+    const MonsterDefinition* goldenChest = FindMonster(loaded.monsters, 1002);
+    REQUIRE(chest != nullptr);
+    REQUIRE(goldenChest != nullptr);
+    CHECK(chest->kind == Data::Monsters::MonsterKind::Npc);
+    CHECK(chest->model == "MODEL_TREASURE_CHEST_NPC");
+    CHECK(goldenChest->kind == Data::Monsters::MonsterKind::Npc);
+    CHECK(goldenChest->model == "MODEL_GOLDEN_TREASURE_CHEST_NPC");
+}
+
+TEST_CASE("Shipped monster list: the bosses of our boss invasion (1003-1009) are monsters of Season 8 [data][monsters]")
+{
+    const Data::Monsters::MonsterDataLoadResult loaded =
+        Data::Monsters::LoadMonstersFile(ClientData / "Monsters" / "Monsters.json");
+
+    const MonsterDefinition* silvester = FindMonster(loaded.monsters, 1003);
+    const MonsterDefinition* reaper = FindMonster(loaded.monsters, 1009);
+    REQUIRE(silvester != nullptr);
+    REQUIRE(reaper != nullptr);
+    CHECK(silvester->kind == Data::Monsters::MonsterKind::Monster);
+    CHECK(silvester->model == "MONSTER_MODEL_LORD_SILVESTER");
+    CHECK(reaper->model == "MONSTER_MODEL_REAPER");
+    CHECK(reaper->names.Get("pt") == "Ceifador");
 }
 
 TEST_CASE("Monster data: the game's load fills the table, errors stop it [data][monsters]")

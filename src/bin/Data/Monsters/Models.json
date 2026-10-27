@@ -3477,6 +3477,41 @@
       ]
     },
     {
+      "slot": "MONSTER_MODEL_LORD_SILVESTER",
+      "file": "Data/Monster/Monster263.bmd",
+      "textureFolders": ["Monster"]
+    },
+    {
+      "slot": "MONSTER_MODEL_SELLIHODEN",
+      "file": "Data/Monster/monster244.bmd",
+      "textureFolders": ["Monster"]
+    },
+    {
+      "slot": "MONSTER_MODEL_UKANVA",
+      "file": "Data/Monster/monster243.bmd",
+      "textureFolders": ["Monster"]
+    },
+    {
+      "slot": "MONSTER_MODEL_SILLA",
+      "file": "Data/Monster/Monster245.bmd",
+      "textureFolders": ["Monster"]
+    },
+    {
+      "slot": "MONSTER_MODEL_NORMUS",
+      "file": "Data/Monster/monster246.bmd",
+      "textureFolders": ["Monster"]
+    },
+    {
+      "slot": "MONSTER_MODEL_MUFF",
+      "file": "Data/Monster/Monster247.bmd",
+      "textureFolders": ["Monster"]
+    },
+    {
+      "slot": "MONSTER_MODEL_REAPER",
+      "file": "Data/Monster/monster259.bmd",
+      "textureFolders": ["Monster"]
+    },
+    {
       "slot": "MODEL_MERCHANT_FEMALE",
       "file": "Data/NPC/Female01.bmd",
       "textureFolders": ["NPC"],
@@ -4133,6 +4168,28 @@
       "slot": "MODEL_WORKSHOP",
       "file": "Data/NPC/Oficina01.bmd",
       "textureFolders": ["NPC"]
+    },
+    {
+      "slot": "MODEL_TREASURE_CHEST_NPC",
+      "file": "Data/NPC/BauDoTesouro.bmd",
+      "textureFolders": ["NPC"],
+      "sounds": [
+        {"file": "Data/Sound/Doppelganger/treasurebox_open.wav", "id": "SOUND_DOPPELGANGER_JEWELBOX_OPEN", "channels": 4, "spatial": false}
+      ],
+      "soundEvents": [
+        {"animations": ["die"], "sounds": ["SOUND_DOPPELGANGER_JEWELBOX_OPEN"]}
+      ]
+    },
+    {
+      "slot": "MODEL_GOLDEN_TREASURE_CHEST_NPC",
+      "file": "Data/NPC/BauDoTesouro.bmd",
+      "textureFolders": ["NPC"],
+      "sounds": [
+        {"file": "Data/Sound/Doppelganger/treasurebox_open.wav", "id": "SOUND_DOPPELGANGER_JEWELBOX_OPEN", "channels": 4, "spatial": false}
+      ],
+      "soundEvents": [
+        {"animations": ["die"], "sounds": ["SOUND_DOPPELGANGER_JEWELBOX_OPEN"]}
+      ]
     }
   ]
 }

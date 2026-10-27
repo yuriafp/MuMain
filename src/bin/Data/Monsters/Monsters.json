@@ -3835,6 +3835,95 @@
       "name": {"en": "Alquimista", "es": "Alquimista", "pt": "Alquimista"},
       "kind": "npc",
       "model": "MODEL_WORKSHOP"
+    },
+    {
+      "number": 1001,
+      "name": {"en": "Treasure Chest", "es": "Arcón del Tesoro", "pt": "Baú do Tesouro"},
+      "kind": "npc",
+      "model": "MODEL_TREASURE_CHEST_NPC"
+    },
+    {
+      "number": 1002,
+      "name": {"en": "Golden Treasure Chest", "es": "Arcón del Tesoro Dorado", "pt": "Baú do Tesouro Dourado"},
+      "kind": "npc",
+      "model": "MODEL_GOLDEN_TREASURE_CHEST_NPC"
+    },
+    {
+      "number": 1003,
+      "name": {"en": "Lord Silvester", "es": "Lord Silvester", "pt": "Lorde Silvester"},
+      "kind": "monster",
+      "model": "MONSTER_MODEL_LORD_SILVESTER",
+      "attacks": {
+        "monsterSkills": {"20": "attack1", "23": "attack2", "34": "attack2", "35": "attack2", "59": "attack1"},
+        "otherwiseRandom": "rand",
+        "clearSkill": "always"
+      }
+    },
+    {
+      "number": 1004,
+      "name": {"en": "Sellihoden", "es": "Sellihoden", "pt": "Sellihoden"},
+      "kind": "monster",
+      "model": "MONSTER_MODEL_SELLIHODEN",
+      "attacks": {
+        "monsterSkills": {"20": "attack1", "23": "attack2", "34": "attack2", "35": "attack2", "59": "attack1"},
+        "otherwiseRandom": "rand",
+        "clearSkill": "always"
+      }
+    },
+    {
+      "number": 1005,
+      "name": {"en": "Ukanva", "es": "Ukanva", "pt": "Ukanva"},
+      "kind": "monster",
+      "model": "MONSTER_MODEL_UKANVA",
+      "attacks": {
+        "monsterSkills": {"20": "attack1", "23": "attack2", "34": "attack2", "35": "attack2", "59": "attack1"},
+        "otherwiseRandom": "rand",
+        "clearSkill": "always"
+      }
+    },
+    {
+      "number": 1006,
+      "name": {"en": "Silla", "es": "Silla", "pt": "Silla"},
+      "kind": "monster",
+      "model": "MONSTER_MODEL_SILLA",
+      "attacks": {
+        "monsterSkills": {"20": "attack1", "23": "attack2", "34": "attack2", "35": "attack2", "59": "attack1"},
+        "otherwiseRandom": "rand",
+        "clearSkill": "always"
+      }
+    },
+    {
+      "number": 1007,
+      "name": {"en": "Normus", "es": "Normus", "pt": "Normus"},
+      "kind": "monster",
+      "model": "MONSTER_MODEL_NORMUS",
+      "attacks": {
+        "monsterSkills": {"20": "attack1", "23": "attack2", "34": "attack2", "35": "attack2", "59": "attack1"},
+        "otherwiseRandom": "rand",
+        "clearSkill": "always"
+      }
+    },
+    {
+      "number": 1008,
+      "name": {"en": "Muff", "es": "Muff", "pt": "Muff"},
+      "kind": "monster",
+      "model": "MONSTER_MODEL_MUFF",
+      "attacks": {
+        "monsterSkills": {"20": "attack1", "23": "attack2", "34": "attack2", "35": "attack2", "59": "attack1"},
+        "otherwiseRandom": "rand",
+        "clearSkill": "always"
+      }
+    },
+    {
+      "number": 1009,
+      "name": {"en": "Reaper", "es": "Segador", "pt": "Ceifador"},
+      "kind": "monster",
+      "model": "MONSTER_MODEL_REAPER",
+      "attacks": {
+        "monsterSkills": {"20": "attack1", "23": "attack2", "34": "attack2", "35": "attack2", "59": "attack1"},
+        "otherwiseRandom": "rand",
+        "clearSkill": "always"
+      }
     }
   ]
 }

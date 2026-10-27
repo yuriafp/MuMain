@@ -74,7 +74,8 @@ TEST_CASE("Monster sounds: the sounds of the sound events are loaded on the maps
         }
         startup = LoadedIds(scope.Run([] { OpenSounds(); }));
     }
-    REQUIRE(models.size() == 70);
+    // Upstream's 70 and our two treasure chests.
+    REQUIRE(models.size() == 72);
     REQUIRE_FALSE(startup.empty());
 
     // Each map's load once.

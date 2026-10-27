@@ -1344,6 +1344,8 @@ enum
     MODEL_TERSIA,
     MODEL_BENA,
     MODEL_WORKSHOP,
+    MODEL_TREASURE_CHEST_NPC,
+    MODEL_GOLDEN_TREASURE_CHEST_NPC,
     MODEL_NPC_END,
     // player
     MODEL_PLAYER,
@@ -4560,6 +4562,14 @@ enum EMonsterModelType : int
     MONSTER_MODEL_CRYPOS = 214,
     MONSTER_MODEL_CONDRA = 215,
     MONSTER_MODEL_NACONDRA = 216,
+    // The bosses of our boss invasion, from the Season 8 client.
+    MONSTER_MODEL_LORD_SILVESTER = 217,
+    MONSTER_MODEL_SELLIHODEN = 218,
+    MONSTER_MODEL_UKANVA = 219,
+    MONSTER_MODEL_SILLA = 220,
+    MONSTER_MODEL_NORMUS = 221,
+    MONSTER_MODEL_MUFF = 222,
+    MONSTER_MODEL_REAPER = 223,
     MONSTER_MODEL_COUNT,            // keep last: number of monster models
 };
 
@@ -5115,6 +5125,17 @@ enum EMonsterType : int
 
     // The NPCs of our server, outside the original numbers.
     MONSTER_WORKSHOP = 1000,
+    MONSTER_TREASURE_CHEST = 1001,
+    MONSTER_GOLDEN_TREASURE_CHEST = 1002,
+
+    // The bosses of our boss invasion, from the Season 8 client.
+    MONSTER_LORD_SILVESTER = 1003,
+    MONSTER_SELLIHODEN = 1004,
+    MONSTER_UKANVA = 1005,
+    MONSTER_SILLA = 1006,
+    MONSTER_NORMUS = 1007,
+    MONSTER_MUFF = 1008,
+    MONSTER_REAPER = 1009,
 
     MONSTER_END = 668
 };
