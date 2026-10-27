@@ -55,3 +55,11 @@ mu_add_test(
         test_item_expiry.cpp
         ${CMAKE_SOURCE_DIR}/src/source/GameLogic/Items/ItemExpiry.cpp
 )
+
+mu_add_test(
+    NAME test_helper_attack_rotation
+    SOURCES
+        test_helper_attack_rotation.cpp
+        ${CMAKE_SOURCE_DIR}/src/source/App/Platform/Windows/Winmain.cpp
+    LINK_LIBS MuClient
+)
