@@ -288,6 +288,17 @@ and the game keeps running; the file is logged and listed by Monster Checks.
 Molt's `Data/Monster/Monster50.bmd` is missing, here and in the original
 client (OpenMU has no monster 68).
 
+### Monsters that look like another monster
+
+The monsters of our server's Icarus 2 map (1010 to 1015: the Forge Gorgon,
+Death Gorgon, Balrog, Metal Balrog, its Elite and the Balrog Lord) are made
+by the client as the monster of the original game they look like (Gorgon 18,
+Death Gorgon 35, Balrog 38, Metal Balrog 67), then made bigger and given
+their own name from `Monsters.json`: 1.1 to 1.2 times the size of their base
+monster, 1.45 for the Elite and 2.2 for the Lord, the boss. Their attacks and
+effects are the ones of the base monster. Their `Monsters.json` entry only
+holds the name, the kind and the model of the base monster.
+
 ## Attacks
 
 A monster entry's `attacks` say which animation the monster plays for the

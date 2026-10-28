@@ -3924,6 +3924,42 @@
         "otherwiseRandom": "rand",
         "clearSkill": "always"
       }
+    },
+    {
+      "number": 1010,
+      "name": {"en": "Forge Gorgon", "es": "Gorgona da Forja", "pt": "Górgone da Forja"},
+      "kind": "monster",
+      "model": "MONSTER_MODEL_GORGON"
+    },
+    {
+      "number": 1011,
+      "name": {"en": "Forge Death Gorgon", "es": "Gorgona de la Muerte de la Forja", "pt": "Górgone da Morte da Forja"},
+      "kind": "monster",
+      "model": "MONSTER_MODEL_GORGON"
+    },
+    {
+      "number": 1012,
+      "name": {"en": "Forge Balrog", "es": "Balrog de la Forja", "pt": "Balrog da Forja"},
+      "kind": "monster",
+      "model": "MONSTER_MODEL_BALROG"
+    },
+    {
+      "number": 1013,
+      "name": {"en": "Forge Metal Balrog", "es": "Balrog de Metal de la Forja", "pt": "Balrog de Metal da Forja"},
+      "kind": "monster",
+      "model": "MONSTER_MODEL_BALROG"
+    },
+    {
+      "number": 1014,
+      "name": {"en": "Elite Forge Metal Balrog", "es": "Balrog de Metal de Élite de la Forja", "pt": "Balrog de Metal de Elite da Forja"},
+      "kind": "monster",
+      "model": "MONSTER_MODEL_BALROG"
+    },
+    {
+      "number": 1015,
+      "name": {"en": "Balrog Lord", "es": "Señor Balrog", "pt": "Senhor Balrog"},
+      "kind": "monster",
+      "model": "MONSTER_MODEL_BALROG"
     }
   ]
 }

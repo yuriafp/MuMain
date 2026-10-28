@@ -98,7 +98,7 @@ TEST_CASE("Shipped monster list: loads, with only the warning about 252's empty 
     REQUIRE_MESSAGE(loaded.issues.size() == 1, Messages(loaded.issues));
     CHECK(loaded.issues[0].severity == ItemDataIssueSeverity::Warning);
     CHECK(loaded.issues[0].number == 252);
-    CHECK(loaded.monsters.size() == 557);
+    CHECK(loaded.monsters.size() == 563);
 }
 
 TEST_CASE("Shipped monster list: written in the writer's format [data][monsters]")
@@ -218,6 +218,21 @@ TEST_CASE("Shipped monster list: the bosses of our boss invasion (1003-1009) are
     CHECK(silvester->model == "MONSTER_MODEL_LORD_SILVESTER");
     CHECK(reaper->model == "MONSTER_MODEL_REAPER");
     CHECK(reaper->names.Get("pt") == "Ceifador");
+}
+
+TEST_CASE("Shipped monster list: the monsters of Icarus 2 (1010-1015) have the model of their base monster [data][monsters]")
+{
+    const Data::Monsters::MonsterDataLoadResult loaded =
+        Data::Monsters::LoadMonstersFile(ClientData / "Monsters" / "Monsters.json");
+
+    const MonsterDefinition* gorgon = FindMonster(loaded.monsters, 1010);
+    const MonsterDefinition* lord = FindMonster(loaded.monsters, 1015);
+    REQUIRE(gorgon != nullptr);
+    REQUIRE(lord != nullptr);
+    CHECK(gorgon->kind == Data::Monsters::MonsterKind::Monster);
+    CHECK(gorgon->model == "MONSTER_MODEL_GORGON");
+    CHECK(lord->model == "MONSTER_MODEL_BALROG");
+    CHECK(lord->names.Get("pt") == "Senhor Balrog");
 }
 
 TEST_CASE("Monster data: the game's load fills the table, errors stop it [data][monsters]")

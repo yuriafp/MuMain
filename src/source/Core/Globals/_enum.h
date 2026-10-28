@@ -5137,6 +5137,14 @@ enum EMonsterType : int
     MONSTER_MUFF = 1008,
     MONSTER_REAPER = 1009,
 
+    // The monsters of Icarus 2, with the model of a monster of the original game.
+    MONSTER_FORGE_GORGON = 1010,
+    MONSTER_FORGE_DEATH_GORGON = 1011,
+    MONSTER_FORGE_BALROG = 1012,
+    MONSTER_FORGE_METAL_BALROG = 1013,
+    MONSTER_FORGE_METAL_BALROG_ELITE = 1014,
+    MONSTER_BALROG_LORD = 1015,
+
     MONSTER_END = 668
 };
 

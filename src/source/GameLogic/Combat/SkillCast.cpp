@@ -311,7 +311,7 @@ void UseSkillWarrior(CHARACTER* c, OBJECT* o)
             SetAction(o, PLAYER_ATTACK_SKILL_WHEEL);
             break;
         case AT_SKILL_RIDER:
-            if (gMapManager.WorldActive == WD_8TARKAN || gMapManager.WorldActive == WD_10HEAVEN || g_Direction.m_CKanturu.IsMayaScene())
+            if (gMapManager.WorldActive == WD_8TARKAN || IsHeavenWorld(gMapManager.WorldActive) || g_Direction.m_CKanturu.IsMayaScene())
                 SetAction(o, PLAYER_SKILL_RIDER_FLY);
             else
                 SetAction(o, PLAYER_SKILL_RIDER);

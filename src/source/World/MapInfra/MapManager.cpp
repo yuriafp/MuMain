@@ -149,6 +149,7 @@ void CMapManager::Load() // OK
         gLoadData.OpenTexture(MODEL_BUG01 + 1, L"Object9\\");
         break;
     case WD_10HEAVEN:
+    case WD_43ICARUS2:
         LoadBitmap(L"Effect\\clouds.jpg", BITMAP_CLOUD, GL_LINEAR, GL_CLAMP_TO_EDGE);
         gLoadData.AccessModel(MODEL_CLOUD, L"Data\\Object11\\", L"cloud");
         gLoadData.OpenTexture(MODEL_CLOUD, L"Object11\\");
@@ -902,6 +903,10 @@ void CMapManager::Load() // OK
         {
             iMapWorld = WD_24HELLAS + 1;
         }
+        else if (this->WorldActive == WD_43ICARUS2)
+        {
+            iMapWorld = WD_10HEAVEN + 1;
+        }
         else if (gMapManager.IsCursedTemple())
         {
             iMapWorld = WD_45CURSEDTEMPLE_LV1 + 2;
@@ -1474,6 +1479,11 @@ bool CMapManager::InBattleCastle(int iMap)
     return (iMap == WD_30BATTLECASTLE) ? true : false;
 }
 
+namespace
+{
+constexpr const wchar_t* kIcarus2MapName = L"Icarus 2";
+}
+
 const wchar_t* CMapManager::GetMapName(int iMap)
 {
     if (iMap == WD_34CRYWOLF_1ST)
@@ -1534,6 +1544,10 @@ const wchar_t* CMapManager::GetMapName(int iMap)
     if (InBloodCastle(iMap) == true)
     {
         return (I18N::Game::BloodCastle);
+    }
+    if (iMap == WD_43ICARUS2)
+    {
+        return kIcarus2MapName;
     }
     if (iMap == WD_10HEAVEN)
     {

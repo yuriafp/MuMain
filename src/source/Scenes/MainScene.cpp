@@ -90,7 +90,7 @@ static bool RequireLeavesEffect()
            gMapManager.WorldActive == WD_3NORIA ||
            gMapManager.WorldActive == WD_7ATLANSE ||
            gMapManager.InDevilSquare() ||
-           gMapManager.WorldActive == WD_10HEAVEN ||
+           IsHeavenWorld(gMapManager.WorldActive) ||
            gMapManager.InChaosCastle() ||
            gMapManager.InBattleCastle() ||
            M31HuntingGround::IsInHuntingGround() ||
@@ -540,7 +540,7 @@ static void RenderGameWorld(BYTE& byWaterMap, int width, int height)
                 { FRAME_PROFILE(Terrain); RenderTerrain(false); }
         }
         else
-            if (gMapManager.WorldActive != WD_10HEAVEN && gMapManager.WorldActive != -1)
+            if (!IsHeavenWorld(gMapManager.WorldActive) && gMapManager.WorldActive != -1)
             {
                 if ((gMapManager.IsPKField() || IsDoppelGanger2()) && renderStatic)
                 {

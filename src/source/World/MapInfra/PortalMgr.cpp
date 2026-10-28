@@ -54,6 +54,7 @@ BOOL CPortalMgr::IsPortalUsable()
     case WD_8TARKAN:
     case WD_33AIDA:
     case WD_10HEAVEN:
+    case WD_43ICARUS2:
     case WD_37KANTURU_1ST:
     case WD_38KANTURU_2ND:
     case WD_57ICECITY:

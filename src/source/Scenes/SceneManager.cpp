@@ -591,7 +591,7 @@ static void SetWorldClearColor()
         rgb8(10, 20, 14);                              // Dark green
     else if (world == WD_2DEVIAS)
         rgb8(0, 0, 10);                                // Dark navy abyss
-    else if (world == WD_10HEAVEN)
+    else if (IsHeavenWorld(world))
         rgb8(3, 25, 44);                               // Blue
     else if (world == WD_73NEW_LOGIN_SCENE || world == WD_74NEW_CHARACTER_SCENE)
         SetClearAndFogColor(0.f, 0.f, 0.f);            // Black
@@ -827,6 +827,7 @@ static void PlayWorldAmbientSounds()
                 PlayBuffer(SOUND_DESERT01, NULL, true);
                 break;
             case WD_10HEAVEN:
+            case WD_43ICARUS2:
                 PlayBuffer(SOUND_HEAVEN01, NULL, true);
                 if (rand_fps_check(100))
                 {
@@ -901,7 +902,7 @@ static void StopInactiveAmbientSounds()
     {
         StopBuffer(SOUND_DESERT01, true);
     }
-    if (gMapManager.WorldActive != WD_10HEAVEN)
+    if (!IsHeavenWorld(gMapManager.WorldActive))
     {
         StopBuffer(SOUND_HEAVEN01, true);
     }
@@ -995,7 +996,7 @@ static void ManageBackgroundMusic()
         StopMp3(MUSIC_ATLANS);
     }
 
-    if (gMapManager.WorldActive == WD_10HEAVEN) {
+    if (IsHeavenWorld(gMapManager.WorldActive)) {
         PlayMp3(MUSIC_ICARUS);
     }
     else {

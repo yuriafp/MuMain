@@ -8,7 +8,7 @@ namespace GameLogic::Items
 {
 bool RequiresFlight(int world)
 {
-    return world == WD_10HEAVEN;
+    return IsHeavenWorld(world);
 }
 
 bool CanTakeOff(int equipmentSlot, int world, const ITEM* pItemHelper, const ITEM* pItemWing)

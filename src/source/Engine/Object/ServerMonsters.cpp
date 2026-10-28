@@ -6,6 +6,7 @@
 #include "Engine/Object/ZzzCharacter.h"
 #include "Engine/Object/ZzzOpenData.h"
 #include "GameLogic/Monsters/MonsterAttackPlay.h"
+#include "GameLogic/Monsters/MonsterNames.h"
 #include "Render/Effects/ZzzEffect.h"
 
 namespace Engine::Object::ServerMonsters
@@ -99,6 +100,34 @@ constexpr InvasionBoss InvasionBosses[] = {
 // The bosses of the boss invasion which the generic monster code creates, so they aren't in
 // InvasionBosses.
 constexpr EMonsterType GenericInvasionBosses[] = {MONSTER_DARK_PHOENIX};
+
+struct MonsterVariant
+{
+    EMonsterType type;
+    EMonsterType base;
+    float scaleFactor;
+};
+
+// The monsters of Icarus 2: a monster of the original game, a little bigger the higher its level;
+// the Balrog Lord is the boss of the map.
+constexpr MonsterVariant MonsterVariants[] = {
+    {MONSTER_FORGE_GORGON, MONSTER_GORGON, 1.1f},
+    {MONSTER_FORGE_DEATH_GORGON, MONSTER_DEATH_GORGON, 1.15f},
+    {MONSTER_FORGE_BALROG, MONSTER_BALROG, 1.1f},
+    {MONSTER_FORGE_METAL_BALROG, MONSTER_METAL_BALROG, 1.2f},
+    {MONSTER_FORGE_METAL_BALROG_ELITE, MONSTER_METAL_BALROG, 1.45f},
+    {MONSTER_BALROG_LORD, MONSTER_METAL_BALROG, 2.2f},
+};
+
+const MonsterVariant* FindVariant(EMonsterType type)
+{
+    for (const MonsterVariant& variant : MonsterVariants)
+    {
+        if (variant.type == type)
+            return &variant;
+    }
+    return nullptr;
+}
 
 CHARACTER* CreateNpc(int model, const wchar_t* name, int positionX, int positionY, int key)
 {
@@ -258,6 +287,22 @@ CHARACTER* Create(EMonsterType type, int positionX, int positionY, int key)
     if (boss == nullptr)
         return nullptr;
     return CreateInvasionBoss(*boss, positionX, positionY, key);
+}
+
+bool GetVariant(EMonsterType type, EMonsterType& base, float& scaleFactor)
+{
+    const MonsterVariant* variant = FindVariant(type);
+    if (variant == nullptr)
+        return false;
+    base = variant->base;
+    scaleFactor = variant->scaleFactor;
+    return true;
+}
+
+void ApplyVariant(CHARACTER& character, EMonsterType type, float scaleFactor)
+{
+    character.Object.Scale *= scaleFactor;
+    GameLogic::Monsters::Names::WriteShownName(character, type);
 }
 
 void ScaleInvasionBoss(CHARACTER& character)

@@ -1413,7 +1413,7 @@ void ReceiveRevival(const BYTE* ReceiveBuffer)
         }
         else
         {
-            if (gMapManager.WorldActive == WD_8TARKAN || gMapManager.WorldActive == WD_10HEAVEN)
+            if (gMapManager.WorldActive == WD_8TARKAN || IsHeavenWorld(gMapManager.WorldActive))
                 o->Position[2] = RequestTerrainHeight(o->Position[0], o->Position[1]) + 90.f;
             else
                 o->Position[2] = RequestTerrainHeight(o->Position[0], o->Position[1]) + 30.f;
@@ -2157,7 +2157,7 @@ BOOL ReceiveTeleport(const BYTE* ReceiveBuffer, BOOL bEncrypted)
     }
     else
     {
-        if (gMapManager.WorldActive == WD_8TARKAN || gMapManager.WorldActive == WD_10HEAVEN)
+        if (gMapManager.WorldActive == WD_8TARKAN || IsHeavenWorld(gMapManager.WorldActive))
             o->Position[2] = RequestTerrainHeight(o->Position[0], o->Position[1]) + 90.f;
         else
             o->Position[2] = RequestTerrainHeight(o->Position[0], o->Position[1]) + 30.f;
@@ -2232,7 +2232,7 @@ BOOL ReceiveTeleport(const BYTE* ReceiveBuffer, BOOL bEncrypted)
             }
             else
             {
-                if (gMapManager.WorldActive == WD_8TARKAN || gMapManager.WorldActive == WD_10HEAVEN)
+                if (gMapManager.WorldActive == WD_8TARKAN || IsHeavenWorld(gMapManager.WorldActive))
                     o->Position[2] = RequestTerrainHeight(o->Position[0], o->Position[1]) + 90.f;
                 else
                     o->Position[2] = RequestTerrainHeight(o->Position[0], o->Position[1]) + 30.f;
@@ -4816,7 +4816,7 @@ BOOL ReceiveMagic(const BYTE* ReceiveBuffer, int Size, BOOL bEncrypted)
         break;
 
     case AT_SKILL_RIDER:
-        if (gMapManager.WorldActive == WD_8TARKAN || gMapManager.WorldActive == WD_10HEAVEN ||
+        if (gMapManager.WorldActive == WD_8TARKAN || IsHeavenWorld(gMapManager.WorldActive) ||
             g_Direction.m_CKanturu.IsMayaScene())
             SetAction(so, PLAYER_SKILL_RIDER_FLY);
         else

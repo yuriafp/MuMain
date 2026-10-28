@@ -276,7 +276,7 @@ bool MoveMount(OBJECT* o, bool bForceRender)
                 }
 
                 Vector(1.f, 1.f, 1.f, Light);
-                if (gMapManager.WorldActive == WD_10HEAVEN)
+                if (IsHeavenWorld(gMapManager.WorldActive))
                 {
                     bool   bWave = false;
                     vec3_t p = { 120.f, 0.f, 32.f };
@@ -318,7 +318,7 @@ bool MoveMount(OBJECT* o, bool bForceRender)
                             o->Position[2] + (float)(rand() % 32 - 16), Position);
                         if (gMapManager.WorldActive == WD_2DEVIAS)
                             CreateParticle(BITMAP_SMOKE, Position, o->Angle, Light);
-                        else if (gMapManager.WorldActive != WD_10HEAVEN)
+                        else if (!IsHeavenWorld(gMapManager.WorldActive))
                             if (!g_Direction.m_CKanturu.IsMayaScene())
                                 CreateParticle(BITMAP_SMOKE + 1, Position, o->Angle, Light);
                     }
@@ -350,7 +350,7 @@ bool MoveMount(OBJECT* o, bool bForceRender)
                 Vector(1.f, 1.f, 1.f, Light);
 
                 SetAction(o, 1);
-                if (gMapManager.WorldActive == WD_10HEAVEN || g_Direction.m_CKanturu.IsMayaScene())
+                if (IsHeavenWorld(gMapManager.WorldActive) || g_Direction.m_CKanturu.IsMayaScene())
                 {
                     bool   bWave = false;
                     vec3_t p = { 120.f, 0.f, rand() % 64 - 32.f };
@@ -403,7 +403,7 @@ bool MoveMount(OBJECT* o, bool bForceRender)
 
                         if (gMapManager.WorldActive == WD_2DEVIAS)
                             CreateParticle(BITMAP_SMOKE, Position, o->Angle, Light);
-                        else if (gMapManager.WorldActive != WD_10HEAVEN && !g_Direction.m_CKanturu.IsMayaScene())
+                        else if (!IsHeavenWorld(gMapManager.WorldActive) && !g_Direction.m_CKanturu.IsMayaScene())
                             CreateParticle(BITMAP_SMOKE + 1, Position, o->Angle, Light);
                     }
                 }
@@ -524,7 +524,7 @@ bool MoveMount(OBJECT* o, bool bForceRender)
 
             if (o->Type == MODEL_PEGASUS)
             {
-                if (gMapManager.WorldActive == WD_8TARKAN || gMapManager.WorldActive == WD_10HEAVEN || g_Direction.m_CKanturu.IsMayaScene())
+                if (gMapManager.WorldActive == WD_8TARKAN || IsHeavenWorld(gMapManager.WorldActive) || g_Direction.m_CKanturu.IsMayaScene())
                     o->Position[2] -= 10.f;
                 else if (gMapManager.WorldActive != -1)
                     o->Position[2] -= 30.f;
@@ -537,7 +537,7 @@ bool MoveMount(OBJECT* o, bool bForceRender)
                 //  페가수스.
                 if (o->Type == MODEL_PEGASUS)
                 {
-                    if (gMapManager.WorldActive == WD_8TARKAN || gMapManager.WorldActive == WD_10HEAVEN || g_Direction.m_CKanturu.IsMayaScene())
+                    if (gMapManager.WorldActive == WD_8TARKAN || IsHeavenWorld(gMapManager.WorldActive) || g_Direction.m_CKanturu.IsMayaScene())
                         SetAction(o, 3);
                     else
                         SetAction(o, 2);
@@ -547,7 +547,7 @@ bool MoveMount(OBJECT* o, bool bForceRender)
                     SetAction(o, 2);
                 }
 
-                if (rand_fps_check(2) && gMapManager.WorldActive != WD_10HEAVEN)
+                if (rand_fps_check(2) && !IsHeavenWorld(gMapManager.WorldActive))
                 {
                     if (!g_Direction.m_CKanturu.IsMayaScene())
 
@@ -566,7 +566,7 @@ bool MoveMount(OBJECT* o, bool bForceRender)
             }
             else if (o->Owner->CurrentAction == PLAYER_SKILL_RIDER || o->Owner->CurrentAction == PLAYER_SKILL_RIDER_FLY)
             {
-                if (gMapManager.WorldActive == WD_8TARKAN || gMapManager.WorldActive == WD_10HEAVEN || g_Direction.m_CKanturu.IsMayaScene())
+                if (gMapManager.WorldActive == WD_8TARKAN || IsHeavenWorld(gMapManager.WorldActive) || g_Direction.m_CKanturu.IsMayaScene())
                     SetAction(o, 7);
                 else
                     SetAction(o, 6);
@@ -577,7 +577,7 @@ bool MoveMount(OBJECT* o, bool bForceRender)
             {
                 if (o->Type == MODEL_PEGASUS)
                 {
-                    if (gMapManager.WorldActive == WD_8TARKAN || gMapManager.WorldActive == WD_10HEAVEN || g_Direction.m_CKanturu.IsMayaScene())
+                    if (gMapManager.WorldActive == WD_8TARKAN || IsHeavenWorld(gMapManager.WorldActive) || g_Direction.m_CKanturu.IsMayaScene())
                         SetAction(o, 5);
                     else
                         SetAction(o, 4);
@@ -591,7 +591,7 @@ bool MoveMount(OBJECT* o, bool bForceRender)
             {
                 if (o->Type == MODEL_PEGASUS)
                 {
-                    if (gMapManager.WorldActive == WD_8TARKAN || gMapManager.WorldActive == WD_10HEAVEN || g_Direction.m_CKanturu.IsMayaScene())
+                    if (gMapManager.WorldActive == WD_8TARKAN || IsHeavenWorld(gMapManager.WorldActive) || g_Direction.m_CKanturu.IsMayaScene())
                         SetAction(o, 1);
                     else
                         SetAction(o, 0);
@@ -839,7 +839,7 @@ void DeleteBoids()
 
 int CreateDragon(OBJECT* o, int index)
 {
-    if (gMapManager.WorldActive != WD_10HEAVEN) return 0;
+    if (!IsHeavenWorld(gMapManager.WorldActive)) return 0;
 
     if (index < 3)
     {
@@ -1252,6 +1252,7 @@ void MoveBoids()
         case WD_67DOPPLEGANGER3:
             break;
         case WD_10HEAVEN:
+        case WD_43ICARUS2:
             if (i >= 13)
             {
                 bOut = true;
@@ -1323,7 +1324,7 @@ void MoveBoids()
                 || gMapManager.WorldActive == WD_1DUNGEON
                 || gMapManager.WorldActive == WD_3NORIA
                 || gMapManager.WorldActive == WD_4LOSTTOWER
-                || gMapManager.WorldActive == WD_10HEAVEN
+                || IsHeavenWorld(gMapManager.WorldActive)
                 || ((gMapManager.WorldActive == WD_7ATLANSE || gMapManager.WorldActive == WD_67DOPPLEGANGER3) && (TerrainWall[Index] == 0 || TerrainWall[Index] == TW_CHARACTER))
                 || gMapManager.InBloodCastle()
                 || gMapManager.InHellas()
@@ -1601,7 +1602,7 @@ void RenderBoids(bool bAfterCharacter)
                     CreateSprite(BITMAP_LIGHT, Position, 0.1f, Light, o);
                     break;
                 }
-                if (gMapManager.WorldActive != WD_10HEAVEN)
+                if (!IsHeavenWorld(gMapManager.WorldActive))
                 {
                     EnableAlphaTest();
                     if (gMapManager.WorldActive == WD_51HOME_6TH_CHAR && o->Type == MODEL_MAP_TORNADO);
@@ -1649,7 +1650,7 @@ void RenderFishs()
                 }
                 else
                 {
-                    if (gMapManager.WorldActive != WD_10HEAVEN)
+                    if (!IsHeavenWorld(gMapManager.WorldActive))
                     {
                         EnableAlphaTest();
                         BMD* b = &Models[o->Type];

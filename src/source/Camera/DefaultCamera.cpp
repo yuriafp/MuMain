@@ -503,7 +503,7 @@ void DefaultCamera::AdjustHeroHeight()
     float baseHeight = RequestTerrainHeight(Hero->Object.Position[0], Hero->Object.Position[1]);
     if (Hero->Helper.Type == MODEL_HORN_OF_DINORANT && !Hero->SafeZone && gMapManager.WorldActive != -1)
     {
-        if (gMapManager.WorldActive == WD_8TARKAN || gMapManager.WorldActive == WD_10HEAVEN)
+        if (gMapManager.WorldActive == WD_8TARKAN || IsHeavenWorld(gMapManager.WorldActive))
             Hero->Object.Position[2] = baseHeight + 90.f;
         else
             Hero->Object.Position[2] = baseHeight + 30.f;

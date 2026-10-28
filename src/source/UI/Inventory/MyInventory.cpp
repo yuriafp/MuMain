@@ -490,7 +490,7 @@ bool CMyInventory::IsEquipable(int iIndex, ITEM* pItem) const
     {
         return false;
     }
-    if (pItem->Type == ITEM_HORN_OF_UNIRIA && gMapManager.WorldActive == WD_10HEAVEN)
+    if (pItem->Type == ITEM_HORN_OF_UNIRIA && IsHeavenWorld(gMapManager.WorldActive))
     {
         return false;
     }

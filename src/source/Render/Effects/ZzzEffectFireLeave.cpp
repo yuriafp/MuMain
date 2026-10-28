@@ -258,7 +258,7 @@ bool CreateHeavenRain(PARTICLE* o, int index)
         return false;
     }
 
-    if (gMapManager.WorldActive != WD_10HEAVEN) return false;
+    if (!IsHeavenWorld(gMapManager.WorldActive)) return false;
 
     int Rainly = RainCurrent * MAX_LEAVES / 100;
     if (index < Rainly)
@@ -371,7 +371,7 @@ bool MoveChaosCastleRain(PARTICLE* o)
 
 bool MoveHeavenRain(PARTICLE* o)
 {
-    if (gMapManager.WorldActive != WD_0LORENCIA && gMapManager.WorldActive != WD_10HEAVEN) return false;
+    if (gMapManager.WorldActive != WD_0LORENCIA && !IsHeavenWorld(gMapManager.WorldActive)) return false;
 
     if (o->Type == BITMAP_RAIN)
     {
@@ -381,7 +381,7 @@ bool MoveHeavenRain(PARTICLE* o)
         {
             o->Live = false;
             o->Position[2] = Height + 10.f;
-            if (gMapManager.WorldActive != WD_10HEAVEN)
+            if (!IsHeavenWorld(gMapManager.WorldActive))
                 CreateParticle(BITMAP_RAIN_CIRCLE, o->Position, o->Angle, o->Light);
         }
     }
@@ -440,7 +440,7 @@ bool MoveLeaves()
 
     int iMaxLeaves = (gMapManager.InDevilSquare() == true) ? MAX_LEAVES : 80;
 
-    if (gMapManager.WorldActive == WD_10HEAVEN)
+    if (IsHeavenWorld(gMapManager.WorldActive))
     {
         RainTarget = MAX_LEAVES / 2;
     }
@@ -534,7 +534,7 @@ void RenderLeaves()
         return;
     }
 
-    if (gMapManager.WorldActive == WD_2DEVIAS || gMapManager.WorldActive == WD_7ATLANSE || gMapManager.WorldActive == WD_10HEAVEN
+    if (gMapManager.WorldActive == WD_2DEVIAS || gMapManager.WorldActive == WD_7ATLANSE || IsHeavenWorld(gMapManager.WorldActive)
         || IsIceCity()
         || IsSantaTown()
         || gMapManager.IsPKField()

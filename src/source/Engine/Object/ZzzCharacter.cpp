@@ -589,7 +589,7 @@ void SetPlayerWalk(CHARACTER* c)
         }
         else if (c->Helper.Type == MODEL_HORN_OF_DINORANT && !c->SafeZone)   //  페가시아를 타고있음.
         {
-            if (gMapManager.WorldActive == WD_8TARKAN || gMapManager.WorldActive == WD_10HEAVEN || g_Direction.m_CKanturu.IsMayaScene())
+            if (gMapManager.WorldActive == WD_8TARKAN || IsHeavenWorld(gMapManager.WorldActive) || g_Direction.m_CKanturu.IsMayaScene())
             {
                 // 애니메이션 튀는거때문에 아예 막아버림
 //                if(c->Weapon[0].Type==-1 && c->Weapon[1].Type==-1)
@@ -6349,7 +6349,7 @@ void MoveCharacterPosition(CHARACTER* c)
     }
     else
     {
-        if (gMapManager.WorldActive == WD_8TARKAN || gMapManager.WorldActive == WD_10HEAVEN)
+        if (gMapManager.WorldActive == WD_8TARKAN || IsHeavenWorld(gMapManager.WorldActive))
             o->Position[2] = RequestTerrainHeight(o->Position[0], o->Position[1]) + 90.f;
         else
             o->Position[2] = RequestTerrainHeight(o->Position[0], o->Position[1]) + 30.f;
@@ -7304,7 +7304,7 @@ void RenderLinkObject(float x, float y, float z, CHARACTER* c, PART_t* f, int Ty
             CreateSprite(BITMAP_LIGHT, Position, 1.1f, Light, o);
         }
 
-        if (o->CurrentAction == PLAYER_RUN_TWO_HAND_SWORD_TWO && gMapManager.WorldActive != WD_10HEAVEN && rand_fps_check(2))
+        if (o->CurrentAction == PLAYER_RUN_TWO_HAND_SWORD_TWO && !IsHeavenWorld(gMapManager.WorldActive) && rand_fps_check(2))
         {
             if (!g_Direction.m_CKanturu.IsMayaScene())
             {
@@ -7707,7 +7707,7 @@ void RenderLinkObject(float x, float y, float z, CHARACTER* c, PART_t* f, int Ty
     break;
     case MODEL_DARK_REIGN_BLADE:
     case MODEL_RUNE_BLADE:
-        if (o->CurrentAction == PLAYER_RUN_TWO_HAND_SWORD_TWO && gMapManager.WorldActive != WD_10HEAVEN && rand_fps_check(2))
+        if (o->CurrentAction == PLAYER_RUN_TWO_HAND_SWORD_TWO && !IsHeavenWorld(gMapManager.WorldActive) && rand_fps_check(2))
         {
             if (!g_Direction.m_CKanturu.IsMayaScene())
             {
@@ -8411,7 +8411,7 @@ void RenderLinkObject(float x, float y, float z, CHARACTER* c, PART_t* f, int Ty
         break;
     }
 
-    if (gMapManager.WorldActive != WD_10HEAVEN && gMapManager.InHellas() == FALSE &&
+    if (!IsHeavenWorld(gMapManager.WorldActive) && gMapManager.InHellas() == FALSE &&
         !g_Direction.m_CKanturu.IsMayaScene() && !IsWingShadowDisabledDebug())
     {
         switch (Type)        // 날개인지 검사
@@ -8599,7 +8599,7 @@ void RenderCharacter(CHARACTER* c, OBJECT* o, int Select)
 
     if (o->Alpha >= 0.5f && c->HideShadow == false)
     {
-        if (gMapManager.WorldActive != WD_10HEAVEN && (o->Type == MODEL_PLAYER) && (!(MODEL_HORN_OF_UNIRIA <= c->Helper.Type && c->Helper.Type <= MODEL_HORN_OF_DINORANT) || c->SafeZone)
+        if (!IsHeavenWorld(gMapManager.WorldActive) && (o->Type == MODEL_PLAYER) && (!(MODEL_HORN_OF_UNIRIA <= c->Helper.Type && c->Helper.Type <= MODEL_HORN_OF_DINORANT) || c->SafeZone)
             && gMapManager.InHellas() == false
             )
         {
@@ -8675,7 +8675,7 @@ void RenderCharacter(CHARACTER* c, OBJECT* o, int Select)
         o->Type != MODEL_PLAYER && o->Kind != KIND_TRAP &&
         c->MonsterIndex != MONSTER_ICE_QUEEN && c->MonsterIndex != MONSTER_ICE_MONSTER && c->MonsterIndex != MONSTER_RED_DRAGON && c->MonsterIndex != MONSTER_ELF_LALA && c->MonsterIndex != MONSTER_ZAIKAN && c->MonsterIndex != MONSTER_DEATH_BEAM_KNIGHT
         && c->MonsterIndex != MONSTER_GATE_TO_KALIMA_1
-        ) && gMapManager.WorldActive != WD_10HEAVEN
+        ) && !IsHeavenWorld(gMapManager.WorldActive)
         )
     {
         if (o->Alpha >= 0.3f)
@@ -11798,7 +11798,7 @@ void CreateCharacterPointer(CHARACTER* c, int Type, unsigned char PositionX, uns
     }
     else
     {
-        if (gMapManager.WorldActive == WD_8TARKAN || gMapManager.WorldActive == WD_10HEAVEN)
+        if (gMapManager.WorldActive == WD_8TARKAN || IsHeavenWorld(gMapManager.WorldActive))
             o->Position[2] = RequestTerrainHeight(o->Position[0], o->Position[1]) + 90.f;
         else
             o->Position[2] = RequestTerrainHeight(o->Position[0], o->Position[1]) + 30.f;
@@ -12863,6 +12863,16 @@ CHARACTER* CreateMonster(EMonsterType Type, int PositionX, int PositionY, int Ke
     CHARACTER* c = NULL;
     OBJECT* o;
     int Level;
+
+    EMonsterType variantBase;
+    float variantScale;
+    if (Engine::Object::ServerMonsters::GetVariant(Type, variantBase, variantScale))
+    {
+        c = CreateMonster(variantBase, PositionX, PositionY, Key);
+        if (c != NULL)
+            Engine::Object::ServerMonsters::ApplyVariant(*c, Type, variantScale);
+        return c;
+    }
 
     c = g_CursedTemple->CreateCharacters(Type, PositionX, PositionY, Key);
     if (c != NULL)

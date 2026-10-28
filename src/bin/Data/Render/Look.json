@@ -25,6 +25,11 @@
       "world": 10,
       "name": "Icarus",
       "bloom.strength": 0.3
+    },
+    {
+      "world": 43,
+      "name": "Icarus 2",
+      "bloom.strength": 0.3
     }
   ]
 }

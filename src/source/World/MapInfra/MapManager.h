@@ -34,6 +34,7 @@ enum ENUM_WORLD
     WD_40AREA_FOR_GM = 40,
     WD_41CHANGEUP3RD_1ST = 41,
     WD_42CHANGEUP3RD_2ND = 42,
+    WD_43ICARUS2 = 43,
     WD_45CURSEDTEMPLE_LV1 = 45,
     WD_45CURSEDTEMPLE_LV2,
     WD_45CURSEDTEMPLE_LV3,
@@ -97,3 +98,9 @@ public:
 };
 
 extern CMapManager gMapManager;
+
+// The sky worlds: Icarus and our own Icarus 2. They share the flight rules, camera, clouds and music.
+inline bool IsHeavenWorld(int world)
+{
+    return world == WD_10HEAVEN || world == WD_43ICARUS2;
+}

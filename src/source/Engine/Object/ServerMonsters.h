@@ -15,6 +15,14 @@ namespace Engine::Object::ServerMonsters
 // Creates the character of one of these monsters; nullptr for any other number.
 CHARACTER* Create(EMonsterType type, int positionX, int positionY, int key);
 
+// The monsters of Icarus 2 (1010 to 1015) look like a monster of the original game, only bigger: the
+// base monster whose model, weapons and attack effects they use, and how much bigger they are.
+// False, with nothing set, for any other number.
+bool GetVariant(EMonsterType type, EMonsterType& base, float& scaleFactor);
+
+// Gives the character just created for the base monster the name and the size of its variant.
+void ApplyVariant(CHARACTER& character, EMonsterType type, float scaleFactor);
+
 // Makes a boss of the boss invasion bigger than the scale of its model,
 // wherever it appears, also in its own event: the server gives the bosses many
 // times their health. Any other character stays as it is.

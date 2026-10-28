@@ -117,7 +117,7 @@ void AttackElf(CHARACTER* c, int Skill, float Distance)
 #ifdef ADD_ELF_SUMMON
     case AT_SKILL_SUMMON + 7:
 #endif // ADD_ELF_SUMMON
-        if (gMapManager.WorldActive != WD_10HEAVEN && gMapManager.InChaosCastle() == false)
+        if (!IsHeavenWorld(gMapManager.WorldActive) && gMapManager.InChaosCastle() == false)
             if (!g_Direction.m_CKanturu.IsMayaScene())
             {
                 SendRequestMagic(Skill, HeroKey);

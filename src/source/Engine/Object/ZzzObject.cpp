@@ -636,7 +636,7 @@ void Draw_RenderObject(OBJECT* o, bool Translate, int Select, int ExtraMon)
 
             return;
         }
-        if (gMapManager.WorldActive == WD_10HEAVEN)
+        if (IsHeavenWorld(gMapManager.WorldActive))
         {
             if (o->Type == MODEL_DRAGON_)
             {
@@ -945,7 +945,7 @@ void Draw_RenderObject(OBJECT* o, bool Translate, int Select, int ExtraMon)
                 b->RenderMesh(14, RENDER_CHROME | RENDER_BRIGHT, o->Alpha, o->BlendMesh, o->BlendMeshLight, o->BlendMeshTexCoordU, o->BlendMeshTexCoordV, o->HiddenMesh);
                 b->RenderMesh(15, RENDER_CHROME | RENDER_BRIGHT, o->Alpha, o->BlendMesh, o->BlendMeshLight, o->BlendMeshTexCoordU, o->BlendMeshTexCoordV, o->HiddenMesh);
 
-                if (gMapManager.WorldActive != WD_10HEAVEN && gMapManager.InHellas() == false)
+                if (!IsHeavenWorld(gMapManager.WorldActive) && gMapManager.InHellas() == false)
                 {
                     if (!g_Direction.m_CKanturu.IsMayaScene())
                     {
@@ -1012,7 +1012,7 @@ void Draw_RenderObject(OBJECT* o, bool Translate, int Select, int ExtraMon)
 
                 b->EndRender();
 
-                if (gMapManager.WorldActive != WD_10HEAVEN && gMapManager.InHellas() == FALSE)
+                if (!IsHeavenWorld(gMapManager.WorldActive) && gMapManager.InHellas() == FALSE)
                 {
                     if (!g_Direction.m_CKanturu.IsMayaScene())
                     {
@@ -1137,7 +1137,7 @@ void Draw_RenderObject(OBJECT* o, bool Translate, int Select, int ExtraMon)
                 }
                 b->EndRender();
 
-                if (gMapManager.WorldActive != WD_10HEAVEN && gMapManager.InHellas() == false)
+                if (!IsHeavenWorld(gMapManager.WorldActive) && gMapManager.InHellas() == false)
                 {
                     if (!g_Direction.m_CKanturu.IsMayaScene())
                     {
@@ -3163,6 +3163,7 @@ void RenderObjectVisual(OBJECT* o)
         }
         break;
     case WD_10HEAVEN:
+    case WD_43ICARUS2:
         switch (o->Type)
         {
         case    0:
@@ -3402,7 +3403,7 @@ void RenderObjects()
 #endif
 
     float   range = 0.f;
-    if (gMapManager.WorldActive == WD_10HEAVEN)
+    if (IsHeavenWorld(gMapManager.WorldActive))
     {
         range = -10.f;
     }
@@ -3666,7 +3667,7 @@ void RenderObjects_AfterCharacter()
         return;
 
     float   range = 0.f;
-    if (gMapManager.WorldActive == WD_10HEAVEN)
+    if (IsHeavenWorld(gMapManager.WorldActive))
     {
         range = -10.f;
     }
@@ -4314,6 +4315,7 @@ void MoveObject(OBJECT* o)
         break;
 
     case WD_10HEAVEN:
+    case WD_43ICARUS2:
         break;
 
     case WD_11BLOODCASTLE1:
@@ -4480,7 +4482,7 @@ void MoveObjectSetting(int& objCount)
     if (MoveHellasObjectSetting(objCount, visibleObject))                       return;
     if (battleCastle::MoveBattleCastleObjectSetting(objCount, visibleObject))   return;
 
-    if (gMapManager.WorldActive == WD_10HEAVEN)
+    if (IsHeavenWorld(gMapManager.WorldActive))
     {
         objCount = MoveHeavenThunder();
 
@@ -4519,7 +4521,7 @@ void MoveObjectSetting(int& objCount)
 void MoveObjectOnEffect(OBJECT* o, int& objCount, int& visObject)
 {
     vec3_t  Light;
-    if (gMapManager.WorldActive == WD_10HEAVEN)
+    if (IsHeavenWorld(gMapManager.WorldActive))
     {
         visObject++;
         if (objCount)
@@ -5949,7 +5951,7 @@ void RenderItems()
 
                 vec3_t vBackup;
                 VectorCopy(o->Position, vBackup);
-                if (gMapManager.WorldActive == WD_10HEAVEN)
+                if (IsHeavenWorld(gMapManager.WorldActive))
                 {
                     o->Position[2] += 10.0f * (float)sinf((float)(i * 1237 + WorldTime) * 0.002f);
                 }
@@ -6868,7 +6870,7 @@ void RenderPartObjectEffect(OBJECT* o, int Type, vec3_t Light, float Alpha, int 
             bRenderShadow = false;
         }
 
-        if (WD_10HEAVEN == gMapManager.WorldActive || o->m_bySkillCount == 3 || g_Direction.m_CKanturu.IsMayaScene())
+        if (IsHeavenWorld(gMapManager.WorldActive) || o->m_bySkillCount == 3 || g_Direction.m_CKanturu.IsMayaScene())
         {
             bRenderShadow = false;
         }
@@ -7139,7 +7141,7 @@ void RenderPartObjectEffect(OBJECT* o, int Type, vec3_t Light, float Alpha, int 
             bRenderShadow = false;
         }
 
-        if (WD_10HEAVEN == gMapManager.WorldActive || o->m_bySkillCount == 3 || g_Direction.m_CKanturu.IsMayaScene())
+        if (IsHeavenWorld(gMapManager.WorldActive) || o->m_bySkillCount == 3 || g_Direction.m_CKanturu.IsMayaScene())
         {
             bRenderShadow = false;
         }
