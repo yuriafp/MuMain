@@ -593,6 +593,34 @@ TEST_CASE("The Grand Soul pants' mesh is the cloth grid again after their model 
     Hero = previousHero;
 }
 
+// The cloth of the Grand Soul pants moves a mesh of their model, which the cloth grid
+// rebuilds, so pants that share their model (our classic Grand Soul pants) wear it too.
+// Pants that open the same file as a model of their own keep their mesh and wear none.
+TEST_CASE("Pants that share the model of cloth pants wear their cloth [data][items]")
+{
+    TestItemModelSlots slots;
+    ItemModelDefinition grandSoul;
+    grandSoul.group = 9;
+    grandSoul.number = 18;
+    grandSoul.model = "grandSoulPants";
+    grandSoul.file = (ClientDirectory / "Data/Player/t_PantMale19.bmd").generic_string();
+    grandSoul.textureFolders = {"Player"};
+    ItemModelDefinition sharing = grandSoul;
+    sharing.number = 104;
+    ItemModelDefinition ownFile = grandSoul;
+    ownFile.number = 100;
+    ownFile.model.clear();
+    g_ItemModelDatabase.Build(std::vector<ItemModelDefinition>{grandSoul, sharing, ownFile},
+                              Data::Effects::GlowColorList{});
+    ModelLoader::OpenModels({});
+
+    CHECK(GetPantsClothKind(MODEL_GRAND_SOUL_PANTS) == 1);
+    CHECK(GetPantsClothKind(ToModelSlot(MakeItemType(9, 104))) == 1);
+    CHECK(GetPantsClothKind(ToModelSlot(MakeItemType(9, 100))) == 0);
+    CHECK(GetPantsClothKind(MODEL_DIVINE_PANTS) == 2);
+    CHECK(GetPantsClothKind(MODEL_DARK_SOUL_PANTS) == 3);
+}
+
 // The item editor moves an item's model with the item: the model data and the
 // opened model change slots, nothing is opened again.
 TEST_CASE("The item model database sets and removes single models [data][items]")

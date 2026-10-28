@@ -7232,6 +7232,24 @@ void RenderPartObjectEdgeLight(BMD* b, OBJECT* o, int Flag, bool Translate, floa
     RenderPartObjectEdge(b, o, Flag, Translate, Scale);
 }
 
+// The pants whose cloth moves a mesh of their model, in the order of their cloth kinds (1, 2, 3).
+constexpr int ClothPantsModels[] = {MODEL_GRAND_SOUL_PANTS, MODEL_DIVINE_PANTS, MODEL_DARK_SOUL_PANTS};
+
+int GetPantsClothKind(int Type)
+{
+    const BMD& model = Models[Type];
+    for (int index = 0; index < static_cast<int>(std::size(ClothPantsModels)); ++index)
+    {
+        const int pants = ClothPantsModels[index];
+        const bool sharesModel = model.Meshs != nullptr && model.Meshs == Models[pants].Meshs;
+        if (Type == pants || sharesModel)
+        {
+            return index + 1;
+        }
+    }
+    return 0;
+}
+
 void RenderPartObject(OBJECT* o, int Type, void* p2, vec3_t Light, float Alpha, int ItemLevel, int ExcellentFlags, int ancientDiscriminator, bool GlobalTransform, bool HideSkin, bool Translate, int Select, int RenderType)
 {
     if (Alpha <= 0.01f)
@@ -7308,21 +7326,7 @@ void RenderPartObject(OBJECT* o, int Type, void* p2, vec3_t Light, float Alpha, 
 
     if (p)
     {
-        int iCloth = 0;
-        switch (Type)
-        {
-        case MODEL_GRAND_SOUL_PANTS:
-            iCloth = 1;
-            break;
-
-        case MODEL_DIVINE_PANTS:
-            iCloth = 2;
-            break;
-
-        case MODEL_DARK_SOUL_PANTS:
-            iCloth = 3;
-            break;
-        }
+        const int iCloth = GetPantsClothKind(Type);
 
         if (!p->m_pCloth[0] && iCloth > 0)
         {

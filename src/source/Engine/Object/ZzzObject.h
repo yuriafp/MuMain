@@ -76,6 +76,10 @@ Render::Items::ItemEffects::Result ApplyPartObjectEffect(BMD* b, OBJECT* o, int 
                                                          int ItemLevel);
 void RenderPartObjectEffect(OBJECT* o, int Type, vec3_t Light, float Alpha = 0.f, int Level = 0, int ExcellentFlags = 0,
                             int ancientDiscriminator = 0, int Select = 0, int RenderType = RENDER_TEXTURE);
+// The cloth the pants of the model `Type` wear: 1, 2 and 3 for the Grand Soul, Divine and Dark
+// Soul pants and for the items that share one of their models (the cloth moves a mesh of the
+// model), 0 for none.
+int GetPantsClothKind(int Type);
 void RenderPartObject(OBJECT* o, int Type, void* p, vec3_t Light, float Alpha = 0.f, int Level = 0,
                       int ExcellentFlags = 0, int ancientDiscriminator = 0, bool GlobalTransform = false,
                       bool HideSkin = false, bool Translate = false, int Select = 0, int RenderType = RENDER_TEXTURE);

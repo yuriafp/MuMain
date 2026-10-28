@@ -1026,6 +1026,10 @@ the other items use that data. Everything else (`inventory`, `ground`,
 Changing a shared model changes all its items; the model tool lists them
 first (see [Item Model](#item-model)).
 
+The cloth of the Grand Soul, Divine and Dark Soul pants moves a mesh of
+their model, so an item that shares one of their models wears that cloth
+too.
+
 ---
 
 ## Changing names and translations
