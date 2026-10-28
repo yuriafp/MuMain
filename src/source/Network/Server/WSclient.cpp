@@ -53,6 +53,8 @@
 #include "GameLogic/Pets/w_PetProcess.h"
 #include "Network/Server/CSMapServer.h"
 #include "Network/Server/TransformViewportEntry.h"
+#include "Network/Server/WeeklyGoalPacket.h"
+#include "GameLogic/Events/WeeklyGoal.h"
 #include "GameLogic/NPCs/npcGateSwitch.h"
 #include "GameLogic/Items/CComGem.h"
 #include "GameLogic/Items/InventoryUtils.h"
@@ -13251,6 +13253,18 @@ BOOL ReceiveStraightAttack(const BYTE* ReceiveBuffer, int Size, BOOL bEncrypted)
     return (TRUE);
 }
 
+// Our server's weekly goal, its answer to /meta (Network/Server/WeeklyGoalPacket.h): keep it and
+// open its window.
+static void ReceiveWeeklyGoal(std::span<const BYTE> ReceiveBuffer)
+{
+    GameLogic::Events::WeeklyGoal goal;
+    if (!Network::WeeklyGoal::Read(ReceiveBuffer.data(), ReceiveBuffer.size(), goal))
+        return;
+
+    GameLogic::Events::SetCurrentWeeklyGoal(std::move(goal));
+    UI::Windows::Show(mu::ui::window::INTERFACE_WEEKLY_GOAL);
+}
+
 void ReceiveDarkside(const BYTE* ReceiveBuffer)
 {
     auto Data = (LPPRECEIVE_DARKSIDE_INDEX)ReceiveBuffer;
@@ -14779,6 +14793,13 @@ static void ProcessPacket(const BYTE* ReceiveBuffer, int32_t Size)
         // Received mu helper config from server
         ReceiveMuHelperConfigurationData(received_span);
         break;
+    case Network::WeeklyGoal::HeadCode:
+    {
+        auto Data = (LPPHEADER_DEFAULT_SUBCODE)ReceiveBuffer;
+        if (Data->SubCode == Network::WeeklyGoal::SubCode)
+            ReceiveWeeklyGoal(received_span);
+    }
+    break;
     default:
         break;
     }

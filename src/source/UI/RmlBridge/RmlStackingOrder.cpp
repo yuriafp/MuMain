@@ -89,6 +89,7 @@ constexpr DocumentPlacement Placements[] = {
     {"guard_window.rml", 5.0f, MainScene},
     {"gateman.rml", 5.0f, MainScene},
     {"gate_switch.rml", 5.0f, MainScene},
+    {"weekly_goal.rml", 5.0f, MainScene},
     {"catapult.rml", 5.0f, MainScene},
     {"doppelganger_enter.rml", 5.0f, MainScene},
     {"united_market_place.rml", 5.0f, MainScene},

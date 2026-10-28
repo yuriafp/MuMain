@@ -62,6 +62,7 @@ CSystem::CSystem()
     m_pNewGuardWindow = nullptr;
     m_pNewGatemanWindow = nullptr;
     m_pNewGateSwitchWindow = nullptr;
+    m_pNewWeeklyGoalWindow = nullptr;
     m_pNewStorageInventory = nullptr;
     m_pNewStorageInventoryExt = nullptr;
     m_pNewGuildInfoWindow = nullptr;
@@ -258,6 +259,10 @@ bool CSystem::LoadMainSceneInterface()
 
     m_pNewGateSwitchWindow = new CGateSwitchWindow;
     if (m_pNewGateSwitchWindow->Create(m_pNewUIMng) == false)
+        return false;
+
+    m_pNewWeeklyGoalWindow = new CWeeklyGoalWindow;
+    if (m_pNewWeeklyGoalWindow->Create(m_pNewUIMng) == false)
         return false;
 
     m_pNewStorageInventory = new CStorageInventory;
@@ -572,6 +577,7 @@ bool CSystem::LoadMainSceneInterface()
     slot(INTERFACE_GUARDSMAN, "guard", m_pNewGuardWindow, "guard_window.rml");
     slot(INTERFACE_GATEKEEPER, "gatekeeper", m_pNewGatemanWindow, "gateman.rml");
     slot(INTERFACE_GATESWITCH, "gate_switch", m_pNewGateSwitchWindow, "gate_switch.rml");
+    slot(INTERFACE_WEEKLY_GOAL, "weekly_goal", m_pNewWeeklyGoalWindow, "weekly_goal.rml");
     slot(INTERFACE_NPCGUILDMASTER, "guild_make", m_pNewGuildMakeWindow, "guild_make.rml");
     slot(INTERFACE_CATAPULT, "catapult", m_pNewCatapultWindow, "catapult.rml");
     slot(INTERFACE_DUELWATCH, "duel_watch", m_pNewDuelWatchWindow, "duel_watch.rml");
@@ -658,6 +664,7 @@ void CSystem::UnloadMainSceneInterface()
     SAFE_DELETE(m_pNewGuardWindow);
     SAFE_DELETE(m_pNewGatemanWindow);
     SAFE_DELETE(m_pNewGateSwitchWindow);
+    SAFE_DELETE(m_pNewWeeklyGoalWindow);
     SAFE_DELETE(m_pNewNPCShop);
     SAFE_DELETE(m_pNewPetInfoWindow);
     SAFE_DELETE(m_pNewMyInventory);
@@ -941,6 +948,10 @@ void CSystem::Show(DWORD dwKey)
     {
         HideAllGroupA();
         g_pGateSwitchWindow->OpeningProcess();
+    }
+    else if (dwKey == INTERFACE_WEEKLY_GOAL)
+    {
+        HideAllGroupA();
     }
     else if (dwKey == INTERFACE_NPCGUILDMASTER)
     {
@@ -1580,6 +1591,7 @@ void CSystem::HideAllGroupA()
         INTERFACE_GENSRANKING,
 #endif //PBG_ADD_GENSRANKING
         INTERFACE_UNITEDMARKETPLACE_NPC_JULIA,
+        INTERFACE_WEEKLY_GOAL,
 
         mu::ui::window::INTERFACE_LUCKYITEMWND,
 

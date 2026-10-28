@@ -1,0 +1,44 @@
+<rml>
+<head>
+    <title>Weekly goal</title>
+    <link type="text/rcss" href="base.rcss"/>
+    <link type="text/rcss" href="docked_panel_frame.rcss"/>
+    <link type="text/rcss" href="weekly_goal.rcss"/>
+</head>
+<body>
+    <!-- The collective goal of the week (CWeeklyGoalWindow), docked right, opened by /meta: the
+         title, the goal, its progress bar and count, then the status, what the player's account
+         counted, the reward and when the week turns. The workspace places the frame; each text
+         pane counter-scales once and its lines flow at the native size. C++ keeps the goal the
+         server sent; the exit is queued with weekly_goal_exit. -->
+    <div id="panel" data-model="weekly_goal">
+        <div class="frame-piece frame-top"></div>
+        <div class="frame-piece frame-left"></div>
+        <div class="frame-piece frame-right"></div>
+        <div class="frame-piece frame-bottom"></div>
+
+        <span class="sharp-text sharp-flow" id="title" data-style-font-size="bold_text_px + 'px'">{{title}}</span>
+        <div class="sharp-text sharp-flow" id="wg_goal" data-style-font-size="bold_text_px + 'px'">{{goal}}</div>
+
+        <!-- bound-geometry: the fill is the goal's progress, which changes with every answer of the server. -->
+        <div id="wg_bar" data-class-reached="reached">
+            <div id="wg_bar_fill" data-style-width="bar_percent + '%'"></div>
+        </div>
+        <div class="sharp-text sharp-flow" id="wg_progress" data-style-font-size="text_px + 'px'">{{progress}}</div>
+
+        <div class="sharp-text sharp-flow" id="wg_lines" data-style-font-size="text_px + 'px'">
+            <span class="wg-line wg-status" data-class-reached="reached">{{status}}</span>
+            <span class="wg-line">{{contribution}}</span>
+            <span class="wg-line wg-heading">{{reward_title}}</span>
+            <span class="wg-line wg-reward">{{reward}}</span>
+            <span class="wg-line wg-rewarded" data-if="rewarded">{{rewarded_text}}</span>
+            <span class="wg-line wg-week-end">{{week_end}}</span>
+        </div>
+
+        <div id="btn_exit" class="modern-icon-btn-px" data-event-click="weekly_goal_exit" data-attr-data-hint="exit_tooltip">
+            <span class="modern-icon-btn-glyph-px wg-exit-glyph">&#215;</span>
+        </div>
+        <div id="frame_corner_close" data-event-click="weekly_goal_exit"></div>
+    </div>
+</body>
+</rml>

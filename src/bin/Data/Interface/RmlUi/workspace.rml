@@ -58,6 +58,7 @@
 					<div class="slot" data-window="guard"></div>
 					<div class="slot" data-window="gatekeeper"></div>
 					<div class="slot" data-window="gate_switch"></div>
+					<div class="slot" data-window="weekly_goal"></div>
 					<div class="slot" data-window="guild_make"></div>
 					<div class="slot" data-window="catapult"></div>
 					<div class="slot" data-window="duel_watch"></div>

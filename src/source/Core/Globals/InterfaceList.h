@@ -131,6 +131,9 @@ enum INTERFACE_LIST
     // a different button model (arbitrary labeled list vs two fixed OK/Cancel slots). Same
     // reasoning as INTERFACE_CREDITS above.
     INTERFACE_GENERIC_MENU_DIALOG,
+    // CWeeklyGoalWindow (UI/Events/WeeklyGoalWindow.h) -- our server's weekly goal, opened by
+    // /meta. Same reasoning as INTERFACE_CREDITS above.
+    INTERFACE_WEEKLY_GOAL,
     INTERFACE_END,
     INTERFACE_COUNT = INTERFACE_END - 2,
 };

@@ -44,6 +44,14 @@ mu_add_test(
 )
 
 mu_add_test(
+    NAME weekly_goal_tests
+    SOURCES
+        test_weekly_goal.cpp
+        ${CMAKE_SOURCE_DIR}/src/source/GameLogic/Events/WeeklyGoal.cpp
+        ${CMAKE_SOURCE_DIR}/src/source/Network/Server/WeeklyGoalPacket.cpp
+)
+
+mu_add_test(
     NAME buy_option_selection_tests
     SOURCES
         test_buy_option_selection.cpp

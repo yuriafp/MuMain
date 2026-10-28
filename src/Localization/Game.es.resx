@@ -12396,4 +12396,55 @@
   <data name="MagicStoneOfOwner" xml:space="preserve">
     <value>Piedra mágica de %ls</value>
   </data>
+  <data name="WeeklyGoalTitle" xml:space="preserve">
+    <value>Meta de la semana</value>
+  </data>
+  <data name="WeeklyGoalGoal" xml:space="preserve">
+    <value>%d %ls</value>
+  </data>
+  <data name="WeeklyGoalProgress" xml:space="preserve">
+    <value>%d de %d (%d%%)</value>
+  </data>
+  <data name="WeeklyGoalRemaining" xml:space="preserve">
+    <value>Faltan %d</value>
+  </data>
+  <data name="WeeklyGoalReached" xml:space="preserve">
+    <value>¡Lograda! +%d%% de exp para todos</value>
+  </data>
+  <data name="WeeklyGoalContribution" xml:space="preserve">
+    <value>Tu cuenta sumó %d</value>
+  </data>
+  <data name="WeeklyGoalRewardTitle" xml:space="preserve">
+    <value>Premio para quien sumó:</value>
+  </data>
+  <data name="WeeklyGoalRewarded" xml:space="preserve">
+    <value>Tu cuenta ya recibió el premio.</value>
+  </data>
+  <data name="WeeklyGoalWeekEnd" xml:space="preserve">
+    <value>La semana cambia el %02d/%02d a las %02d:%02d</value>
+  </data>
+  <data name="WeeklyGoalBloodCastle" xml:space="preserve">
+    <value>%d Blood Castles completados</value>
+  </data>
+  <data name="WeeklyGoalDevilSquare" xml:space="preserve">
+    <value>%d Devil Squares completados</value>
+  </data>
+  <data name="WeeklyGoalChaosCastle" xml:space="preserve">
+    <value>%d entradas al Chaos Castle</value>
+  </data>
+  <data name="WeeklyGoalResets" xml:space="preserve">
+    <value>%d resets del grupo</value>
+  </data>
+  <data name="WeeklyGoalTreasureChests" xml:space="preserve">
+    <value>%d arcones del tesoro abiertos</value>
+  </data>
+  <data name="WeeklyGoalRewardPart" xml:space="preserve">
+    <value>%d %ls</value>
+  </data>
+  <data name="WeeklyGoalListNext" xml:space="preserve">
+    <value>%ls, %ls</value>
+  </data>
+  <data name="WeeklyGoalListLast" xml:space="preserve">
+    <value>%ls y %ls</value>
+  </data>
 </root>

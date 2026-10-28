@@ -1,0 +1,53 @@
+/* Legacy theme for CWeeklyGoalWindow: the docked_panel_frame.rcss frame (linked first;
+   newui_item_back01 top), the title and the goal bold, the progress bar on a dark well with the
+   gold fill of the original's gauges, then the wrapped lines. Reference px inside #panel. */
+
+.frame-top { decorator: image(docked-bg-top-b); }
+#panel { pointer-events: auto; }
+
+#title, #wg_goal, #wg_progress, #wg_lines {
+    display: block;
+    position: absolute;
+    line-height: 1.1;
+    text-align: center;
+    white-space: normal;
+    word-break: break-word;
+    pointer-events: none;
+}
+#title { left: 8px; top: 12px; --flow-w: 154px; font-weight: bold; color: #ffffff; }
+#wg_goal { left: 6px; top: 55px; --flow-w: 178px; font-weight: bold; color: #ffd24a; }
+#wg_progress { left: 6px; top: 108px; --flow-w: 178px; color: #dcdcdc; }
+#wg_lines { left: 6px; top: 135px; --flow-w: 178px; color: #dcdcdc; }
+
+#wg_bar {
+    position: absolute;
+    left: 20px;
+    top: 88px;
+    width: 150px;
+    height: 14px;
+    background-color: #0b0b0b;
+    border: 1px #5a4a2a;
+    pointer-events: none;
+}
+#wg_bar_fill { height: 100%; background-color: #c8961e; }
+#wg_bar.reached #wg_bar_fill { background-color: #3fae3f; }
+
+.wg-line {
+    display: block;
+    white-space: normal;
+    word-break: break-word;
+    /* A line that fills the pane keeps its glyphs' side bearings inside the pane's clip. */
+    padding: 0 2px;
+    pointer-events: none;
+}
+.wg-line + .wg-line { margin-top: 0.35em; }
+/* The reward and the week's end start their own groups. */
+.wg-line + .wg-heading, .wg-line + .wg-week-end { margin-top: 1em; }
+.wg-status { font-weight: bold; color: #ffffff; }
+.wg-status.reached { color: #6fe06f; }
+.wg-heading { font-weight: bold; color: #ffd24a; }
+.wg-heading + .wg-reward { margin-top: 0.15em; }
+.wg-rewarded { color: #6fe06f; }
+.wg-week-end { color: #969696; }
+
+.wg-exit-glyph { display: none; }

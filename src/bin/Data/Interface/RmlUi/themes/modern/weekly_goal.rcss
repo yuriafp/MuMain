@@ -1,0 +1,52 @@
+/* Modern weekly goal: docked_panel_frame.rcss's forged panel (linked first), the progress bar on a
+   recessed well with an accent fill, the theme's text tokens. Geometry is the legacy one
+   (reference px under the dock transform). */
+#panel { pointer-events: auto; }
+
+#title, #wg_goal, #wg_progress, #wg_lines {
+    display: block;
+    position: absolute;
+    line-height: 1.1;
+    text-align: center;
+    white-space: normal;
+    word-break: break-word;
+    pointer-events: none;
+}
+#title { left: 8px; top: 12px; --flow-w: 154px; font-weight: bold; color: token(text-warm); }
+#wg_goal { left: 6px; top: 55px; --flow-w: 178px; font-weight: bold; color: token(accent-gold); }
+#wg_progress { left: 6px; top: 108px; --flow-w: 178px; color: token(text-primary); }
+#wg_lines { left: 6px; top: 135px; --flow-w: 178px; color: token(text-primary); }
+
+#wg_bar {
+    position: absolute;
+    left: 20px;
+    top: 88px;
+    width: 150px;
+    height: 14px;
+    background-color: token(surface-recessed);
+    border: 1px token(border-frame);
+    border-radius: token(radius-sm)px;
+    pointer-events: none;
+}
+#wg_bar_fill { height: 100%; background-color: token(accent-steel-hover); border-radius: token(radius-sm)px; }
+#wg_bar.reached #wg_bar_fill { background-color: token(semantic-success); }
+
+.wg-line {
+    display: block;
+    white-space: normal;
+    word-break: break-word;
+    /* A line that fills the pane keeps its glyphs' side bearings inside the pane's clip. */
+    padding: 0 2px;
+    pointer-events: none;
+}
+.wg-line + .wg-line { margin-top: 0.35em; }
+/* The reward and the week's end start their own groups. */
+.wg-line + .wg-heading, .wg-line + .wg-week-end { margin-top: 1em; }
+.wg-status { font-weight: bold; }
+.wg-status.reached { color: token(semantic-success); }
+.wg-heading { font-weight: bold; color: token(accent-gold); }
+.wg-heading + .wg-reward { margin-top: 0.15em; }
+.wg-rewarded { color: token(semantic-success); }
+.wg-week-end { color: token(text-muted); }
+
+#btn_exit { left: 13px; }

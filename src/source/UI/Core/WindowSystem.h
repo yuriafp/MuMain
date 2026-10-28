@@ -20,6 +20,7 @@
 #include "UI/Combat/GuardWindow.h"
 #include "UI/NPCs/GatemanWindow.h"
 #include "UI/Events/GateSwitchWindow.h"
+#include "UI/Events/WeeklyGoalWindow.h"
 #include "UI/Inventory/StorageInventory.h"
 #include "UI/Inventory/StorageInventoryExt.h"
 #include "Guild/GuildInfoWindow.h"
@@ -162,6 +163,7 @@ namespace mu::ui::window
         CGuardWindow* m_pNewGuardWindow;
         CGatemanWindow* m_pNewGatemanWindow;
         CGateSwitchWindow* m_pNewGateSwitchWindow;
+        CWeeklyGoalWindow* m_pNewWeeklyGoalWindow;
         CStorageInventory* m_pNewStorageInventory;
         CStorageInventoryExt* m_pNewStorageInventoryExt;
         CGuildMakeWindow* m_pNewGuildMakeWindow;
