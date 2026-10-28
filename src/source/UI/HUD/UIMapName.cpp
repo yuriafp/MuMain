@@ -91,6 +91,7 @@ void CUIMapName::InitImgPathMap()
 
     m_mapImgPath[41] = strFolderName + L"BalgasBarrack.tga";
     m_mapImgPath[42] = strFolderName + L"BalgasRefuge.tga";
+    m_mapImgPath[43] = strFolderName + L"Icarus.tga"; // Icarus 2 shows the Icarus banner
 
     m_mapImgPath[45] = strFolderName + L"IllusionTemple.tga";
     m_mapImgPath[46] = strFolderName + L"IllusionTemple.tga";

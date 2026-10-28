@@ -255,6 +255,8 @@ bool LoadDataBitmap(const wchar_t* szFullPath, GLuint uiTextureIndex, GLuint uiF
                 0,
             };
             mu_swprintf(szErrorMsg, L"LoadBitmap Failed: %ls", szFullPath);
+            mu::log::Get("render")->error("LoadBitmap failed: texture slot {}, path '{}'", uiTextureIndex,
+                                          mu_wchar_to_utf8(szFullPath));
 #ifdef FOR_WORK
             PopUpErrorCheckMsgBox(szErrorMsg);
 #else  // FOR_WORK
