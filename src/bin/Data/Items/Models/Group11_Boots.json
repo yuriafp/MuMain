@@ -232,8 +232,7 @@
     },
     {
       "number": 18,
-      "file": "Data/Player/BootMale19.bmd",
-      "textureFolders": ["Player"],
+      "model": "grandSoulBoots",
       "inventory": {
         "anchor": [0.5, 0.9],
         "scale": 0.0032
@@ -258,8 +257,7 @@
     },
     {
       "number": 20,
-      "file": "Data/Player/BootMale21.bmd",
-      "textureFolders": ["Player"],
+      "model": "thunderHawkBoots",
       "inventory": {
         "anchor": [0.5, 0.9],
         "scale": 0.0032
@@ -302,8 +300,7 @@
     },
     {
       "number": 23,
-      "file": "Data/Player/BootMale24.bmd",
-      "textureFolders": ["Player"],
+      "model": "hurricaneBoots",
       "inventory": {
         "anchor": [0.5, 0.9],
         "scale": 0.0032
@@ -330,8 +327,7 @@
     },
     {
       "number": 25,
-      "file": "Data/Player/BootMale26.bmd",
-      "textureFolders": ["Player"],
+      "model": "lightPlateBoots",
       "inventory": {
         "anchor": [0.5, 0.9],
         "scale": 0.0032
@@ -345,8 +341,7 @@
     },
     {
       "number": 26,
-      "file": "Data/Player/BootMale27.bmd",
-      "textureFolders": ["Player"],
+      "model": "adamantineBoots",
       "inventory": {
         "anchor": [0.5, 0.9],
         "scale": 0.0032
@@ -360,8 +355,7 @@
     },
     {
       "number": 27,
-      "file": "Data/Player/BootMale28.bmd",
-      "textureFolders": ["Player"],
+      "model": "darkSteelBoots",
       "inventory": {
         "anchor": [0.5, 0.9],
         "scale": 0.0032
@@ -375,8 +369,7 @@
     },
     {
       "number": 28,
-      "file": "Data/Player/BootMale29.bmd",
-      "textureFolders": ["Player"],
+      "model": "darkMasterBoots",
       "inventory": {
         "anchor": [0.5, 0.9],
         "scale": 0.0032
@@ -907,8 +900,7 @@
     },
     {
       "number": 100,
-      "file": "Data/Player/BootMale26.bmd",
-      "textureFolders": ["Player"],
+      "model": "lightPlateBoots",
       "inventory": {
         "anchor": [0.5, 0.9],
         "scale": 0.0032
@@ -919,8 +911,7 @@
     },
     {
       "number": 101,
-      "file": "Data/Player/BootMale28.bmd",
-      "textureFolders": ["Player"],
+      "model": "darkSteelBoots",
       "inventory": {
         "anchor": [0.5, 0.9],
         "scale": 0.0032
@@ -931,8 +922,7 @@
     },
     {
       "number": 102,
-      "file": "Data/Player/BootMale29.bmd",
-      "textureFolders": ["Player"],
+      "model": "darkMasterBoots",
       "inventory": {
         "anchor": [0.5, 0.9],
         "scale": 0.0032
@@ -943,8 +933,7 @@
     },
     {
       "number": 103,
-      "file": "Data/Player/BootMale27.bmd",
-      "textureFolders": ["Player"],
+      "model": "adamantineBoots",
       "inventory": {
         "anchor": [0.5, 0.9],
         "scale": 0.0032
@@ -955,8 +944,7 @@
     },
     {
       "number": 104,
-      "file": "Data/Player/BootMale19.bmd",
-      "textureFolders": ["Player"],
+      "model": "grandSoulBoots",
       "inventory": {
         "anchor": [0.5, 0.9],
         "scale": 0.0032
@@ -968,8 +956,7 @@
     },
     {
       "number": 105,
-      "file": "Data/Player/BootMale21.bmd",
-      "textureFolders": ["Player"],
+      "model": "thunderHawkBoots",
       "inventory": {
         "anchor": [0.5, 0.9],
         "scale": 0.0032
@@ -984,8 +971,7 @@
     },
     {
       "number": 106,
-      "file": "Data/Player/BootMale24.bmd",
-      "textureFolders": ["Player"],
+      "model": "hurricaneBoots",
       "inventory": {
         "anchor": [0.5, 0.9],
         "scale": 0.0032

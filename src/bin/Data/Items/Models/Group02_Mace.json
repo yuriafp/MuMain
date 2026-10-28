@@ -105,8 +105,7 @@
     },
     {
       "number": 8,
-      "file": "Data/Item/Mace09.bmd",
-      "textureFolders": ["Item"],
+      "model": "battleScepter",
       "inventory": {
         "anchor": [0.8, 0.7],
         "rotation": [180, 270, 15],
@@ -122,8 +121,7 @@
     },
     {
       "number": 9,
-      "file": "Data/Item/Mace10.bmd",
-      "textureFolders": ["Item"],
+      "model": "masterScepter",
       "inventory": {
         "anchor": [0.8, 0.7],
         "rotation": [180, 270, 15],
@@ -139,8 +137,7 @@
     },
     {
       "number": 10,
-      "file": "Data/Item/Mace11.bmd",
-      "textureFolders": ["Item"],
+      "model": "greatScepter",
       "inventory": {
         "anchor": [0.8, 0.7],
         "rotation": [180, 270, 15],
@@ -156,8 +153,7 @@
     },
     {
       "number": 11,
-      "file": "Data/Item/Mace12.bmd",
-      "textureFolders": ["Item"],
+      "model": "lordScepter",
       "inventory": {
         "anchor": [0.8, 0.7],
         "rotation": [180, 270, 15],
@@ -170,8 +166,7 @@
     },
     {
       "number": 12,
-      "file": "Data/Item/Mace13.bmd",
-      "textureFolders": ["Item"],
+      "model": "greatLordScepter",
       "inventory": {
         "anchor": [0.8, 0.7],
         "rotation": [180, 270, 15]
@@ -281,8 +276,7 @@
     },
     {
       "number": 30,
-      "file": "Data/Item/Mace09.bmd",
-      "textureFolders": ["Item"],
+      "model": "battleScepter",
       "inventory": {
         "anchor": [0.8, 0.7],
         "rotation": [180, 270, 15],
@@ -298,8 +292,7 @@
     },
     {
       "number": 31,
-      "file": "Data/Item/Mace10.bmd",
-      "textureFolders": ["Item"],
+      "model": "masterScepter",
       "inventory": {
         "anchor": [0.8, 0.7],
         "rotation": [180, 270, 15],
@@ -315,8 +308,7 @@
     },
     {
       "number": 32,
-      "file": "Data/Item/Mace11.bmd",
-      "textureFolders": ["Item"],
+      "model": "greatScepter",
       "inventory": {
         "anchor": [0.8, 0.7],
         "rotation": [180, 270, 15],
@@ -332,8 +324,7 @@
     },
     {
       "number": 33,
-      "file": "Data/Item/Mace12.bmd",
-      "textureFolders": ["Item"],
+      "model": "lordScepter",
       "inventory": {
         "anchor": [0.8, 0.7],
         "rotation": [180, 270, 15],
@@ -346,8 +337,7 @@
     },
     {
       "number": 34,
-      "file": "Data/Item/Mace13.bmd",
-      "textureFolders": ["Item"],
+      "model": "greatLordScepter",
       "inventory": {
         "anchor": [0.8, 0.7],
         "rotation": [180, 270, 15]

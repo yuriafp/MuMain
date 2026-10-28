@@ -326,8 +326,7 @@
     },
     {
       "number": 18,
-      "file": "Data/Player/t_PantMale19.bmd",
-      "textureFolders": ["Player"],
+      "model": "grandSoulPants",
       "inventory": {
         "anchor": [0.5, 0.9],
         "scale": 0.0033,
@@ -361,8 +360,7 @@
     },
     {
       "number": 20,
-      "file": "Data/Player/PantMale21.bmd",
-      "textureFolders": ["Player"],
+      "model": "thunderHawkPants",
       "inventory": {
         "anchor": [0.5, 0.9],
         "scale": 0.0033,
@@ -420,8 +418,7 @@
     },
     {
       "number": 23,
-      "file": "Data/Player/PantMale24.bmd",
-      "textureFolders": ["Player"],
+      "model": "hurricanePants",
       "inventory": {
         "anchor": [0.5, 0.9],
         "scale": 0.0033,
@@ -459,8 +456,7 @@
     },
     {
       "number": 25,
-      "file": "Data/Player/PantMale26.bmd",
-      "textureFolders": ["Player"],
+      "model": "lightPlatePants",
       "inventory": {
         "anchor": [0.5, 0.9],
         "scale": 0.0033,
@@ -479,8 +475,7 @@
     },
     {
       "number": 26,
-      "file": "Data/Player/PantMale27.bmd",
-      "textureFolders": ["Player"],
+      "model": "adamantinePants",
       "inventory": {
         "anchor": [0.5, 0.9],
         "scale": 0.0033,
@@ -499,8 +494,7 @@
     },
     {
       "number": 27,
-      "file": "Data/Player/PantMale28.bmd",
-      "textureFolders": ["Player"],
+      "model": "darkSteelPants",
       "inventory": {
         "anchor": [0.5, 0.9],
         "scale": 0.0033,
@@ -519,8 +513,7 @@
     },
     {
       "number": 28,
-      "file": "Data/Player/PantMale29.bmd",
-      "textureFolders": ["Player"],
+      "model": "darkMasterPants",
       "inventory": {
         "anchor": [0.5, 0.9],
         "scale": 0.0033,
@@ -1240,8 +1233,7 @@
     },
     {
       "number": 100,
-      "file": "Data/Player/PantMale26.bmd",
-      "textureFolders": ["Player"],
+      "model": "lightPlatePants",
       "inventory": {
         "anchor": [0.5, 0.9],
         "scale": 0.0033,
@@ -1257,8 +1249,7 @@
     },
     {
       "number": 101,
-      "file": "Data/Player/PantMale28.bmd",
-      "textureFolders": ["Player"],
+      "model": "darkSteelPants",
       "inventory": {
         "anchor": [0.5, 0.9],
         "scale": 0.0033,
@@ -1274,8 +1265,7 @@
     },
     {
       "number": 102,
-      "file": "Data/Player/PantMale29.bmd",
-      "textureFolders": ["Player"],
+      "model": "darkMasterPants",
       "inventory": {
         "anchor": [0.5, 0.9],
         "scale": 0.0033,
@@ -1291,8 +1281,7 @@
     },
     {
       "number": 103,
-      "file": "Data/Player/PantMale27.bmd",
-      "textureFolders": ["Player"],
+      "model": "adamantinePants",
       "inventory": {
         "anchor": [0.5, 0.9],
         "scale": 0.0033,
@@ -1308,8 +1297,7 @@
     },
     {
       "number": 104,
-      "file": "Data/Player/t_PantMale19.bmd",
-      "textureFolders": ["Player"],
+      "model": "grandSoulPants",
       "inventory": {
         "anchor": [0.5, 0.9],
         "scale": 0.0033,
@@ -1326,8 +1314,7 @@
     },
     {
       "number": 105,
-      "file": "Data/Player/PantMale21.bmd",
-      "textureFolders": ["Player"],
+      "model": "thunderHawkPants",
       "inventory": {
         "anchor": [0.5, 0.9],
         "scale": 0.0033,
@@ -1347,8 +1334,7 @@
     },
     {
       "number": 106,
-      "file": "Data/Player/PantMale24.bmd",
-      "textureFolders": ["Player"],
+      "model": "hurricanePants",
       "inventory": {
         "anchor": [0.5, 0.9],
         "scale": 0.0033,

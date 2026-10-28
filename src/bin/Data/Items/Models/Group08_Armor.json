@@ -326,8 +326,7 @@
     },
     {
       "number": 18,
-      "file": "Data/Player/ArmorMale19.bmd",
-      "textureFolders": ["Player"],
+      "model": "grandSoulArmor",
       "inventory": {
         "anchor": [0.5, 0.8],
         "scale": 0.0039,
@@ -361,8 +360,7 @@
     },
     {
       "number": 20,
-      "file": "Data/Player/ArmorMale21.bmd",
-      "textureFolders": ["Player"],
+      "model": "thunderHawkArmor",
       "inventory": {
         "anchor": [0.5, 0.8],
         "scale": 0.0039,
@@ -420,8 +418,7 @@
     },
     {
       "number": 23,
-      "file": "Data/Player/ArmorMale24.bmd",
-      "textureFolders": ["Player"],
+      "model": "hurricaneArmor",
       "inventory": {
         "anchor": [0.5, 0.8],
         "scale": 0.0039,
@@ -458,8 +455,7 @@
     },
     {
       "number": 25,
-      "file": "Data/Player/ArmorMale26.bmd",
-      "textureFolders": ["Player"],
+      "model": "lightPlateArmor",
       "inventory": {
         "anchor": [0.5, 0.8],
         "scale": 0.0039,
@@ -478,8 +474,7 @@
     },
     {
       "number": 26,
-      "file": "Data/Player/ArmorMale27.bmd",
-      "textureFolders": ["Player"],
+      "model": "adamantineArmor",
       "inventory": {
         "anchor": [0.5, 0.8],
         "scale": 0.0039,
@@ -498,8 +493,7 @@
     },
     {
       "number": 27,
-      "file": "Data/Player/ArmorMale28.bmd",
-      "textureFolders": ["Player"],
+      "model": "darkSteelArmor",
       "inventory": {
         "anchor": [0.5, 0.8],
         "scale": 0.0039,
@@ -518,8 +512,7 @@
     },
     {
       "number": 28,
-      "file": "Data/Player/ArmorMale29.bmd",
-      "textureFolders": ["Player"],
+      "model": "darkMasterArmor",
       "inventory": {
         "anchor": [0.5, 0.8],
         "scale": 0.0039,
@@ -1287,8 +1280,7 @@
     },
     {
       "number": 100,
-      "file": "Data/Player/ArmorMale26.bmd",
-      "textureFolders": ["Player"],
+      "model": "lightPlateArmor",
       "inventory": {
         "anchor": [0.5, 0.8],
         "scale": 0.0039,
@@ -1304,8 +1296,7 @@
     },
     {
       "number": 101,
-      "file": "Data/Player/ArmorMale28.bmd",
-      "textureFolders": ["Player"],
+      "model": "darkSteelArmor",
       "inventory": {
         "anchor": [0.5, 0.8],
         "scale": 0.0039,
@@ -1321,8 +1312,7 @@
     },
     {
       "number": 102,
-      "file": "Data/Player/ArmorMale29.bmd",
-      "textureFolders": ["Player"],
+      "model": "darkMasterArmor",
       "inventory": {
         "anchor": [0.5, 0.8],
         "scale": 0.0039,
@@ -1338,8 +1328,7 @@
     },
     {
       "number": 103,
-      "file": "Data/Player/ArmorMale27.bmd",
-      "textureFolders": ["Player"],
+      "model": "adamantineArmor",
       "inventory": {
         "anchor": [0.5, 0.8],
         "scale": 0.0039,
@@ -1355,8 +1344,7 @@
     },
     {
       "number": 104,
-      "file": "Data/Player/ArmorMale19.bmd",
-      "textureFolders": ["Player"],
+      "model": "grandSoulArmor",
       "inventory": {
         "anchor": [0.5, 0.8],
         "scale": 0.0039,
@@ -1373,8 +1361,7 @@
     },
     {
       "number": 105,
-      "file": "Data/Player/ArmorMale21.bmd",
-      "textureFolders": ["Player"],
+      "model": "thunderHawkArmor",
       "inventory": {
         "anchor": [0.5, 0.8],
         "scale": 0.0039,
@@ -1394,8 +1381,7 @@
     },
     {
       "number": 106,
-      "file": "Data/Player/ArmorMale24.bmd",
-      "textureFolders": ["Player"],
+      "model": "hurricaneArmor",
       "inventory": {
         "anchor": [0.5, 0.8],
         "scale": 0.0039,

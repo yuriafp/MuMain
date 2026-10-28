@@ -283,8 +283,7 @@
     },
     {
       "number": 18,
-      "file": "Data/Player/HelmMale19.bmd",
-      "textureFolders": ["Player"],
+      "model": "grandSoulHelm",
       "inventory": {
         "anchor": [0.5, 0.8],
         "scale": 0.0039,
@@ -370,8 +369,7 @@
     },
     {
       "number": 25,
-      "file": "Data/Player/HelmMale26.bmd",
-      "textureFolders": ["Player"],
+      "model": "lightPlateMask",
       "inventory": {
         "anchor": [0.5, 0.8],
         "scale": 0.0039,
@@ -389,8 +387,7 @@
     },
     {
       "number": 26,
-      "file": "Data/Player/HelmMale27.bmd",
-      "textureFolders": ["Player"],
+      "model": "adamantineMask",
       "inventory": {
         "anchor": [0.5, 0.8],
         "scale": 0.0039,
@@ -408,8 +405,7 @@
     },
     {
       "number": 27,
-      "file": "Data/Player/HelmMale28.bmd",
-      "textureFolders": ["Player"],
+      "model": "darkSteelMask",
       "inventory": {
         "anchor": [0.5, 0.8],
         "scale": 0.0039,
@@ -427,8 +423,7 @@
     },
     {
       "number": 28,
-      "file": "Data/Player/HelmMale29.bmd",
-      "textureFolders": ["Player"],
+      "model": "darkMasterMask",
       "inventory": {
         "anchor": [0.5, 0.8],
         "scale": 0.0039,
@@ -1094,8 +1089,7 @@
     },
     {
       "number": 100,
-      "file": "Data/Player/HelmMale26.bmd",
-      "textureFolders": ["Player"],
+      "model": "lightPlateMask",
       "inventory": {
         "anchor": [0.5, 0.8],
         "scale": 0.0039,
@@ -1110,8 +1104,7 @@
     },
     {
       "number": 101,
-      "file": "Data/Player/HelmMale28.bmd",
-      "textureFolders": ["Player"],
+      "model": "darkSteelMask",
       "inventory": {
         "anchor": [0.5, 0.8],
         "scale": 0.0039,
@@ -1126,8 +1119,7 @@
     },
     {
       "number": 102,
-      "file": "Data/Player/HelmMale29.bmd",
-      "textureFolders": ["Player"],
+      "model": "darkMasterMask",
       "inventory": {
         "anchor": [0.5, 0.8],
         "scale": 0.0039,
@@ -1142,8 +1134,7 @@
     },
     {
       "number": 103,
-      "file": "Data/Player/HelmMale27.bmd",
-      "textureFolders": ["Player"],
+      "model": "adamantineMask",
       "inventory": {
         "anchor": [0.5, 0.8],
         "scale": 0.0039,
@@ -1158,8 +1149,7 @@
     },
     {
       "number": 104,
-      "file": "Data/Player/HelmMale19.bmd",
-      "textureFolders": ["Player"],
+      "model": "grandSoulHelm",
       "inventory": {
         "anchor": [0.5, 0.8],
         "scale": 0.0039,

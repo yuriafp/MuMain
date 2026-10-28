@@ -2,6 +2,36 @@
   "formatVersion": 1,
   "models": [
     {
+      "name": "adamantineArmor",
+      "file": "Data/Player/ArmorMale27.bmd",
+      "textureFolders": ["Player"]
+    },
+    {
+      "name": "adamantineBoots",
+      "file": "Data/Player/BootMale27.bmd",
+      "textureFolders": ["Player"]
+    },
+    {
+      "name": "adamantineGloves",
+      "file": "Data/Player/GloveMale27.bmd",
+      "textureFolders": ["Player"]
+    },
+    {
+      "name": "adamantineMask",
+      "file": "Data/Player/HelmMale27.bmd",
+      "textureFolders": ["Player"]
+    },
+    {
+      "name": "adamantinePants",
+      "file": "Data/Player/PantMale27.bmd",
+      "textureFolders": ["Player"]
+    },
+    {
+      "name": "battleScepter",
+      "file": "Data/Item/Mace09.bmd",
+      "textureFolders": ["Item"]
+    },
+    {
       "name": "capeOfFighter",
       "file": "Data/Item/Wing50.bmd",
       "textureFolders": ["Item"]
@@ -27,6 +57,56 @@
       "textureFolders": ["Item"]
     },
     {
+      "name": "darkMasterArmor",
+      "file": "Data/Player/ArmorMale29.bmd",
+      "textureFolders": ["Player"]
+    },
+    {
+      "name": "darkMasterBoots",
+      "file": "Data/Player/BootMale29.bmd",
+      "textureFolders": ["Player"]
+    },
+    {
+      "name": "darkMasterGloves",
+      "file": "Data/Player/GloveMale29.bmd",
+      "textureFolders": ["Player"]
+    },
+    {
+      "name": "darkMasterMask",
+      "file": "Data/Player/HelmMale29.bmd",
+      "textureFolders": ["Player"]
+    },
+    {
+      "name": "darkMasterPants",
+      "file": "Data/Player/PantMale29.bmd",
+      "textureFolders": ["Player"]
+    },
+    {
+      "name": "darkSteelArmor",
+      "file": "Data/Player/ArmorMale28.bmd",
+      "textureFolders": ["Player"]
+    },
+    {
+      "name": "darkSteelBoots",
+      "file": "Data/Player/BootMale28.bmd",
+      "textureFolders": ["Player"]
+    },
+    {
+      "name": "darkSteelGloves",
+      "file": "Data/Player/GloveMale28.bmd",
+      "textureFolders": ["Player"]
+    },
+    {
+      "name": "darkSteelMask",
+      "file": "Data/Player/HelmMale28.bmd",
+      "textureFolders": ["Player"]
+    },
+    {
+      "name": "darkSteelPants",
+      "file": "Data/Player/PantMale28.bmd",
+      "textureFolders": ["Player"]
+    },
+    {
       "name": "eliteHealingPotion",
       "file": "Data/Item/partCharge2/EPotionR.bmd",
       "textureFolders": ["Item/partCharge2"]
@@ -42,9 +122,64 @@
       "textureFolders": ["Item/Ingameshop"]
     },
     {
+      "name": "grandSoulArmor",
+      "file": "Data/Player/ArmorMale19.bmd",
+      "textureFolders": ["Player"]
+    },
+    {
+      "name": "grandSoulBoots",
+      "file": "Data/Player/BootMale19.bmd",
+      "textureFolders": ["Player"]
+    },
+    {
+      "name": "grandSoulGloves",
+      "file": "Data/Player/GloveMale19.bmd",
+      "textureFolders": ["Player"]
+    },
+    {
+      "name": "grandSoulHelm",
+      "file": "Data/Player/HelmMale19.bmd",
+      "textureFolders": ["Player"]
+    },
+    {
+      "name": "grandSoulPants",
+      "file": "Data/Player/t_PantMale19.bmd",
+      "textureFolders": ["Player"]
+    },
+    {
+      "name": "greatLordScepter",
+      "file": "Data/Item/Mace13.bmd",
+      "textureFolders": ["Item"]
+    },
+    {
+      "name": "greatScepter",
+      "file": "Data/Item/Mace11.bmd",
+      "textureFolders": ["Item"]
+    },
+    {
       "name": "higherRefiningStone",
       "file": "Data/Item/HighRefineStone.bmd",
       "textureFolders": ["Item"]
+    },
+    {
+      "name": "hurricaneArmor",
+      "file": "Data/Player/ArmorMale24.bmd",
+      "textureFolders": ["Player"]
+    },
+    {
+      "name": "hurricaneBoots",
+      "file": "Data/Player/BootMale24.bmd",
+      "textureFolders": ["Player"]
+    },
+    {
+      "name": "hurricaneGloves",
+      "file": "Data/Player/GloveMale24.bmd",
+      "textureFolders": ["Player"]
+    },
+    {
+      "name": "hurricanePants",
+      "file": "Data/Player/PantMale24.bmd",
+      "textureFolders": ["Player"]
     },
     {
       "name": "jackOLanternScroll",
@@ -87,6 +222,36 @@
       "textureFolders": ["Item"]
     },
     {
+      "name": "lightPlateArmor",
+      "file": "Data/Player/ArmorMale26.bmd",
+      "textureFolders": ["Player"]
+    },
+    {
+      "name": "lightPlateBoots",
+      "file": "Data/Player/BootMale26.bmd",
+      "textureFolders": ["Player"]
+    },
+    {
+      "name": "lightPlateGloves",
+      "file": "Data/Player/GloveMale26.bmd",
+      "textureFolders": ["Player"]
+    },
+    {
+      "name": "lightPlateMask",
+      "file": "Data/Player/HelmMale26.bmd",
+      "textureFolders": ["Player"]
+    },
+    {
+      "name": "lightPlatePants",
+      "file": "Data/Player/PantMale26.bmd",
+      "textureFolders": ["Player"]
+    },
+    {
+      "name": "lordScepter",
+      "file": "Data/Item/Mace12.bmd",
+      "textureFolders": ["Item"]
+    },
+    {
       "name": "lowerRefiningStone",
       "file": "Data/Item/LowRefineStone.bmd",
       "textureFolders": ["Item"]
@@ -100,6 +265,11 @@
       "name": "luckyTicketRed",
       "file": "Data/Item/LuckyItem/LuckyCardred.bmd",
       "textureFolders": ["Item/LuckyItem"]
+    },
+    {
+      "name": "masterScepter",
+      "file": "Data/Item/Mace10.bmd",
+      "textureFolders": ["Item"]
     },
     {
       "name": "membershipItem",
@@ -160,6 +330,26 @@
       "name": "socketSeed",
       "file": "Data/Item/s30_seed.bmd",
       "textureFolders": ["Effect"]
+    },
+    {
+      "name": "thunderHawkArmor",
+      "file": "Data/Player/ArmorMale21.bmd",
+      "textureFolders": ["Player"]
+    },
+    {
+      "name": "thunderHawkBoots",
+      "file": "Data/Player/BootMale21.bmd",
+      "textureFolders": ["Player"]
+    },
+    {
+      "name": "thunderHawkGloves",
+      "file": "Data/Player/GloveMale21.bmd",
+      "textureFolders": ["Player"]
+    },
+    {
+      "name": "thunderHawkPants",
+      "file": "Data/Player/PantMale21.bmd",
+      "textureFolders": ["Player"]
     },
     {
       "name": "transformationRing",

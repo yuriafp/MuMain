@@ -306,7 +306,8 @@ TEST_CASE("Every model file that several items use is a shared model [data][item
         INFO(shared.name << " " << shared.file);
         CHECK(sharedFiles.insert(shared.file).second);
     }
-    CHECK(ShippedModels().sharedModels.size() == 34);
+    // Upstream ships 34; our classic items add the models they share with their Season 6 items.
+    CHECK(ShippedModels().sharedModels.size() == 34 + ClassicItems::SharedModels);
 
     const ItemModelDefinition* parchment = FindModel(ShippedModels().models, 15, 19);
     REQUIRE(parchment != nullptr);
