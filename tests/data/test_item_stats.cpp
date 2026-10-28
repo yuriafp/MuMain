@@ -2,6 +2,7 @@
 
 #include "doctest.h"
 
+#include "ClassicItems.h"
 #include "ClientDataScope.h"
 #include "ItemStatProfilesScope.h"
 #include "LevelBasisScrollProfile.h"
@@ -209,7 +210,8 @@ TEST_CASE("Every shipped item names the stat profile the profile rules give [dat
         itemsWithProfile += definition.statProfile.empty() || hornOfFenrir ? 0 : 1;
     }
     CHECK(DeriveStatProfile(g_ItemDatabase.GetStatProfiles(), *g_ItemDatabase.Find(ITEM_HORN_OF_FENRIR)) == "helper");
-    CHECK(itemsWithProfile == 578);
+    // Upstream ships 578; our classic maces and armour have the weapon and armor profiles.
+    CHECK(itemsWithProfile == 578 + ClassicItems::Items);
 }
 
 TEST_CASE("The shipped profile rules give each kind of item its profile [data][items]")
@@ -286,7 +288,9 @@ TEST_CASE("The items each shipped profile rule gives its profile [data][items]")
 {
     ShippedItemAttributes items;
     const ItemStatProfiles& profiles = g_ItemDatabase.GetStatProfiles();
-    const std::vector<int> expected = {2, 10, 3, 22, 113, 327, 6, 4, 2, 5, 7, 0, 12, 36, 32};
+    // Upstream's counts; rules 5 (weapon) and 6 (armor) also give our classic maces and armour theirs.
+    const std::vector<int> expected = {
+        2, 10, 3, 22, 113 + ClassicItems::Maces, 327 + ClassicItems::ArmourParts, 6, 4, 2, 5, 7, 0, 12, 36, 32};
     REQUIRE(profiles.GetRules().size() == expected.size());
     std::vector<int> counts(expected.size());
     int withoutRule = 0;

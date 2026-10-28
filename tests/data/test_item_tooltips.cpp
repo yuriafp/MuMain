@@ -2,6 +2,7 @@
 
 #include "doctest.h"
 
+#include "ClassicItems.h"
 #include "ClientDataScope.h"
 
 #include "Core/Platform/ProcessLocale.h"
@@ -269,7 +270,8 @@ TEST_CASE("Every item's tooltip is as recorded [data][items][tooltip]")
                     changedTooltips.emplace_back(key, text);
                 }
             });
-        CHECK(tooltips == 911 * 11 * 16);
+        // Upstream's 911 items and our classic ones.
+        CHECK(tooltips == (911 + ClassicItems::Items) * 11 * 16);
     }
     SetItemTooltipTextMeasure(nullptr);
 

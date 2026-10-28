@@ -2,6 +2,7 @@
 
 #include "doctest.h"
 
+#include "ClassicItems.h"
 #include "ItemModelDatabaseScope.h"
 #include "TestFiles.h"
 #include "TestModelSlots.h"
@@ -976,11 +977,13 @@ TEST_CASE("Shipped item models mark the capes that are worn as cloth [data][item
 // their cloth parts (skirt, cape) would shine like metal.
 TEST_CASE("Shipped item models declare specular for the metal armour sets [data][items]")
 {
-    const std::vector<int> metal{
+    std::vector<int> metal{
         0,  1,  6,  8,  9,  16, 17, 21, 29, 34, 45, 46, // Dark Knight
         15, 20, 23, 32, 37,                             // Magic Gladiator
         25, 26, 27, 28, 33, 38, 51,                     // Dark Lord
     };
+    // And our classic copies of metal sets.
+    metal.insert(metal.end(), std::begin(ClassicItems::MetalArmourSets), std::end(ClassicItems::MetalArmourSets));
     std::vector<std::pair<int, int>> declared;
     std::vector<std::pair<int, int>> expected;
     for (const ItemModelDefinition& model : ShippedModels().models)
@@ -1001,7 +1004,8 @@ TEST_CASE("Shipped item models declare specular for the metal armour sets [data]
     std::sort(declared.begin(), declared.end());
     std::sort(expected.begin(), expected.end());
     CHECK(declared == expected);
-    CHECK(expected.size() == 115); // 24 sets, five parts each; the Magic Gladiator sets have no helm
+    // 24 sets, five parts each; the Magic Gladiator sets have no helm. Plus our classic copies.
+    CHECK(expected.size() == 115 + ClassicItems::MetalArmourParts);
 }
 
 // The place in the slot of the items whose place depends on their level, as
