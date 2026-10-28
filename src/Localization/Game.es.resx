@@ -12276,7 +12276,7 @@
     <value>Elige la opción:</value>
   </data>
   <data name="WorkshopPlaceItem" xml:space="preserve">
-    <value>Coloca un arma, armadura o escudo.</value>
+    <value>Coloca un arma, armadura, escudo o ala.</value>
   </data>
   <data name="WorkshopChooseInList" xml:space="preserve">
     <value>Elige la opción en la lista de abajo.</value>
@@ -12375,17 +12375,48 @@
   <data name="WorkshopIncorrectItems" xml:space="preserve">
     <value>Estos objetos no sirven para esta opción.</value>
   </data>
+  <data name="WorkshopRecipeWingOption" xml:space="preserve">
+    <value>Oficina: opción de ala</value>
+    <comment>legacy_id=9005</comment>
+  </data>
+  <data name="WorkshopWingItem" xml:space="preserve">
+    <value>Ala o capa</value>
+  </data>
+  <data name="WorkshopWingLife" xml:space="preserve">
+    <value>Vida máxima +50, +5 por nivel</value>
+  </data>
+  <data name="WorkshopWingMana" xml:space="preserve">
+    <value>Maná máximo +50, +5 por nivel</value>
+  </data>
+  <data name="WorkshopWingIgnoreDefense3" xml:space="preserve">
+    <value>Prob. de ignorar la defensa 3%</value>
+  </data>
+  <data name="WorkshopWingCommand" xml:space="preserve">
+    <value>Comando +10, +5 por nivel</value>
+  </data>
+  <data name="WorkshopWingIgnoreDefense5" xml:space="preserve">
+    <value>Prob. de ignorar la defensa 5%</value>
+  </data>
+  <data name="WorkshopWingReflect" xml:space="preserve">
+    <value>Prob. de reflejar todo el daño 5%</value>
+  </data>
+  <data name="WorkshopWingRecoverLife" xml:space="preserve">
+    <value>Prob. de recuperar toda la vida 5%</value>
+  </data>
+  <data name="WorkshopWingRecoverMana" xml:space="preserve">
+    <value>Prob. de recuperar todo el maná 5%</value>
+  </data>
   <data name="AlchemistBringItem" xml:space="preserve">
-    <value>Tráeme tu arma, armadura o escudo, y despertaré su poder oculto.</value>
+    <value>Tráeme tu arma, armadura, escudo o alas, y despertaré su poder oculto.</value>
   </data>
   <data name="AlchemistChoice" xml:space="preserve">
-    <value>¿La Luck o una opción excelente? En mi mesa, tú eliges.</value>
+    <value>¿La Luck, una opción excelente o de ala? En mi mesa, tú eliges.</value>
   </data>
   <data name="AlchemistLuck" xml:space="preserve">
     <value>Una Jewel of Soul, y la opción Luck es tuya, sin fallar.</value>
   </data>
   <data name="AlchemistExcellent" xml:space="preserve">
-    <value>Las Jewels of Creation compran las opciones excelentes, una a una.</value>
+    <value>Las Jewels of Creation compran las opciones excelentes y las de ala, una a una.</value>
   </data>
   <data name="AlchemistNothingLost" xml:space="preserve">
     <value>En mi mesa no se pierde ningún objeto: como mucho, las joyas y el zen.</value>

@@ -13,13 +13,13 @@ namespace UI::Mix::Workshop
 {
 bool IsOpen();
 
-// The Oficina's options for the weapons, armors and shields in the mix box.
+// The Oficina's options for the weapons, armors, shields and wings in the mix box.
 GameLogic::Items::Workshop::Options GetOptions(mu::ui::window::CInventoryCtrl& box);
 
-// The only weapon, armor or shield in the mix box, or nullptr.
+// The only weapon, armor, shield or wing in the mix box, or nullptr.
 const ITEM* FindItem(mu::ui::window::CInventoryCtrl& box);
 
-// The name of the choice for the only weapon, armor or shield in the mix box, or nullptr.
+// The name of the choice for the only weapon, armor, shield or wing in the mix box, or nullptr.
 const wchar_t* GetOptionName(mu::ui::window::CInventoryCtrl& box, int choice);
 
 // The line telling the player what to do before the recipe lines can; false when they tell it.

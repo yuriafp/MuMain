@@ -466,7 +466,8 @@ bool CMixInventory::RefreshWorkshopOptions()
 
     const int choice = GetWorkshopChoice();
     g_MixRecipeMgr.SetOnlyRecipe(choice < 0 ? SEASON3A::CMixRecipes::NO_RECIPE
-                                            : GameLogic::Items::Workshop::GetRecipeIndex(choice, m_WorkshopOptions.ExcellentCount()));
+                                            : GameLogic::Items::Workshop::GetRecipeIndex(choice, m_WorkshopOptions.GetKind(),
+                                                                                         m_WorkshopOptions.OptionCount()));
     return changed;
 }
 

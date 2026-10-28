@@ -713,6 +713,9 @@ int CMixRecipes::GetSourceName(int iItemNum, wchar_t* pszNameOut, int iNumMixIte
             mu_swprintf(szTempName, I18N::Game::WeaponItem);
         else if (pMixRecipeItem->m_sTypeMin == ITEM_SHIELD && pMixRecipeItem->m_sTypeMax == ITEM_BOOTS + MAX_ITEM_INDEX - 1)
             mu_swprintf(szTempName, I18N::Game::DefenseItem);
+        // The Oficina's wings and capes (GameLogic/Items/WorkshopOptions.h), whose recipes take what lies between.
+        else if (pMixRecipeItem->m_sTypeMin == ITEM_WING && pMixRecipeItem->m_sTypeMax == ITEM_CAPE_OF_LORD)
+            mu_swprintf(szTempName, I18N::Game::WorkshopWingItem);
         else if (pMixRecipeItem->m_sTypeMin == ITEM_WING && pMixRecipeItem->m_sTypeMax == ITEM_WINGS_OF_SATAN)
             mu_swprintf(szTempName, I18N::Game::BasicWing);
         else if (pMixRecipeItem->m_sTypeMin == ITEM_WINGS_OF_SPIRITS && pMixRecipeItem->m_sTypeMax == ITEM_WINGS_OF_DARKNESS)
