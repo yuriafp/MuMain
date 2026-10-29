@@ -92,8 +92,12 @@ TEST_CASE("A tooltip layout line has its text, conditions, colors, style and val
     const TooltipLayoutLine& line = FirstLine(result);
     CHECK(line.textName == "lacking");
     REQUIRE(line.when.size() == 3);
-    CHECK(line.when[0] == TooltipCondition{TooltipCondition::Kind::Value, "requiredLevel", ItemTag::Count, false});
-    CHECK(line.when[1] == TooltipCondition{TooltipCondition::Kind::State, "excellent", ItemTag::Count, true});
+    // Read as the value and the state they name.
+    CHECK(line.when[0] == TooltipCondition{TooltipCondition::Kind::Value, TooltipValue::RequiredLevel});
+    CHECK(line.when[0].GetName() == "requiredLevel");
+    CHECK(line.when[1] == TooltipCondition{TooltipCondition::Kind::State, TooltipValue::Count, TooltipState::Excellent,
+                                           ItemTag::Count, true});
+    CHECK(line.when[1].GetName() == "excellent");
     CHECK(line.when[2].kind == TooltipCondition::Kind::Tag);
     CHECK(line.when[2].tag == ItemTag::Sceptre);
     CHECK(line.color == ItemTextColor::Red);
@@ -121,7 +125,7 @@ TEST_CASE("A tooltip file's typos are errors with the name meant [data][items][t
         [](const std::string& texts, const std::string& lines, const std::string& field, const std::string& message)
     {
         INFO(lines);
-        CHECK(Read(TooltipFile(texts, lines)).Has(ItemDataIssueSeverity::Error, field, message));
+        CHECK(Read(TooltipFile(texts, lines)).Has(ItemDataIssueSeverity::Fatal, field, message));
     };
     const std::string defense = R"("defense": "Defense: {defense}")";
     error(defense, R"({"text": "@defence"},)", "layouts[0].lines[1].text", "did you mean \"@defense\"?");
@@ -145,7 +149,7 @@ TEST_CASE("A tooltip file's typos are errors with the name meant [data][items][t
     // A reference that's like no text names none.
     error(defense, R"({"text": "@nothing"},)", "layouts[0].lines[1].text", "\"@nothing\" is not a text of \"texts\"");
     CHECK_FALSE(Read(TooltipFile(defense, R"({"text": "@nothing"},)"))
-                    .Has(ItemDataIssueSeverity::Error, "layouts[0].lines[1].text", "did you mean"));
+                    .Has(ItemDataIssueSeverity::Fatal, "layouts[0].lines[1].text", "did you mean"));
     // A translation that drops a placeholder, adds one, or breaks a brace.
     error(R"("defense": {"en": "Defense: {defense}", "de": "Verteidigung"})", R"({"text": "@defense"},)",
           "texts.defense.de", "the English text {defense}");
@@ -162,28 +166,28 @@ TEST_CASE("A tooltip layout has the four sections once each, in their order [dat
     CHECK(read(R"({"section": "name"}, {"section": "description"}, {"section": "classes"}, {"section": "options"})")
               .issues.empty());
     CHECK(read(R"({"section": "name"}, {"section": "classes"}, {"section": "description"}, {"section": "options"})")
-              .Has(ItemDataIssueSeverity::Error, "layouts[0].lines[2].section", "in the order"));
+              .Has(ItemDataIssueSeverity::Fatal, "layouts[0].lines[2].section", "in the order"));
     CHECK(read(R"({"section": "name"}, {"section": "description"}, {"section": "options"})")
-              .Has(ItemDataIssueSeverity::Error, "layouts[0].lines", "must have the sections"));
+              .Has(ItemDataIssueSeverity::Fatal, "layouts[0].lines", "must have the sections"));
     CHECK(read(R"({"text": ""}, {"section": "name"}, {"section": "description"}, {"section": "classes"},
                   {"section": "options"})")
-              .Has(ItemDataIssueSeverity::Error, "layouts[0].lines[1].section", "start after the name"));
+              .Has(ItemDataIssueSeverity::Fatal, "layouts[0].lines[1].section", "start after the name"));
     CHECK(read(R"({"section": "name"}, {"section": "description"}, {"section": "classes"}, {"section": "options"},
                   {"text": ""})")
-              .Has(ItemDataIssueSeverity::Error, "layouts[0].lines[4]", "no line comes after it"));
+              .Has(ItemDataIssueSeverity::Fatal, "layouts[0].lines[4]", "no line comes after it"));
     CHECK(read(R"({"section": "name"}, {"section": "summary"})")
-              .Has(ItemDataIssueSeverity::Error, "layouts[0].lines[1].section", "must be \"name\""));
+              .Has(ItemDataIssueSeverity::Fatal, "layouts[0].lines[1].section", "must be \"name\""));
 }
 
 TEST_CASE("A tooltip file needs the default layout [data][items][tooltip]")
 {
     const ReadResult result = Read(R"({"formatVersion": 1, "layouts": []})");
-    CHECK(result.Has(ItemDataIssueSeverity::Error, "layouts", "must have the layout \"default\""));
+    CHECK(result.Has(ItemDataIssueSeverity::Fatal, "layouts", "must have the layout \"default\""));
 
     // A layout of another name doesn't stand in for it.
     const ReadResult other = Read(R"({"formatVersion": 1, "layouts": [{"name": "compact", "lines": [
         {"section": "name"}, {"section": "description"}, {"section": "classes"}, {"section": "options"}]}]})");
-    CHECK(other.Has(ItemDataIssueSeverity::Error, "layouts", "must have the layout \"default\""));
+    CHECK(other.Has(ItemDataIssueSeverity::Fatal, "layouts", "must have the layout \"default\""));
     CHECK(other.Has(ItemDataIssueSeverity::Warning, "layouts[0].name", "only the \"default\" layout is used"));
 }
 
@@ -191,7 +195,7 @@ TEST_CASE("A tooltip file warns about a line value its text does not have [data]
 {
     const ReadResult result = Read(
         TooltipFile(R"("used": "Defense: {defense}")", R"({"text": "@used", "values": {"missing": "missingLevel"}},)"));
-    CHECK_FALSE(HasErrors(result.issues));
+    CHECK_FALSE(HasFatal(result.issues));
     CHECK(result.Has(ItemDataIssueSeverity::Warning, "layouts[0].lines[1].values.missing", "has no {missing}"));
 }
 
@@ -235,13 +239,13 @@ TEST_CASE("A shared text is used by a layout or an item description [data][items
                                       issue.message.find(message) != std::string::npos;
                            });
     };
-    CHECK(has(ItemDataIssueSeverity::Error, "description[1].text", "did you mean \"@life\"?"));
-    CHECK(has(ItemDataIssueSeverity::Error, "description[2].text", "{notATable}"));
+    CHECK(has(ItemDataIssueSeverity::Fatal, "description[1].text", "did you mean \"@life\"?"));
+    CHECK(has(ItemDataIssueSeverity::Fatal, "description[2].text", "{notATable}"));
     // A shared text names a table only through the line's values, also one the stat file has: the editor's table
     // counts and rename read an item's own data.
-    CHECK(has(ItemDataIssueSeverity::Error, "description[3].text", "names the table {table:capeDamageIncrease}"));
-    CHECK_FALSE(has(ItemDataIssueSeverity::Error, "description[4].text", ""));
-    CHECK_FALSE(has(ItemDataIssueSeverity::Error, "description[4].values.percent", ""));
+    CHECK(has(ItemDataIssueSeverity::Fatal, "description[3].text", "names the table {table:capeDamageIncrease}"));
+    CHECK_FALSE(has(ItemDataIssueSeverity::Fatal, "description[4].text", ""));
+    CHECK_FALSE(has(ItemDataIssueSeverity::Fatal, "description[4].values.percent", ""));
     CHECK(has(ItemDataIssueSeverity::Warning, "description[4].values.missing", "has no {missing}"));
     CHECK(has(ItemDataIssueSeverity::Warning, "texts.unused", "neither a layout nor an item description"));
     CHECK_FALSE(has(ItemDataIssueSeverity::Warning, "texts.life", ""));
@@ -299,28 +303,35 @@ TEST_CASE("A tooltip line's conditions all hold, each turned around by \"!\" [da
     ItemTooltipValues values;
     values.defense = 12;
     values.excellent = true;
-    const auto met = [&](std::vector<TooltipCondition> conditions, int type = ScrollOfPoisonType, int level = 0)
-    { return AreTooltipConditionsMet(conditions, type, level, values); };
-    using Kind = TooltipCondition::Kind;
+    // Conditions as a file writes them, read.
+    const auto met = [&](std::vector<std::string_view> texts, int type = ScrollOfPoisonType, int level = 0)
+    {
+        std::vector<TooltipCondition> conditions(texts.size());
+        for (size_t index = 0; index < texts.size(); ++index)
+        {
+            std::string error;
+            REQUIRE(ReadTooltipCondition(texts[index], conditions[index], error));
+        }
+        return AreTooltipConditionsMet(conditions, type, level, values);
+    };
     CHECK(met({}));
-    CHECK(met({{Kind::Value, "defense"}, {Kind::State, "excellent"}}));
-    CHECK_FALSE(met({{Kind::Value, "defense"}, {Kind::State, "ancient"}}));
-    CHECK(met({{Kind::State, "ancient", ItemTag::Count, true}}));
-    CHECK_FALSE(met({{Kind::Value, "magicDefense"}}));
+    CHECK(met({"defense", "excellent"}));
+    CHECK_FALSE(met({"defense", "ancient"}));
+    CHECK(met({"!ancient"}));
+    CHECK_FALSE(met({"magicDefense"}));
     // {level} is a value too.
-    CHECK_FALSE(met({{Kind::Value, "level"}}));
-    CHECK(met({{Kind::Value, "level"}}, ScrollOfPoisonType, 3));
+    CHECK_FALSE(met({"level"}));
+    CHECK(met({"level"}, ScrollOfPoisonType, 3));
     // A tag, and a tag turned around: the Battle Scepter is a sceptre, the Kris is not.
-    CHECK(met({{Kind::Tag, "", ItemTag::Sceptre}}, MakeItemType(2, 8)));
-    CHECK_FALSE(met({{Kind::Tag, "", ItemTag::Sceptre}}, MakeItemType(0, 0)));
-    CHECK(met({{Kind::Tag, "", ItemTag::Sceptre, true}}, MakeItemType(0, 0)));
+    CHECK(met({"tag:sceptre"}, MakeItemType(2, 8)));
+    CHECK_FALSE(met({"tag:sceptre"}, MakeItemType(0, 0)));
+    CHECK(met({"!tag:sceptre"}, MakeItemType(0, 0)));
     // A value compared with a number.
     values.durability = 2;
-    using Comparison = TooltipCondition::Comparison;
-    CHECK(met({{Kind::Value, "durability", ItemTag::Count, false, Comparison::Equal, 2}}));
-    CHECK_FALSE(met({{Kind::Value, "durability", ItemTag::Count, false, Comparison::Equal, 1}}));
-    CHECK(met({{Kind::Value, "durability", ItemTag::Count, true, Comparison::Equal, 1}}));
-    CHECK(met({{Kind::Value, "level", ItemTag::Count, false, Comparison::NotEqual, 1}}, ScrollOfPoisonType, 2));
+    CHECK(met({"durability=2"}));
+    CHECK_FALSE(met({"durability=1"}));
+    CHECK(met({"!durability=1"}));
+    CHECK(met({"level!=1"}, ScrollOfPoisonType, 2));
 }
 
 TEST_CASE("A tooltip line takes the color of its first color rule that holds [data][items][tooltip]")
@@ -328,11 +339,19 @@ TEST_CASE("A tooltip line takes the color of its first color rule that holds [da
     ItemTooltipValues values;
     values.excellent = true;
     values.damageHarmonyBonus = true;
+    // Conditions as a file has them: read, so the state each names is resolved.
+    const auto read = [](std::string_view text)
+    {
+        TooltipCondition condition;
+        std::string error;
+        REQUIRE(ReadTooltipCondition(text, condition, error));
+        return condition;
+    };
     TooltipLayoutLine line;
     line.color = ItemTextColor::Gray;
-    line.colors = {{{{TooltipCondition::Kind::State, "ancient"}}, ItemTextColor::Green},
-                   {{{TooltipCondition::Kind::State, "damageHarmonyBonus"}}, ItemTextColor::Yellow},
-                   {{{TooltipCondition::Kind::State, "excellent"}}, ItemTextColor::Blue}};
+    line.colors = {{{read("ancient")}, ItemTextColor::Green},
+                   {{read("damageHarmonyBonus")}, ItemTextColor::Yellow},
+                   {{read("excellent")}, ItemTextColor::Blue}};
     CHECK(GetTooltipLineColor(line, ScrollOfPoisonType, 0, values) == ItemTextColor::Yellow);
     values.damageHarmonyBonus = false;
     CHECK(GetTooltipLineColor(line, ScrollOfPoisonType, 0, values) == ItemTextColor::Blue);
@@ -362,9 +381,9 @@ TEST_CASE("A tooltip file's texts are checked like item names [data][items][tool
                     R"("unknown": {"en": "A text", "xx": "Ein Text"}, "blank": "")",
                     R"({"text": "@onlyGerman"}, {"text": "@badCode"}, {"text": "@unknown"}, {"text": "@blank"},)"));
 
-    CHECK(result.Has(ItemDataIssueSeverity::Error, "texts.onlyGerman", "the English text is missing"));
-    CHECK(result.Has(ItemDataIssueSeverity::Error, "texts.badCode", "\"d e\" is not a language code"));
-    CHECK_FALSE(result.Has(ItemDataIssueSeverity::Error, "texts.blank", "English"));
+    CHECK(result.Has(ItemDataIssueSeverity::Fatal, "texts.onlyGerman", "the English text is missing"));
+    CHECK(result.Has(ItemDataIssueSeverity::Fatal, "texts.badCode", "\"d e\" is not a language code"));
+    CHECK_FALSE(result.Has(ItemDataIssueSeverity::Fatal, "texts.blank", "English"));
 
     const char* uiLocales[] = {"en", "de"};
     std::vector<ItemDataIssue> issues;

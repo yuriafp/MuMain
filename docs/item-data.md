@@ -93,8 +93,9 @@ names, ancient set prefixes are omitted, and money uses `Zen +amount`. A languag
 change may require updating saved keywords; option words follow the UI language
 too. Ordinary equipment keeps contiguous keywords such as `+7+Skill` in English.
 `+N` matches the displayed name's number, not necessarily the raw source level:
-Kundun tiers and jewel bundles use their displayed numbers, while seeds and some
-quest items omit their source level. Unmapped variant levels fall back to the base
+Kundun tiers use their displayed numbers, while seeds and some quest items omit
+their source level. Jewel and stone bundles show their count instead (`x10` to
+`x30`), so a keyword such as `Bless +2` no longer matches them; `Bless x20` does. Unmapped variant levels fall back to the base
 name and `+level`.
 
 A saved keyword holds **at most 14 encoded bytes** (14 single-byte characters,
@@ -115,7 +116,7 @@ variants or option words. An online keyword need not select the same items offli
 | `tags` | Categories the game code asks for, e.g. `["mount", "flying"]`; see [Tags](#tags) |
 | `levelValues` | Values of the description's own placeholders, one per item level from +0: `{"stat": ["ENG", "STA", ...]}` makes `{stat}` "ENG" at +0 and "STA" at +1. Each value is a text with its translations (written like `name`) or a shared text (`"@name"`), without placeholders. A line that shows one is shown only at levels that have a value. The Fruits' `{stat}` is one. A client-only field; the bmd import keeps it |
 | `description` | Lines the tooltip shows for the item, e.g. the Jewel of Bless's "It is used to increase your item level up to 6"; see [Descriptions](#descriptions). A client-only field; the bmd import keeps it |
-| `nameLines` | How the tooltip names the item and the name's color, when not the standard name and color (see [Name lines](#name-lines)). Each is written like a `description` line without `bold` and `after` (the name is always bold and first), its text is checked like one, and its `text` and `color` may be left out. Name lines are in the item names' language (English with the options' "Translate item names" off), and a text that is empty in it keeps the standard name. A client-only field; the bmd import keeps it |
+| `nameLines` | How the game names the item (its tooltip, the repair window, windows, messages and ground labels) and the tooltip's name color, when not the standard name and color (see [Name lines](#name-lines)). Each is written like a `description` line without `bold` and `after` (the name is always bold and first), its text is checked like one, and its `text` and `color` may be left out. Name lines are in the item names' language (English with the options' "Translate item names" off), and a text that is empty in it keeps the standard name. A client-only field; the bmd import keeps it |
 | `width`, `height` | Size in inventory slots |
 | `slot` | Equipment slot: `mainHand`, `offHand`, `helm`, `armor`, `pants`, `gloves`, `boots`, `wings`, `pet`, `pendant`, `ring`. Left out = not equippable |
 | `wingTier` | Only for wings: `small`, `first`, `second`, `third`. The wing formulas (defense, defense per level, damage increase, absorption) depend on it; excellent second and third tier wings get no extra durability, and the chaos mix knows a wing's tier from it |
@@ -339,7 +340,9 @@ Each line is `{"text": ..., "values": {...}, "when": [...], "color": ...,
 - **An empty text** (`{"text": ""}`) is a blank line.
 - **Long lines** wrap at about the width of the original tooltips' widest
   lines, and `\n` in a text breaks the line there (`\n\n` leaves a blank
-  line).
+  line). A line's text is shown up to 511 characters (with its placeholders
+  filled, before it wraps), a name line's up to 255; a text written longer
+  is a warning, and the tooltip cuts it there.
 - **`color`** is one of the tooltip colors: `white` (left out), `blue`,
   `red`, `yellow`, `green`, `darkRed`, `purple`, `darkBlue`, `darkYellow`,
   `greenBlue`, `gray`, `redPurple`, `violet`, `orange`.
@@ -391,6 +394,15 @@ standard color) and then its first `colors` rule that holds. Without such a
 line, the standard name and color. The NPC shop's price line has the name's
 color.
 
+The repair window writes the same name in the same color. Elsewhere the name
+lines give only the text: the mix and quest windows, the server's messages,
+the control socket and the ground labels (which keep their own colors) write
+the line's text, and where no line holds, the item's `name` with " +level"
+above +0 (the ground labels add the set's name and the options themselves).
+There may be no item there, only its type and level: a condition on the
+item's durability or options then reads 0 (the Horn of Fenrir is plain
+"Horn of Fenrir").
+
 ```json
 "nameLines": [
   {"text": "{name}", "color": "white", "levels": [0, 0], "colors": [{"when": ["level>=7"], "color": "yellow"}, {"when": ["hasOptions"], "color": "blue"}]},
@@ -427,8 +439,9 @@ placeholder is one of:
   charms' effect in the game's ItemAddOption data): `addOptionValue1`,
   `addOptionValue2` and `addOptionDuration`, a text such as "1 Hour"; the
   hero's `heroLevel`; and for the [name lines](#name-lines) the item's `name`
-  (its `name` in the item names' language), `levelPlusOne` (a packed jewel's count)
-  and `excellentFlags` (its excellent options, 0 to 63; the Horn of Fenrir's
+  (its `name` in the item names' language), `levelPlusOne` (its level + 1),
+  `bundleCount` (how many jewels or stones a bundle holds, as the game counts
+  them; 0 for other items) and `excellentFlags` (its excellent options, 0 to 63; the Horn of Fenrir's
   1, 2 and 4 are its Destroy, Protect and Illusion kinds);
 - a **level bonus table** of [`Stats/ItemStats.json`](#item-stats-by-level),
   as `table:` and its name: the table's value at the item's + level
@@ -714,11 +727,14 @@ a profile no item names is a warning.
 ## Loading and errors
 
 At startup all `*.json` files in `Data/Items` and `Stats/ItemStats.json` are
-read and checked.
+read and checked. Problems have three levels, the same in every data area
+and editor tool: **fatal** ones make the data unusable, **errors** name
+something that is missing (the game runs without it), **warnings** are worth
+knowing.
 
-**Errors** stop the start with a message that names the file, the item and
-the field (**Copy text** copies it). All problems are also written to
-`MuError.log`. Errors are:
+**Fatal problems** stop the start with a message that names the file, the
+item and the field (**Copy text** copies it). All problems are also written to
+`MuError.log`. Fatal problems are:
 
 - invalid JSON, a missing or unsupported `formatVersion`, an invalid `group`
 - an item without `number` or `name`, a number outside 0–511
@@ -1123,17 +1139,13 @@ shows it in the others.
 - **Item Model**: see [Item Model](#item-model).
 - **Glow Colors**: the glow color list, see [Glow Colors](#glow-colors).
 - **Item Formulas**: the item stat file, see [Item Formulas](#item-formulas).
-- **Item Checks**: the checks of a save as a list, errors first. A click on
-  a problem of an item selects it and opens the tool of its field; an arrow
-  key onto it only selects the item. A click on a problem of the item stat
-  file (a profile or a table nothing uses) opens Item Formulas at it.
 - **Item Sync**: Export and Import of the items and item formulas with an
   OpenMU server, see [Item Sync](#item-sync).
 - **Item Translations**: the names in all languages, see
   [translation-system.md → In the item editor](translation-system.md#in-the-item-editor).
 
-In the browser, Item Rules, Item Categories, Item Checks and Item
-Translations, the arrow keys move the selection (see
+In the browser, Item Rules, Item Categories and Item Translations, the
+arrow keys move the selection (see
 [dev-editor.md](dev-editor.md)). In the lists of the items that use a model
 or a look they only move the cursor: selecting one there shows that item's
 form instead, with its own list.
@@ -1160,8 +1172,12 @@ How changes work:
   `Data/Effects/GlowColors.json` when a glow color changed and
   `Stats/ItemStats.json` when the item formulas changed; the other model
   files are not touched. It lists each UI language that misses item names, with
-  how many. With errors nothing is written, and the errors are listed in
-  the editor console and in **Item Checks**. Warnings (a model file that is
+  how many. With fatal problems nothing is written, and they are listed in
+  the editor console and in **Data Checks** (see
+  [dev-editor.md → Data Checks](dev-editor.md#data-checks)): a click on a
+  problem of an item selects it and opens the tool of its field; one of the
+  item stat file (a profile or a table nothing uses) opens Item Formulas at
+  it. Warnings (a model file that is
   missing, a file several items name themselves instead of through a
   shared model, a render style or item effect that does not exist) do not
   stop it. If a file cannot be written (read-only folder, full disk), no
@@ -1417,8 +1433,8 @@ number, fields with their default value left out, LF line endings.
 - An item a file has more than once (OpenMU does not keep the group and
   number unique) is a locked row: the import leaves it as it is.
 - Before the import is applied, the data as it would be gets the checks of
-  a save. With errors nothing changes; the errors are listed and the rows of
-  their items are unchecked.
+  a save. With fatal problems nothing changes; they are listed and the rows
+  of their items are unchecked.
 
 **Known differences** are fields and formula entries meant to differ
 between the client and the server. Ticking **Known** on a field, on an

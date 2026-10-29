@@ -222,7 +222,17 @@ void RenderItem3D(float sx, float sy, float Width, float Height, int Type, int L
 void RenderItem3DWithHover(float sx, float sy, float Width, float Height, int Type, int Level, int excellentFlags, int ancientDiscriminator, bool hovered);
 void RenderObjectScreen(int Type, int ItemLevel, int excellentFlags, int ancientDiscriminator, vec3_t Target, int Select, bool PickUp);
 bool GetAttackDamage(int* iMinDamage, int* iMaxDamage);
-void GetItemName(int iType, int iLevel, wchar_t* Text);
+// The item's name in the item names' language (the UI's, or English with "Translate item names" off), as windows,
+// messages and ground labels write it: the text of the first of its
+// name lines whose levels and conditions hold (the item data's nameLines), else its name with " +level" above +0.
+// Without `item`, one of the type at the level, whose durability and options are 0.
+std::wstring GetItemNameText(int type, int level, const ITEM* item = nullptr);
+// Writes GetItemNameText into a buffer of `textSize` characters, cut short to fit.
+void GetItemName(int iType, int iLevel, wchar_t* Text, size_t textSize);
+template <size_t N> void GetItemName(int iType, int iLevel, wchar_t (&Text)[N])
+{
+    GetItemName(iType, iLevel, Text, N);
+}
 std::wstring GetItemName(int iType, int iLevel);
 std::wstring GetItemDisplayName(ITEM* pItem);
 void GetSpecialOptionText(int Type, wchar_t* Text, WORD Option, BYTE Value, int iMana);
@@ -245,6 +255,26 @@ void SetItemTooltipTextMeasure(ItemTooltipTextMeasure measure);
 std::vector<ItemTooltipLine> BuildItemTooltipLines(ITEM* ip, bool Sell, int Inventype = 0,
                                                    bool bItemTextListBoxUse = false);
 void RenderRepairInfoAtPx(float x, float y, ITEM* ip, bool Sell);
+// What BuildRepairInfoText built: the count of lines, and what a click on the item does in repair mode.
+struct RepairInfoText
+{
+    // 0 when the item shows no repair tooltip.
+    int lineCount = 0;
+    // RepairEnable for the drawn tooltip: 2 a click repairs the item, 1 it has nothing to repair; none: as it was.
+    std::optional<int> repairEnable;
+};
+// Fills TextList, TextListColor and TextBold with the repair tooltip's lines for the item, as RenderRepairInfoAtPx
+// shows them; leaves RepairEnable to the caller that draws them.
+RepairInfoText BuildRepairInfoText(ITEM* ip);
+// A drop's name on the ground (Alt, or the pointer over it): its text, colors and whether its font is bold.
+struct GroundItemLabel
+{
+    std::wstring text;
+    DWORD textColor;
+    DWORD backgroundColor;
+    bool bold;
+};
+GroundItemLabel DescribeGroundItemLabel(OBJECT* o, ITEM* ip);
 void RenderSkillInfo(int sx, int sy, int Type, int SkillNum = 0, int iRenderPoint = STRP_NONE);
 void RequireClass(ITEM_ATTRIBUTE* p);
 bool IsRequireClassRenderItem(const short sType);

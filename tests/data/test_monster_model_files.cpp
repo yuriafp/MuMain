@@ -22,7 +22,7 @@
 #include <string>
 #include <vector>
 
-using Data::Items::HasErrors;
+using Data::Items::HasFatal;
 using Data::Items::ItemDataIssue;
 using Data::Items::ItemDataIssueSeverity;
 using Data::Monsters::MonsterModelDefinition;
@@ -168,7 +168,7 @@ TEST_CASE("Monster models: the shipped model list loads; its only warning is Mol
 {
     const Data::Monsters::MonsterModelsLoadResult result = LoadShipped();
     INFO(Messages(result.issues));
-    CHECK_FALSE(HasErrors(result.issues));
+    CHECK_FALSE(HasFatal(result.issues));
     std::vector<ItemDataIssue> issues;
     for (const ItemDataIssue& issue : result.issues)
     {
@@ -192,7 +192,7 @@ TEST_CASE("Monster models: the shipped model list is written as its writer write
     std::vector<MonsterModelDefinition> models;
     std::vector<ItemDataIssue> issues;
     Data::Monsters::ReadMonsterModelsJson(*text, "Models.json", models, issues);
-    REQUIRE_FALSE(HasErrors(issues));
+    REQUIRE_FALSE(HasFatal(issues));
     CHECK(Data::Monsters::WriteMonsterModelsJson(models) == *text);
 }
 
@@ -325,7 +325,7 @@ TEST_CASE("Monster models: the game's load fills the model table [data][monsters
 TEST_CASE("Monster model files: models that share a sound id load it alike [data][monsters]")
 {
     const Data::Monsters::MonsterModelsLoadResult loaded = LoadShipped();
-    REQUIRE_FALSE(Data::Items::HasErrors(loaded.issues));
+    REQUIRE_FALSE(Data::Items::HasFatal(loaded.issues));
     std::map<std::string, std::set<std::string>> loads;
     for (const MonsterModelDefinition& model : loaded.models)
     {

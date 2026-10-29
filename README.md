@@ -107,7 +107,7 @@ Missing keys take the defaults below. The options window writes most of them; se
 | **`[LOGIN]`**               | `Language`                                                                                            | `Eng`                | Game data language: the `Data/Local/<Language>/` folder (quest, skill and minimap texts, map name art). Item, monster and NPC names follow `[UI] Locale`.        |
 | **`[LOGIN]`**               | `RememberMe`, `SavePassword`                                                                          | `0`                  | Remember the account name, and the password too. Both are stored encrypted for this machine and user (`EncryptedUsername`, `EncryptedPassword`).                 |
 | **`[CONNECTION SETTINGS]`** | `ServerIP`, `ServerPort`                                                                              | `localhost`, `44406` | Server to connect to when no `connect` argument is given.                                                                                                        |
-| **`[UI]`**                  | `Locale`                                                                                              | `en`                 | UI language (`en`, `de`, `es`, `id`, `ja`, `pl`, `pt`, `ru`, `tl`, `uk`, `zh-TW`). Switchable at runtime in the options window.                                  |
+| **`[UI]`**                  | `Locale`                                                                                              | `en`                 | UI language (`en`, `de`, `es`, `id`, `ja`, `pl`, `pt`, `ru`, `tl`, `uk`, `zh-CN`, `zh-TW`). Switchable at runtime in the options window.                                  |
 | **`[UI]`**                  | `Font`                                                                                                | empty                | UI font family; empty uses the platform's default.                                                                                                               |
 | **`[UI]`**                  | `RmlTheme`                                                                                            | `legacy`             | UI theme: `legacy` (the original look) or `modern`. `$theme <name>` switches it for the session.                                                                 |
 | **`[UI]`**                  | `UIScalePercent`                                                                                      | `100`                | UI scale, clamped to `75`-`150`.                                                                                                                                 |
@@ -184,6 +184,9 @@ Developer diagnostics, read at startup:
 - [Texture packs](docs/texture-packs.md) - installing, choosing and removing
   packs of replacement or 2x/4x textures in `Data/TexturePacks/`, and how to
   make one.
+- [GLB monster models](docs/glb-models.md) - drawing a monster from a glTF
+  binary named in `Data/Models/ModelFiles.json`: the table, the developer
+  overlay, what the loader expects of a file and its log lines.
 - [Build guide](docs/build/README.md) - platform-specific build notes.
 - [In-game tests](docs/in-game-tests.md) - the tester next to developer
   builds that plays test scenarios with real clients against a fresh OpenMU

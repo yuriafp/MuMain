@@ -346,7 +346,7 @@ private:
     void ReadTags(const OrderedJson& json, ItemTagSet& tags);
     void ReadDescription(const OrderedJson& json, std::vector<ItemDescriptionLine>& description);
     void ReadNameLines(const OrderedJson& json, std::vector<ItemNameLine>& nameLines);
-    bool ReadLine(const OrderedJson& entry, const std::string& field, ItemDescriptionLine& line);
+    bool ReadLine(const OrderedJson& entry, const std::string& field, size_t maxLength, ItemDescriptionLine& line);
     void ReadDescriptionLevels(const OrderedJson& json, const std::string& field, ItemDescriptionLine& line);
     void ReadDescriptionConditions(const OrderedJson& json, const std::string& field, ItemDescriptionLine& line);
     void ReadDescriptionValues(const OrderedJson& json, const std::string& field, ItemDescriptionLine& line);
@@ -361,20 +361,21 @@ private:
                        const std::array<const char*, Count>& keys);
     void WarnAboutUnknownKeys(const OrderedJson& json, const std::set<std::string, std::less<>>& knownKeys,
                               const std::string& prefix);
+    void WarnAboutLongText(const LocalizedString& text, const std::string& field, size_t maxLength);
 
     template <typename T> void ReadValue(const OrderedJson& json, const std::string& field, T& value);
 
     const std::string& m_source;
     int m_group;
     int m_number = ItemDataIssue::NoItem;
-    bool m_hasErrors = false;
+    bool m_hasFatal = false;
     std::vector<ItemDataIssue>& m_issues;
 };
 
 void ItemReader::AddIssue(ItemDataIssueSeverity severity, const std::string& field, const std::string& message)
 {
     m_issues.push_back({severity, m_source, m_group, m_number, field, message});
-    m_hasErrors = m_hasErrors || severity == ItemDataIssueSeverity::Error;
+    m_hasFatal = m_hasFatal || severity == ItemDataIssueSeverity::Fatal;
 }
 
 template <typename T> void ItemReader::ReadValue(const OrderedJson& json, const std::string& field, T& value)
@@ -394,14 +395,14 @@ template <typename T> void ItemReader::ReadValue(const OrderedJson& json, const 
         }
         else if (!json.is_string() || !FindEnumValue(json.get<std::string>(), value))
         {
-            AddIssue(ItemDataIssueSeverity::Error, field, "must be " + JoinEnumNames<T>());
+            AddIssue(ItemDataIssueSeverity::Fatal, field, "must be " + JoinEnumNames<T>());
         }
     }
     else if constexpr (std::is_same_v<T, bool>)
     {
         if (!json.is_boolean())
         {
-            AddIssue(ItemDataIssueSeverity::Error, field, "must be true or false");
+            AddIssue(ItemDataIssueSeverity::Fatal, field, "must be true or false");
             return;
         }
         value = json.get<bool>();
@@ -410,7 +411,7 @@ template <typename T> void ItemReader::ReadValue(const OrderedJson& json, const 
     {
         if (!json.is_string() || !Json::IsName(json.get_ref<const std::string&>()))
         {
-            AddIssue(ItemDataIssueSeverity::Error, field, "must be a name of letters and digits");
+            AddIssue(ItemDataIssueSeverity::Fatal, field, "must be a name of letters and digits");
             return;
         }
         value = json.get<std::string>();
@@ -422,13 +423,13 @@ template <typename T> void ItemReader::ReadValue(const OrderedJson& json, const 
         long long number = 0;
         if (!json.is_number_integer())
         {
-            AddIssue(ItemDataIssueSeverity::Error, field, "must be a whole number");
+            AddIssue(ItemDataIssueSeverity::Fatal, field, "must be a whole number");
             return;
         }
 
         if (!ReadWholeNumber(json, number) || number < Minimum || number > Maximum)
         {
-            AddIssue(ItemDataIssueSeverity::Error, field,
+            AddIssue(ItemDataIssueSeverity::Fatal, field,
                      "must be between " + std::to_string(Minimum) + " and " + std::to_string(Maximum));
             return;
         }
@@ -439,7 +440,7 @@ template <typename T> void ItemReader::ReadValue(const OrderedJson& json, const 
 bool ItemReader::ReadIdentity(const OrderedJson& json, ItemDefinition& definition)
 {
     const auto addError = [this](const std::string& field, const std::string& message)
-    { AddIssue(ItemDataIssueSeverity::Error, field, message); };
+    { AddIssue(ItemDataIssueSeverity::Fatal, field, message); };
     if (!Json::ReadNumber(json, m_number, addError))
     {
         return false;
@@ -448,7 +449,7 @@ bool ItemReader::ReadIdentity(const OrderedJson& json, ItemDefinition& definitio
     const auto name = json.find(Keys::Name);
     if (name == json.end())
     {
-        AddIssue(ItemDataIssueSeverity::Error, Keys::Name, "missing");
+        AddIssue(ItemDataIssueSeverity::Fatal, Keys::Name, "missing");
         return false;
     }
     if (!ReadNames(*name, definition.names))
@@ -466,7 +467,7 @@ bool ItemReader::ReadNames(const OrderedJson& json, LocalizedString& names)
     // A plain text is the English name only; handy for items written by hand.
     return Json::ReadLocalizedString(json, Keys::Name, names,
                                      [this](const std::string& field, const std::string& message)
-                                     { AddIssue(ItemDataIssueSeverity::Error, field, message); });
+                                     { AddIssue(ItemDataIssueSeverity::Fatal, field, message); });
 }
 
 void ItemReader::ReadTags(const OrderedJson& json, ItemTagSet& tags)
@@ -478,7 +479,7 @@ void ItemReader::ReadTags(const OrderedJson& json, ItemTagSet& tags)
     }
     if (!list->is_array())
     {
-        AddIssue(ItemDataIssueSeverity::Error, Keys::Tags, "must be a list of tag names");
+        AddIssue(ItemDataIssueSeverity::Fatal, Keys::Tags, "must be a list of tag names");
         return;
     }
 
@@ -487,7 +488,7 @@ void ItemReader::ReadTags(const OrderedJson& json, ItemTagSet& tags)
         ItemTag tag{};
         if (!entry.is_string() || !FindEnumValue(entry.get<std::string>(), tag))
         {
-            AddIssue(ItemDataIssueSeverity::Error, Keys::Tags,
+            AddIssue(ItemDataIssueSeverity::Fatal, Keys::Tags,
                      entry.dump() + " is not a tag; tags are " + JoinEnumNames<ItemTag>());
             continue;
         }
@@ -504,7 +505,7 @@ void ItemReader::ReadDescription(const OrderedJson& json, std::vector<ItemDescri
     }
     if (!list->is_array())
     {
-        AddIssue(ItemDataIssueSeverity::Error, Keys::Description, "must be a list of lines");
+        AddIssue(ItemDataIssueSeverity::Fatal, Keys::Description, "must be a list of lines");
         return;
     }
     for (size_t index = 0; index < list->size(); ++index)
@@ -513,11 +514,11 @@ void ItemReader::ReadDescription(const OrderedJson& json, std::vector<ItemDescri
         const std::string field = std::string(Keys::Description) + "[" + std::to_string(index) + "]";
         if (!entry.is_object() || !entry.contains(Keys::Text))
         {
-            AddIssue(ItemDataIssueSeverity::Error, field, "must be an object with a text");
+            AddIssue(ItemDataIssueSeverity::Fatal, field, "must be an object with a text");
             continue;
         }
         ItemDescriptionLine line;
-        if (ReadLine(entry, field, line))
+        if (ReadLine(entry, field, MaxDescriptionLineLength, line))
         {
             description.push_back(std::move(line));
         }
@@ -534,7 +535,7 @@ void ItemReader::ReadNameLines(const OrderedJson& json, std::vector<ItemNameLine
     }
     if (!list->is_array())
     {
-        AddIssue(ItemDataIssueSeverity::Error, Keys::NameLines, "must be a list of name lines");
+        AddIssue(ItemDataIssueSeverity::Fatal, Keys::NameLines, "must be a list of name lines");
         return;
     }
     for (size_t index = 0; index < list->size(); ++index)
@@ -543,7 +544,7 @@ void ItemReader::ReadNameLines(const OrderedJson& json, std::vector<ItemNameLine
         const std::string field = std::string(Keys::NameLines) + "[" + std::to_string(index) + "]";
         if (!entry.is_object())
         {
-            AddIssue(ItemDataIssueSeverity::Error, field, "must be an object");
+            AddIssue(ItemDataIssueSeverity::Fatal, field, "must be an object");
             continue;
         }
         // The name is always bold and always the first row.
@@ -551,21 +552,23 @@ void ItemReader::ReadNameLines(const OrderedJson& json, std::vector<ItemNameLine
         {
             if (entry.contains(key))
             {
-                AddIssue(ItemDataIssueSeverity::Error, field + "." + key, "does not apply to a name line");
+                AddIssue(ItemDataIssueSeverity::Fatal, field + "." + key, "does not apply to a name line");
             }
         }
         ItemNameLine line;
         line.hasText = entry.contains(Keys::Text);
         line.hasColor = entry.contains(Keys::Color);
-        if (ReadLine(entry, field, line))
+        if (ReadLine(entry, field, MaxNameLineLength, line))
         {
             nameLines.push_back(std::move(line));
         }
     }
 }
 
-// The fields of one line of a description or of the name lines; false when its text could not be read.
-bool ItemReader::ReadLine(const OrderedJson& entry, const std::string& field, ItemDescriptionLine& line)
+// The fields of one line of a description or of the name lines; false when its text could not be read. A text longer
+// than `maxLength` (MaxDescriptionLineLength, MaxNameLineLength) is a warning: the tooltip cuts it there.
+bool ItemReader::ReadLine(const OrderedJson& entry, const std::string& field, size_t maxLength,
+                          ItemDescriptionLine& line)
 {
     bool read = true;
     if (const auto text = entry.find(Keys::Text); text != entry.end())
@@ -577,7 +580,7 @@ bool ItemReader::ReadLine(const OrderedJson& entry, const std::string& field, It
             line.textName = text->get<std::string>().substr(1);
             if (line.textName.empty())
             {
-                AddIssue(ItemDataIssueSeverity::Error, field + "." + Keys::Text,
+                AddIssue(ItemDataIssueSeverity::Fatal, field + "." + Keys::Text,
                          "\"@\" names no text: a shared text is \"@\" and its name in the tooltip file's \"texts\"");
                 read = false;
             }
@@ -586,7 +589,8 @@ bool ItemReader::ReadLine(const OrderedJson& entry, const std::string& field, It
         {
             read = Json::ReadLocalizedString(*text, field + "." + Keys::Text, line.text,
                                              [this](const std::string& errorField, const std::string& message)
-                                             { AddIssue(ItemDataIssueSeverity::Error, errorField, message); });
+                                             { AddIssue(ItemDataIssueSeverity::Fatal, errorField, message); });
+            WarnAboutLongText(line.text, field + "." + Keys::Text, maxLength);
         }
     }
     if (const auto values = entry.find(Keys::Values); values != entry.end())
@@ -613,7 +617,7 @@ bool ItemReader::ReadLine(const OrderedJson& entry, const std::string& field, It
         }
         else
         {
-            AddIssue(ItemDataIssueSeverity::Error, field + "." + Keys::After,
+            AddIssue(ItemDataIssueSeverity::Fatal, field + "." + Keys::After,
                      "must be \"options\": the line is drawn after the item's options instead of with the "
                      "description");
         }
@@ -626,7 +630,7 @@ bool ItemReader::ReadLine(const OrderedJson& entry, const std::string& field, It
         }
         else
         {
-            AddIssue(ItemDataIssueSeverity::Error, field + "." + Keys::Bold, "must be true or false");
+            AddIssue(ItemDataIssueSeverity::Fatal, field + "." + Keys::Bold, "must be true or false");
         }
     }
     if (const auto levels = entry.find(Keys::Levels); levels != entry.end())
@@ -645,7 +649,7 @@ void ItemReader::ReadDescriptionValues(const OrderedJson& json, const std::strin
 {
     if (!json.is_object())
     {
-        AddIssue(ItemDataIssueSeverity::Error, field, "must be an object of placeholders and the values they show");
+        AddIssue(ItemDataIssueSeverity::Fatal, field, "must be an object of placeholders and the values they show");
         return;
     }
     for (const auto& [placeholder, value] : json.items())
@@ -657,7 +661,7 @@ void ItemReader::ReadDescriptionValues(const OrderedJson& json, const std::strin
         if (!Json::IsName(placeholder) || !value.is_string() ||
             (!Json::IsName(table.empty() ? name : table) && !HasGameDataValuePrefix(name)))
         {
-            AddIssue(ItemDataIssueSeverity::Error, field + "." + placeholder,
+            AddIssue(ItemDataIssueSeverity::Fatal, field + "." + placeholder,
                      "must be a placeholder name and the name of the value it shows, both of letters and digits (a "
                      "table's as \"table:<name>\")");
             continue;
@@ -677,7 +681,7 @@ void ItemReader::ReadLevelValues(const OrderedJson& json, std::vector<ItemLevelV
     }
     if (!found->is_object())
     {
-        AddIssue(ItemDataIssueSeverity::Error, Keys::LevelValues, "must be an object of placeholders and their values");
+        AddIssue(ItemDataIssueSeverity::Fatal, Keys::LevelValues, "must be an object of placeholders and their values");
         return;
     }
     for (const auto& [name, list] : found->items())
@@ -685,12 +689,12 @@ void ItemReader::ReadLevelValues(const OrderedJson& json, std::vector<ItemLevelV
         const std::string field = std::string(Keys::LevelValues) + "." + name;
         if (!Json::IsName(name))
         {
-            AddIssue(ItemDataIssueSeverity::Error, field, "a placeholder name has only letters and digits");
+            AddIssue(ItemDataIssueSeverity::Fatal, field, "a placeholder name has only letters and digits");
             continue;
         }
         if (!list.is_array() || list.empty() || list.size() > ItemLevelCount)
         {
-            AddIssue(ItemDataIssueSeverity::Error, field,
+            AddIssue(ItemDataIssueSeverity::Fatal, field,
                      "must be a list of one value for each item level from +0, at most " +
                          std::to_string(ItemLevelCount));
             continue;
@@ -708,7 +712,7 @@ void ItemReader::ReadLevelValues(const OrderedJson& json, std::vector<ItemLevelV
                 if (value.textName.empty())
                 {
                     AddIssue(
-                        ItemDataIssueSeverity::Error, field + "[" + std::to_string(level) + "]",
+                        ItemDataIssueSeverity::Fatal, field + "[" + std::to_string(level) + "]",
                         "\"@\" names no text: a shared text is \"@\" and its name in the tooltip file's \"texts\"");
                 }
             }
@@ -716,7 +720,7 @@ void ItemReader::ReadLevelValues(const OrderedJson& json, std::vector<ItemLevelV
             {
                 Json::ReadLocalizedString(json, field + "[" + std::to_string(level) + "]", value.text,
                                           [this](const std::string& errorField, const std::string& message)
-                                          { AddIssue(ItemDataIssueSeverity::Error, errorField, message); });
+                                          { AddIssue(ItemDataIssueSeverity::Fatal, errorField, message); });
             }
             entry.values.push_back(std::move(value));
         }
@@ -730,7 +734,7 @@ bool ItemReader::ReadConditionList(const OrderedJson& json, const std::string& f
 {
     ReadTooltipConditions(json, field, R"(["durability", "!timed"])", when,
                           [this](const std::string& errorField, const std::string& message)
-                          { AddIssue(ItemDataIssueSeverity::Error, errorField, message); });
+                          { AddIssue(ItemDataIssueSeverity::Fatal, errorField, message); });
     return json.is_array();
 }
 
@@ -745,7 +749,7 @@ void ItemReader::ReadDescriptionColors(const OrderedJson& json, const std::strin
 {
     if (!json.is_array())
     {
-        AddIssue(ItemDataIssueSeverity::Error, field, "must be a list of {\"when\": [...], \"color\": ...}");
+        AddIssue(ItemDataIssueSeverity::Fatal, field, "must be a list of {\"when\": [...], \"color\": ...}");
         return;
     }
     for (size_t index = 0; index < json.size(); ++index)
@@ -756,14 +760,14 @@ void ItemReader::ReadDescriptionColors(const OrderedJson& json, const std::strin
         const auto color = entry.is_object() ? entry.find(Keys::Color) : entry.end();
         if (when == entry.end() || color == entry.end())
         {
-            AddIssue(ItemDataIssueSeverity::Error, entryField, "must be {\"when\": [...], \"color\": ...}");
+            AddIssue(ItemDataIssueSeverity::Fatal, entryField, "must be {\"when\": [...], \"color\": ...}");
             continue;
         }
         TooltipColorRule rule;
         ReadConditionList(*when, entryField + "." + Keys::When, rule.when);
         if (rule.when.empty())
         {
-            AddIssue(ItemDataIssueSeverity::Error, entryField + "." + Keys::When,
+            AddIssue(ItemDataIssueSeverity::Fatal, entryField + "." + Keys::When,
                      "a color rule needs a condition; the line's \"color\" is the color when no rule holds");
         }
         ReadValue(*color, entryField + "." + Keys::Color, rule.color);
@@ -782,7 +786,7 @@ void ItemReader::ReadDescriptionLevels(const OrderedJson& json, const std::strin
     long long last = 0;
     if (!json.is_array() || json.size() != 2 || !readLevel(json[0], first) || !readLevel(json[1], last) || first > last)
     {
-        AddIssue(ItemDataIssueSeverity::Error, field,
+        AddIssue(ItemDataIssueSeverity::Fatal, field,
                  "must be [first, last], two item levels from 0 to " + std::to_string(ItemLevelCount - 1) +
                      " with the first not above the last");
         return;
@@ -813,7 +817,7 @@ void ItemReader::ReadRequirements(const OrderedJson& json, ItemDefinition& defin
     }
     if (!requirements->is_object())
     {
-        AddIssue(ItemDataIssueSeverity::Error, Keys::Requirements, "must be an object");
+        AddIssue(ItemDataIssueSeverity::Fatal, Keys::Requirements, "must be an object");
         return;
     }
 
@@ -842,7 +846,7 @@ void ItemReader::ReadByteTable(const OrderedJson& json, const char* key, std::ar
     }
     if (!table->is_object())
     {
-        AddIssue(ItemDataIssueSeverity::Error, key, "must be an object");
+        AddIssue(ItemDataIssueSeverity::Fatal, key, "must be an object");
         return;
     }
 
@@ -865,6 +869,39 @@ void ItemReader::WarnAboutUnknownKeys(const OrderedJson& json, const std::set<st
                                { AddIssue(ItemDataIssueSeverity::Warning, field, message); });
 }
 
+// UTF-16 characters, as the client's wide strings hold the text: a character past U+FFFF counts as two.
+static size_t Utf16Length(std::string_view text)
+{
+    size_t length = 0;
+    for (const char c : text)
+    {
+        const auto byte = static_cast<unsigned char>(c);
+        if ((byte & 0xC0) != 0x80)
+        {
+            length += byte >= 0xF0 ? 2 : 1;
+        }
+    }
+    return length;
+}
+
+void ItemReader::WarnAboutLongText(const LocalizedString& text, const std::string& field, size_t maxLength)
+{
+    const auto check = [&](std::string_view locale, const std::string& written)
+    {
+        if (Utf16Length(written) > maxLength)
+        {
+            AddIssue(ItemDataIssueSeverity::Warning, field,
+                     "is longer than " + std::to_string(maxLength) + " characters in \"" + std::string(locale) +
+                         "\": the tooltip shows only the first " + std::to_string(maxLength));
+        }
+    };
+    check(LocalizedString::NeutralLocale, text.GetNeutral());
+    for (const auto& [locale, translation] : text.GetTranslations())
+    {
+        check(locale, translation);
+    }
+}
+
 void ItemReader::ReadRequirementsByLevel(const OrderedJson& json, ItemDefinition& definition)
 {
     const auto byLevel = json.find(Keys::RequirementsByLevel);
@@ -874,7 +911,7 @@ void ItemReader::ReadRequirementsByLevel(const OrderedJson& json, ItemDefinition
     }
     if (!byLevel->is_object())
     {
-        AddIssue(ItemDataIssueSeverity::Error, Keys::RequirementsByLevel, "must be an object");
+        AddIssue(ItemDataIssueSeverity::Fatal, Keys::RequirementsByLevel, "must be an object");
         return;
     }
     for (const auto& [key, values] : byLevel->items())
@@ -883,14 +920,14 @@ void ItemReader::ReadRequirementsByLevel(const OrderedJson& json, ItemDefinition
         const auto requirement = std::find(RequirementKeys.begin(), RequirementKeys.end(), key);
         if (requirement == RequirementKeys.end())
         {
-            AddIssue(ItemDataIssueSeverity::Error, field, "is not a requirement");
+            AddIssue(ItemDataIssueSeverity::Fatal, field, "is not a requirement");
             continue;
         }
         RequirementByLevel levels{};
         const bool read = Json::ReadPerLevelValues(
             values, field, levels, [this](const OrderedJson& entry, const std::string& entryField, WORD& value)
             { ReadValue(entry, entryField, value); }, [this](const std::string& errorField, const std::string& message)
-            { AddIssue(ItemDataIssueSeverity::Error, errorField, message); });
+            { AddIssue(ItemDataIssueSeverity::Fatal, errorField, message); });
         if (read)
         {
             definition.requirementsByLevel.Set(static_cast<ItemRequirement>(requirement - RequirementKeys.begin()),
@@ -920,7 +957,7 @@ bool ItemReader::Read(const OrderedJson& json, ItemDefinition& definition)
 {
     if (!json.is_object())
     {
-        AddIssue(ItemDataIssueSeverity::Error, "", "an item must be an object");
+        AddIssue(ItemDataIssueSeverity::Fatal, "", "an item must be an object");
         return false;
     }
     if (!ReadIdentity(json, definition))
@@ -940,7 +977,7 @@ bool ItemReader::Read(const OrderedJson& json, ItemDefinition& definition)
 
     static const std::set<std::string, std::less<>> KnownItemKeys = GetKnownItemKeys();
     WarnAboutUnknownKeys(json, KnownItemKeys, "");
-    return !m_hasErrors;
+    return !m_hasFatal;
 }
 
 } // namespace

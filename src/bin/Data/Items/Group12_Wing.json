@@ -709,6 +709,7 @@
             "ru": "Используется для объединения предметов Хаоса.",
             "tl": "Ito ay ginagamit upang pagsamahin ang Chaos item",
             "uk": "Використовується для комбінування предметів Хаосу",
+            "zh-CN": "玛雅合成时使用",
             "zh-TW": "它用於組合混沌物品"
           }
         }
@@ -919,24 +920,14 @@
       "name": {
         "en": "Bundle of Jewel of Bless",
         "de": "Bündel Juwelen des Segens",
-        "es": "manojo de Joyas de Bendición",
-        "pt": "feixe da Joia da bênção"
+        "es": "Fardo de Joyas de Bendición",
+        "pt": "Lote de Joias da bênção"
       },
       "tags": ["valuable"],
       "nameLines": [
         {
           "text": {
-            "en": "Jewel of Bless +{levelPlusOne}",
-            "de": "Juwel des Segens +{levelPlusOne}",
-            "es": "Joya de bendición +{levelPlusOne}",
-            "id": "Permata Berkat +{levelPlusOne}",
-            "ja": "祝福の宝石 +{levelPlusOne}",
-            "pl": "Jewel of Bless +{levelPlusOne}",
-            "pt": "Jóia da Abençoação +{levelPlusOne}",
-            "ru": "Драгоценный камень благословения +{levelPlusOne}",
-            "tl": "Hiyas ng Pagpapala +{levelPlusOne}",
-            "uk": "Jewel of Bless +{levelPlusOne}",
-            "zh-TW": "祝福寶石 +{levelPlusOne}"
+            "en": "{name} x{bundleCount}"
           },
           "color": "yellow"
         }
@@ -958,24 +949,14 @@
       "name": {
         "en": "Bundle of Jewel of Soul",
         "de": "Bündel Juwelen der Seele",
-        "es": "manojo de Joyas de Alma",
-        "pt": "feixe da Joia da alma"
+        "es": "Fardo de Joyas de Alma",
+        "pt": "Lote de Joias da alma"
       },
       "tags": ["valuable"],
       "nameLines": [
         {
           "text": {
-            "en": "Jewel of Soul +{levelPlusOne}",
-            "de": "Juwel der Seele +{levelPlusOne}",
-            "es": "joya del alma +{levelPlusOne}",
-            "id": "Permata Jiwa +{levelPlusOne}",
-            "ja": "霊魂の宝石 +{levelPlusOne}",
-            "pl": "Jewel of Soul +{levelPlusOne}",
-            "pt": "Jóia da Alma +{levelPlusOne}",
-            "ru": "Драгоценность души +{levelPlusOne}",
-            "tl": "Hiyas ng Kaluluwa +{levelPlusOne}",
-            "uk": "Перлина душі +{levelPlusOne}",
-            "zh-TW": "靈魂寶石 +{levelPlusOne}"
+            "en": "{name} x{bundleCount}"
           },
           "color": "yellow"
         }
@@ -3207,26 +3188,16 @@
     {
       "number": 136,
       "name": {
-        "en": "Jewel of Life Bundle",
+        "en": "Bundle of Jewel of Life",
         "de": "Bündel Juwelen des Lebens",
-        "es": "Fardo de Joyas de la Vida",
-        "pt": "Joia do Lote da Vida"
+        "es": "Fardo de Joyas de Vida",
+        "pt": "Lote de Joias da vida"
       },
       "tags": ["valuable"],
       "nameLines": [
         {
           "text": {
-            "en": "Jewel of Life +{levelPlusOne}",
-            "de": "Juwel des Lebens +{levelPlusOne}",
-            "es": "joya de la vida +{levelPlusOne}",
-            "id": "Permata Kehidupan +{levelPlusOne}",
-            "ja": "生命の宝石 +{levelPlusOne}",
-            "pl": "Jewel of Life +{levelPlusOne}",
-            "pt": "Jóia da Vida +{levelPlusOne}",
-            "ru": "Жемчужина жизни +{levelPlusOne}",
-            "tl": "Hiyas ng Buhay +{levelPlusOne}",
-            "uk": "Перлина життя +{levelPlusOne}",
-            "zh-TW": "生命寶石 +{levelPlusOne}"
+            "en": "{name} x{bundleCount}"
           },
           "color": "yellow"
         }
@@ -3247,26 +3218,16 @@
     {
       "number": 137,
       "name": {
-        "en": "Jewel of Creation Bundle",
+        "en": "Bundle of Jewel of Creation",
         "de": "Bündel Juwelen der Schöpfung",
         "es": "Fardo de Joyas de la Creación",
-        "pt": "Joia do Lote da Criação"
+        "pt": "Lote de Joias da criação"
       },
       "tags": ["valuable"],
       "nameLines": [
         {
           "text": {
-            "en": "Jewel of Creation +{levelPlusOne}",
-            "de": "Juwel der Schöpfung +{levelPlusOne}",
-            "es": "Joya de la creación +{levelPlusOne}",
-            "id": "Permata Penciptaan +{levelPlusOne}",
-            "ja": "創造の宝石 +{levelPlusOne}",
-            "pl": "Jewel of Creation +{levelPlusOne}",
-            "pt": "Jóia da Criação +{levelPlusOne}",
-            "ru": "Драгоценность творения +{levelPlusOne}",
-            "tl": "Hiyas ng Paglikha +{levelPlusOne}",
-            "uk": "Перлина Творіння +{levelPlusOne}",
-            "zh-TW": "創造寶石 +{levelPlusOne}"
+            "en": "{name} x{bundleCount}"
           },
           "color": "yellow"
         }
@@ -3287,26 +3248,16 @@
     {
       "number": 138,
       "name": {
-        "en": "Jewel of Guardian Bundle",
+        "en": "Bundle of Jewel of Guardian",
         "de": "Bündel Juwelen des Wächters",
-        "es": "Fardo de Joyas Guardián",
-        "pt": "Joia do Lote Guardião"
+        "es": "Fardo de Joyas de Guardián",
+        "pt": "Lote de Joias do guardião"
       },
       "tags": ["valuable"],
       "nameLines": [
         {
           "text": {
-            "en": "Jewel of Guardian +{levelPlusOne}",
-            "de": "Juwel des Wächters +{levelPlusOne}",
-            "es": "Joya del guardián +{levelPlusOne}",
-            "id": "Permata Penjaga +{levelPlusOne}",
-            "ja": "守護の宝石 +{levelPlusOne}",
-            "pl": "Jewel of Guardian +{levelPlusOne}",
-            "pt": "Jóia do Guardião +{levelPlusOne}",
-            "ru": "Сокровище Хранителя +{levelPlusOne}",
-            "tl": "Hiyas ng Tagapangalaga +{levelPlusOne}",
-            "uk": "Jewel of Guardian +{levelPlusOne}",
-            "zh-TW": "守護者寶石 +{levelPlusOne}"
+            "en": "{name} x{bundleCount}"
           },
           "color": "yellow"
         }
@@ -3327,26 +3278,16 @@
     {
       "number": 139,
       "name": {
-        "en": "Gemstone Bundle",
+        "en": "Bundle of Gemstone",
         "de": "Bündel Edelsteine",
         "es": "Fardo de Gemas",
-        "pt": "Lote de Pedra Preciosa"
+        "pt": "Lote de Pedras preciosas"
       },
       "tags": ["valuable"],
       "nameLines": [
         {
           "text": {
-            "en": "Jewel stone +{levelPlusOne}",
-            "de": "Juwelenstein +{levelPlusOne}",
-            "es": "piedra joya +{levelPlusOne}",
-            "id": "Batu permata +{levelPlusOne}",
-            "ja": "調和の原石 +{levelPlusOne}",
-            "pl": "Jewel stone +{levelPlusOne}",
-            "pt": "Pedra joia +{levelPlusOne}",
-            "ru": "Драгоценный камень +{levelPlusOne}",
-            "tl": "Bato ng hiyas +{levelPlusOne}",
-            "uk": "Коштовний камінь +{levelPlusOne}",
-            "zh-TW": "寶石石 +{levelPlusOne}"
+            "en": "{name} x{bundleCount}"
           },
           "color": "yellow"
         }
@@ -3367,26 +3308,16 @@
     {
       "number": 140,
       "name": {
-        "en": "Jewel of Harmony Bundle",
+        "en": "Bundle of Jewel of Harmony",
         "de": "Bündel Juwelen der Harmonie",
         "es": "Fardo de Joyas de la Armonía",
-        "pt": "Joia do Lote da Harmonia"
+        "pt": "Lote de Joias da harmonia"
       },
       "tags": ["valuable"],
       "nameLines": [
         {
           "text": {
-            "en": "Jewel of Harmony +{levelPlusOne}",
-            "de": "Juwel der Harmonie +{levelPlusOne}",
-            "es": "Joya de la armonía +{levelPlusOne}",
-            "id": "Permata Harmoni +{levelPlusOne}",
-            "ja": "調和の宝石の使い方 +{levelPlusOne}",
-            "pl": "Jewel of Harmony +{levelPlusOne}",
-            "pt": "Jóia da Harmonia +{levelPlusOne}",
-            "ru": "Жемчужина гармонии +{levelPlusOne}",
-            "tl": "Jewel of Harmony +{levelPlusOne}",
-            "uk": "Перлина гармонії +{levelPlusOne}",
-            "zh-TW": "和諧寶石 +{levelPlusOne}"
+            "en": "{name} x{bundleCount}"
           },
           "color": "yellow"
         }
@@ -3407,26 +3338,16 @@
     {
       "number": 141,
       "name": {
-        "en": "Jewel of Chaos Bundle",
+        "en": "Bundle of Jewel of Chaos",
         "de": "Bündel Juwelen des Chaos",
-        "es": "Fardo de Joyas del Caos",
-        "pt": "Joia do Lote do Caos"
+        "es": "Fardo de Joyas de Caos",
+        "pt": "Lote de Joias do caos"
       },
       "tags": ["valuable"],
       "nameLines": [
         {
           "text": {
-            "en": "Jewel of Chaos +{levelPlusOne}",
-            "de": "Juwel des Chaos +{levelPlusOne}",
-            "es": "joya del caos +{levelPlusOne}",
-            "id": "Permata Kekacauan +{levelPlusOne}",
-            "ja": "混沌の宝石 +{levelPlusOne}",
-            "pl": "Jewel of Chaos +{levelPlusOne}",
-            "pt": "Jóia do Caos +{levelPlusOne}",
-            "ru": "Жемчужина хаоса +{levelPlusOne}",
-            "tl": "Hiyas ng Chaos +{levelPlusOne}",
-            "uk": "Перлина Хаосу +{levelPlusOne}",
-            "zh-TW": "混沌寶石 +{levelPlusOne}"
+            "en": "{name} x{bundleCount}"
           },
           "color": "yellow"
         }
@@ -3447,26 +3368,16 @@
     {
       "number": 142,
       "name": {
-        "en": "Lower Refining Stone Bundle",
+        "en": "Bundle of Lower Refining Stone",
         "de": "Bündel niederer Verfeinerungssteine",
-        "es": "Fardo de Joyas de Bajo Pulido",
-        "pt": "Lote de Joias de Baixo Polimento"
+        "es": "Fardo de Piedras de Más Baja Refinación",
+        "pt": "Lote de Pedras refinadas inferiores"
       },
       "tags": ["valuable"],
       "nameLines": [
         {
           "text": {
-            "en": "Lower Refining Stone +{levelPlusOne}",
-            "de": "Niederer Verfeinerungsstein +{levelPlusOne}",
-            "es": "Piedra de refinación inferior +{levelPlusOne}",
-            "id": "Batu Pemurnian Bawah +{levelPlusOne}",
-            "ja": "下級製錬石 +{levelPlusOne}",
-            "pl": "Lower Refining Stone +{levelPlusOne}",
-            "pt": "Pedra de Refino Inferior +{levelPlusOne}",
-            "ru": "Нижний очищающий камень +{levelPlusOne}",
-            "tl": "Lower Refining Stone +{levelPlusOne}",
-            "uk": "Нижній очисний камінь +{levelPlusOne}",
-            "zh-TW": "下層精煉石 +{levelPlusOne}"
+            "en": "{name} x{bundleCount}"
           },
           "color": "yellow"
         }
@@ -3487,26 +3398,16 @@
     {
       "number": 143,
       "name": {
-        "en": "Higher Refining Stone Bundle",
+        "en": "Bundle of Higher Refining Stone",
         "de": "Bündel höherer Verfeinerungssteine",
-        "es": "Fardo de Joyas de Alto Pulido",
-        "pt": "Lote de Joias de Alto Polimento"
+        "es": "Fardo de Piedras de Más Alta Refinación",
+        "pt": "Lote de Pedras refinadas superiores"
       },
       "tags": ["valuable"],
       "nameLines": [
         {
           "text": {
-            "en": "Higher Refining Stone +{levelPlusOne}",
-            "de": "Höherer Verfeinerungsstein +{levelPlusOne}",
-            "es": "Piedra de mayor refinamiento +{levelPlusOne}",
-            "id": "Batu Pemurnian Tinggi +{levelPlusOne}",
-            "ja": "上級製錬石 +{levelPlusOne}",
-            "pl": "Higher Refining Stone +{levelPlusOne}",
-            "pt": "Pedra de alto refino +{levelPlusOne}",
-            "ru": "Камень высшей очистки +{levelPlusOne}",
-            "tl": "Higher Refining Stone +{levelPlusOne}",
-            "uk": "Вищий очисний камінь +{levelPlusOne}",
-            "zh-TW": "高等精煉石 +{levelPlusOne}"
+            "en": "{name} x{bundleCount}"
           },
           "color": "yellow"
         }

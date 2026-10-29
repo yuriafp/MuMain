@@ -37,9 +37,15 @@
 #include <filesystem>
 #include <fstream>
 #include <map>
+#include <memory>
 #include <sstream>
 #include <string>
 #include <vector>
+
+#ifdef MU_ENABLE_CONTROL_SOCKET
+#include "App/Control/ControlCommands.h"
+#include "App/Control/ControlProtocol.h"
+#endif
 
 namespace
 {
@@ -536,6 +542,36 @@ TEST_CASE("An item's add option values come from its add option [data][items][to
     CHECK_FALSE(duration->empty());
 }
 
+TEST_CASE("An item's duration text follows the UI's language [data][items][tooltip]")
+{
+    ClientDataScope client(ClientDirectory);
+    std::string errorMessage;
+    REQUIRE(g_ItemDataHandler.Load(errorMessage));
+    TooltipDataScope data;
+    using Data::Items::TooltipValue;
+    using Engine::Items::TooltipValues::GetItemTooltipText;
+
+    // An hour and a second: the words for hours and seconds differ between English and German.
+    ItemTooltipValues values;
+    values.addOptionTime = 3601;
+    const auto written = [&]
+    {
+        std::wstring text;
+        g_StringTime(values.addOptionTime, text, true);
+        return text;
+    };
+    I18N::SetLocale("en");
+    const std::wstring english = GetItemTooltipText(values, TooltipValue::AddOptionDuration);
+    CHECK(english == written());
+    // The same time after a language change is written again in the new language.
+    I18N::SetLocale("de");
+    const std::wstring german = GetItemTooltipText(values, TooltipValue::AddOptionDuration);
+    CHECK(german == written());
+    CHECK(german != english);
+    I18N::SetLocale("en");
+    CHECK(GetItemTooltipText(values, TooltipValue::AddOptionDuration) == english);
+}
+
 TEST_CASE("The Weapon of Archangel shows its reward weapon's skill mana from the skill data [data][items][tooltip]")
 {
     ClientDataScope client(ClientDirectory);
@@ -590,6 +626,47 @@ TEST_CASE("An item's lines drawn after its options follow them [data][items][too
     REQUIRE(transform > 0);
     CHECK(panda[transform - 1].text == L"\n");
     SetItemTooltipTextMeasure(nullptr);
+}
+
+TEST_CASE("The item names of windows and ground labels come from the name lines [data][items][tooltip]")
+{
+    ClientDataScope client(ClientDirectory);
+    std::string errorMessage;
+    REQUIRE(g_ItemDataHandler.Load(errorMessage));
+    TooltipDataScope data;
+    TooltipHeroScope hero;
+    MakeBladeMaster(hero.Hero());
+
+    // Without name lines: the name, " +level" above +0, and no "Excellent" or set name.
+    CHECK(GetItemNameText(ITEM_SWORD, 0) == L"Kris");
+    CHECK(GetItemNameText(ITEM_SWORD, 5) == L"Kris +5");
+    ITEM kris;
+    FillItemFromParameters(kris, Engine::Items::TooltipSnapshot::FullItemParameters(0, 0));
+    kris.ExcellentFlags = 1;
+    CHECK(GetItemNameText(kris.Type, kris.Level, &kris) == L"Kris");
+
+    // A name line's text at its levels; the standard name where none holds.
+    CHECK(GetItemNameText(ITEM_BOX_OF_LUCK, 4) == L"Olive of love");
+    CHECK(GetItemNameText(ITEM_LOST_MAP, 0) == L"Lost Map");
+    CHECK(GetItemNameText(ITEM_LOST_MAP, 3) == L"Lost Map +3");
+    CHECK(GetItemNameText(ITEM_SPIRIT, 0) == L"Spirit of Dark horse");
+    // The Weapon of Archangel's level names the weapon; a dropped one keeps it (CreateItemDrop), so its ground label
+    // names the right one.
+    CHECK(GetItemNameText(ITEM_WEAPON_OF_ARCHANGEL, 0) == L"Absolute Staff of Archangel");
+    CHECK(GetItemNameText(ITEM_WEAPON_OF_ARCHANGEL, 1) == L"Absolute Sword of Archangel");
+    CHECK(GetItemNameText(ITEM_WEAPON_OF_ARCHANGEL, 2) == L"Absolute Crossbow of Archangel");
+
+    // A line's condition on the item: without the item, its options read 0.
+    CHECK(GetItemNameText(ITEM_HORN_OF_FENRIR, 0) == L"Horn of Fenrir");
+    ITEM horn;
+    FillItemFromParameters(horn, Engine::Items::TooltipSnapshot::FullItemParameters(13, 37));
+    horn.ExcellentFlags = 1;
+    CHECK(GetItemNameText(horn.Type, 0, &horn) == L"Horn of Fenrir +Destroy");
+
+    wchar_t name[64] = L"";
+    GetItemName(ITEM_BOX_OF_LUCK, 4, name);
+    CHECK(std::wstring(name) == L"Olive of love");
+    CHECK(GetItemNameText(-1, 0).empty());
 }
 
 // The option lines are the lines the full item has and the plain one doesn't (luck, skill, the option, the excellent
@@ -764,6 +841,94 @@ TEST_CASE("A tooltip's name color goes by the item's kind, level and options in 
     SetItemTooltipTextMeasure(nullptr);
 }
 
+// The quests, the mixes, the server's messages and the ground labels name an item with GetItemName: for every item at
+// every level, the name is the tooltip's first line that isn't blank, which the recorded snapshot covers.
+TEST_CASE("Every item's name at every level is its tooltip's name [data][items][tooltip]")
+{
+    ClientDataScope client(ClientDirectory);
+    std::string errorMessage;
+    REQUIRE(g_ItemDataHandler.Load(errorMessage));
+    TooltipDataScope data;
+    TooltipHeroScope hero;
+    MakeBladeMaster(hero.Hero());
+    SetItemTooltipTextMeasure(&FixedWidthMeasure);
+
+    int names = 0;
+    int different = 0;
+    for (const Data::Items::ItemDefinition& definition : g_ItemDatabase.GetAllSlots())
+    {
+        if (!definition.Exists())
+        {
+            continue;
+        }
+        for (int level = 0; level < Data::Items::ItemLevelCount; ++level)
+        {
+            ItemCreationParams params = Engine::Items::TooltipSnapshot::FullItemParameters(definition.group, definition.number);
+            params.Level = static_cast<BYTE>(level);
+            const std::vector<ItemTooltipLine> lines = Engine::Items::TooltipSnapshot::TooltipOfParameters(params);
+            // The name is the first line that isn't blank.
+            const auto first = std::find_if(lines.begin(), lines.end(),
+                                            [](const ItemTooltipLine& line) { return line.text != L"\n"; });
+            if (first == lines.end())
+            {
+                continue;
+            }
+            const int type = definition.group * MAX_ITEM_INDEX + definition.number;
+            const std::wstring name = GetItemNameText(type, level);
+            wchar_t buffer[128] = L"";
+            GetItemName(type, level, buffer);
+            ++names;
+            if (name != first->text || std::wstring(buffer) != name)
+            {
+                if (++different <= 5)
+                {
+                    INFO(definition.group << "/" << definition.number << " +" << level);
+                    CHECK(Core::Text::ToUtf8(name.c_str()) == Core::Text::ToUtf8(first->text.c_str()));
+                    CHECK(Core::Text::ToUtf8(buffer) == Core::Text::ToUtf8(name.c_str()));
+                }
+            }
+        }
+    }
+    SetItemTooltipTextMeasure(nullptr);
+    CHECK(names > 911 * 10);
+    CHECK(different == 0);
+}
+
+// The ten jewel and stone bundles name their count, 10 per level from 10 at +0, in the item names' language.
+TEST_CASE("A bundle's name has its count at every level [data][items][tooltip]")
+{
+    ClientDataScope client(ClientDirectory);
+    std::string errorMessage;
+    REQUIRE(g_ItemDataHandler.Load(errorMessage));
+    TooltipDataScope data;
+
+    const std::pair<int, std::wstring> bundles[] = {
+        {30, L"Bundle of Jewel of Bless"},        {31, L"Bundle of Jewel of Soul"},
+        {136, L"Bundle of Jewel of Life"},        {137, L"Bundle of Jewel of Creation"},
+        {138, L"Bundle of Jewel of Guardian"},    {139, L"Bundle of Gemstone"},
+        {140, L"Bundle of Jewel of Harmony"},     {141, L"Bundle of Jewel of Chaos"},
+        {142, L"Bundle of Lower Refining Stone"}, {143, L"Bundle of Higher Refining Stone"},
+    };
+    for (const auto& [number, name] : bundles)
+    {
+        for (int level = 0; level <= 3; ++level)
+        {
+            INFO("12/" << number << " +" << level);
+            CHECK(GetItemNameText(ITEM_WING + number, level) == name + L" x" + std::to_wstring(10 * (level + 1)));
+        }
+    }
+
+    // In another language, with translated item names on: the translated name, the same count.
+    const std::string uiLocale = I18N::GetCurrentLocale();
+    const bool translateItemNames = g_ItemDataHandler.GetTranslateItemNames();
+    g_ItemDataHandler.SetTranslateItemNames(true);
+    I18N::SetLocale("es");
+    const std::wstring spanish = GetItemNameText(ITEM_WING + 142, 3);
+    I18N::SetLocale(uiLocale.c_str());
+    g_ItemDataHandler.SetTranslateItemNames(translateItemNames);
+    CHECK(spanish == L"Fardo de Piedras de Más Baja Refinación x40");
+}
+
 TEST_CASE("With translated item names off, the names are English and the rest of the tooltip is translated "
           "[data][items][tooltip]")
 {
@@ -800,3 +965,94 @@ TEST_CASE("With translated item names off, the names are English and the rest of
     CHECK(std::any_of(ring.begin(), ring.end(),
                       [](const ItemTooltipLine& line) { return line.text.ends_with(L"Transformation Ring"); }));
 }
+
+// A full item's durability is the one the repair window counts as full (CalcMaxDurability): it grows with the level,
+// an excellent or ancient option raises it, a staff or stick starts from its magic durability, and the item's byte
+// holds at most 255.
+TEST_CASE("An item's full durability follows its level, options and magic durability [data][items][tooltip]")
+{
+    ClientDataScope client(ClientDirectory);
+    std::string errorMessage;
+    REQUIRE(g_ItemDataHandler.Load(errorMessage));
+    TooltipDataScope data;
+    TooltipHeroScope hero;
+    MakeBladeMaster(hero.Hero());
+
+    const auto full = [](int group, int number, int level, BYTE excellent, BYTE ancient)
+    {
+        ItemCreationParams params = Engine::Items::TooltipSnapshot::FullItemParameters(group, number);
+        params.Level = static_cast<BYTE>(level);
+        params.HasExcellentOption = excellent > 0;
+        params.ExcellentFlags = excellent;
+        params.IsAncient = ancient > 0;
+        params.AncientDiscriminator = ancient;
+        return static_cast<int>(Engine::Items::TooltipSnapshot::FullDurability(params));
+    };
+    // The Kris (0/0): 20 at +0, 34 at +9, 15 more with an excellent option, 20 more as an ancient item.
+    CHECK(full(0, 0, 0, 0, 0) == 20);
+    CHECK(full(0, 0, 9, 0, 0) == 34);
+    CHECK(full(0, 0, 0, 1, 0) == 35);
+    CHECK(full(0, 0, 0, 0, 1) == 40);
+    // The Skull Staff (5/0) and the Storm Blitz Stick (5/19) have no durability of their own, only a magic one.
+    CHECK(full(5, 0, 0, 0, 0) == 20);
+    CHECK(full(5, 19, 0, 0, 0) == 95);
+    // The Dark Horse (13/4) is at 255 already; its excellent option's 15 more don't fit the byte.
+    CHECK(full(13, 4, 0, 1, 0) == 255);
+}
+
+#ifdef MU_ENABLE_CONTROL_SOCKET
+namespace
+{
+std::string RunCommand(std::string (*command)(const App::Control::Request&, std::unique_ptr<App::Control::Act>&),
+                       const std::string& raw)
+{
+    std::unique_ptr<App::Control::Act> act;
+    return command(App::Control::Request::Parse(raw), act);
+}
+} // namespace
+
+// Without `durability`, `tooltip` and `repair-tooltip` make a full item, at the durability the repair window counts as
+// full, so its repair costs nothing; the item's level and options count. The drawn repair tooltip's RepairEnable stays
+// as it is.
+TEST_CASE("The item commands make a full item when the durability is left out [data][items][tooltip][control]")
+{
+    ProcessLocaleScope locale;
+    ClientDataScope client(ClientDirectory);
+    std::string errorMessage;
+    REQUIRE(g_ItemDataHandler.Load(errorMessage));
+    TooltipDataScope data;
+    TooltipHeroScope hero;
+    MakeBladeMaster(hero.Hero());
+    SetItemTooltipTextMeasure(&FixedWidthMeasure);
+
+    const std::pair<const char*, int> items[] = {
+        {R"("group":0,"number":0,"level":9)", 34}, // the Kris +9
+        {R"("group":0,"number":0,"excellent":1)", 35},
+        {R"("group":0,"number":0,"ancient":1)", 40},
+        {R"("group":5,"number":0)", 20},  // the Skull Staff
+        {R"("group":5,"number":19)", 95}, // the Storm Blitz Stick
+    };
+    const int repairEnable = RepairEnable;
+    RepairEnable = 7;
+    for (const auto& [fields, full] : items)
+    {
+        INFO(fields);
+        const std::string durability = Core::Text::ToUtf8(Formatted(L"Durability: [%d/%d]", full, full).c_str());
+        const std::string tooltip =
+            RunCommand(&App::Control::Commands::ItemTooltip, std::string(R"({"cmd":"tooltip",)") + fields + "}");
+        CHECK(tooltip.find(durability) != std::string::npos);
+        const std::string repair = RunCommand(&App::Control::Commands::RepairTooltip,
+                                              std::string(R"({"cmd":"repair-tooltip",)") + fields + "}");
+        CHECK(repair.find(durability) != std::string::npos);
+        CHECK(repair.find("Repairing cost: 0") != std::string::npos);
+    }
+    CHECK(RepairEnable == 7);
+    RepairEnable = repairEnable;
+
+    // A durability given is kept.
+    const std::string worn = RunCommand(&App::Control::Commands::ItemTooltip,
+                                        R"({"cmd":"tooltip","group":0,"number":0,"level":9,"durability":20})");
+    CHECK(worn.find("Durability: [20/34]") != std::string::npos);
+    SetItemTooltipTextMeasure(nullptr);
+}
+#endif
