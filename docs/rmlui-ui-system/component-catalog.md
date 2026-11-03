@@ -38,7 +38,12 @@ Server selection uses `.server-group-btn` (with `.checked`) and `.server-option-
 (with `.gray` / `.orange` category colors), supplied by both themes' `base.rcss`.
 Use a `.button-label` child for the pressed text offset. `server_select.rml` is the reference;
 its stylesheet owns button and gauge geometry. Legacy uses the original `cha_bt` group
-and `server_b2_all` server sprites at their native aspect ratios within the current two-column layout.
+sprite at its native size and the `server_b2_all` server frame in tiles, so every channel row grows
+as wide as the longest text any channel can have, within the current two-column layout. A row has
+`.server-name` on its top line and below it the `.server-gauge-slot` bar; a full server's
+`.server-load-line` lays its load text over the bar, and `CServerSelWin::FitLoadTexts` hides the
+segments under it. The unseen `.server-row-sizer` row holds every name and load text the rows are
+sized by.
 
 Icon buttons have a narrower contract: `.btn-icon`, `.btn-icon-primary`, `.btn-icon-label` and
 `.btn-icon-caption` are used by the login and character-selection documents. The modern base
@@ -228,7 +233,10 @@ behind one active menu. An enabled button runs its callback and closes; Esc uses
 There is no resolution veto. A callback may enqueue the next menu, as the Gem Integration flow does.
 
 Use configuration for content and supported layout variants. `kind` identifies compatibility
-presentation, while `systemMenu` selects the system-menu presentation. Column support is currently
+presentation (the original box the menu copies, `data-kind`, which also switches the document to
+the native-frame layout), while `systemMenu` selects the system-menu presentation. Every caller
+also sets `id`, which only names the menu (`data-id` on the body) so a theme can target one menu
+without new layout rules; it changes nothing by itself. Column support is currently
 limited to the implemented two-column variant; consult the header before adding another shape.
 Frame structure comes from `window_shell.rml`. References: `generic_menu_dialog.rml`, its themed
 assets, and the menu construction in `CustomMessageBox.cpp`.

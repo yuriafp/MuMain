@@ -616,6 +616,7 @@
           "levels": [6, 6]
         }
       ],
+      "groundLabels": [{"style": "orbOfSummoning"}],
       "width": 1,
       "height": 1,
       "level": 3,
@@ -695,7 +696,7 @@
         "es": "Joya de Caos",
         "pt": "Joia do caos"
       },
-      "tags": ["jewel", "valuable"],
+      "tags": ["jewel", "valuable", "noClassLines"],
       "description": [
         {
           "text": {
@@ -719,6 +720,7 @@
           "color": "yellow"
         }
       ],
+      "groundLabels": [{"style": "jewel"}],
       "width": 1,
       "height": 1,
       "level": 12,
@@ -814,6 +816,9 @@
       }
     },
     {
+      "number": 20
+    },
+    {
       "number": 21,
       "name": {
         "en": "Scroll of FireBurst",
@@ -904,6 +909,7 @@
         "es": "gema del secreto",
         "pt": "gema do segredo"
       },
+      "tags": ["noClassLines"],
       "width": 1,
       "height": 1,
       "classRequirements": {
@@ -923,7 +929,27 @@
         "es": "Fardo de Joyas de Bendición",
         "pt": "Lote de Joias da bênção"
       },
-      "tags": ["valuable"],
+      "tags": ["valuable", "noClassLines"],
+      "description": [
+        {
+          "text": {
+            "en": "{bundleCount} Jewel of Bless is combined",
+            "de": "{bundleCount} Juwel des Segens kombiniert",
+            "es": "{bundleCount} Joya de bendición se combina",
+            "id": "{bundleCount} Permata Berkat digabungkan",
+            "ja": "{bundleCount}の祝福の宝石が合わせられた状態",
+            "pl": "{bundleCount} Jewel of Bless jest połączone",
+            "pt": "{bundleCount} Jóia da Abençoação é combinado",
+            "ru": "{bundleCount} Драгоценный камень благословения комбинированный",
+            "tl": "{bundleCount} Hiyas ng Pagpapala ay pinagsama-sama",
+            "uk": "{bundleCount} Jewel of Bless комбінований",
+            "zh-TW": "{bundleCount} 祝福寶石 組合"
+          }
+        },
+        {
+          "text": "@canBeUsedAfterDismantling"
+        }
+      ],
       "nameLines": [
         {
           "text": {
@@ -932,6 +958,7 @@
           "color": "yellow"
         }
       ],
+      "groundLabels": [{"style": "jewel"}],
       "width": 1,
       "height": 1,
       "level": 25,
@@ -952,7 +979,27 @@
         "es": "Fardo de Joyas de Alma",
         "pt": "Lote de Joias da alma"
       },
-      "tags": ["valuable"],
+      "tags": ["valuable", "noClassLines"],
+      "description": [
+        {
+          "text": {
+            "en": "{bundleCount} Jewel of Soul is combined",
+            "de": "{bundleCount} Juwel der Seele kombiniert",
+            "es": "{bundleCount} joya del alma se combina",
+            "id": "{bundleCount} Permata Jiwa digabungkan",
+            "ja": "{bundleCount}の霊魂の宝石が合わせられた状態",
+            "pl": "{bundleCount} Jewel of Soul jest połączone",
+            "pt": "{bundleCount} Jóia da Alma é combinado",
+            "ru": "{bundleCount} Драгоценность души комбинированный",
+            "tl": "{bundleCount} Hiyas ng Kaluluwa ay pinagsama-sama",
+            "uk": "{bundleCount} Перлина душі комбінований",
+            "zh-TW": "{bundleCount} 靈魂寶石 組合"
+          }
+        },
+        {
+          "text": "@canBeUsedAfterDismantling"
+        }
+      ],
       "nameLines": [
         {
           "text": {
@@ -961,6 +1008,7 @@
           "color": "yellow"
         }
       ],
+      "groundLabels": [{"style": "jewel"}],
       "width": 1,
       "height": 1,
       "level": 30,
@@ -981,6 +1029,13 @@
         "es": "caja de moño rojo",
         "pt": "caixa de fita vermelha"
       },
+      "tags": ["noClassLines"],
+      "description": [
+        {
+          "text": "@throwForZenOrItems",
+          "color": "red"
+        }
+      ],
       "nameLines": [
         {
           "text": {
@@ -988,6 +1043,7 @@
           }
         }
       ],
+      "groundLabels": [{"style": "giftBoxRed"}],
       "width": 1,
       "height": 1,
       "classRequirements": {
@@ -1007,6 +1063,13 @@
         "es": "caja de moño verde",
         "pt": "caixa de fita verde"
       },
+      "tags": ["noClassLines"],
+      "description": [
+        {
+          "text": "@throwForZenOrItems",
+          "color": "green"
+        }
+      ],
       "nameLines": [
         {
           "text": {
@@ -1014,6 +1077,7 @@
           }
         }
       ],
+      "groundLabels": [{"style": "giftBoxGreen"}],
       "width": 1,
       "height": 1,
       "classRequirements": {
@@ -1033,6 +1097,13 @@
         "es": "caja de moño azul",
         "pt": "caixa de fita azul"
       },
+      "tags": ["noClassLines"],
+      "description": [
+        {
+          "text": "@throwForZenOrItems",
+          "color": "blue"
+        }
+      ],
       "nameLines": [
         {
           "text": {
@@ -1040,6 +1111,7 @@
           }
         }
       ],
+      "groundLabels": [{"style": "giftBoxBlue"}],
       "width": 1,
       "height": 1,
       "classRequirements": {
@@ -1066,6 +1138,7 @@
           }
         }
       ],
+      "groundLabels": [{"style": "white"}],
       "width": 1,
       "height": 2,
       "statProfile": "orb",
@@ -1706,6 +1779,7 @@
         "es": "Rollo de Diseier Caótico",
         "pt": "Pergaminho Diseier Caótico"
       },
+      "groundLabels": [{"style": "white"}],
       "width": 1,
       "height": 2,
       "statProfile": "orb",
@@ -1877,6 +1951,7 @@
           "color": "violet"
         }
       ],
+      "groundLabels": [{"style": "seedsAndSpheres"}],
       "width": 1,
       "height": 1,
       "level": 150,
@@ -1908,6 +1983,7 @@
           "color": "violet"
         }
       ],
+      "groundLabels": [{"style": "seedsAndSpheres"}],
       "width": 1,
       "height": 1,
       "level": 150,
@@ -1939,6 +2015,7 @@
           "color": "violet"
         }
       ],
+      "groundLabels": [{"style": "seedsAndSpheres"}],
       "width": 1,
       "height": 1,
       "level": 150,
@@ -1970,6 +2047,7 @@
           "color": "violet"
         }
       ],
+      "groundLabels": [{"style": "seedsAndSpheres"}],
       "width": 1,
       "height": 1,
       "level": 150,
@@ -2001,6 +2079,7 @@
           "color": "violet"
         }
       ],
+      "groundLabels": [{"style": "seedsAndSpheres"}],
       "width": 1,
       "height": 1,
       "level": 150,
@@ -2032,6 +2111,7 @@
           "color": "violet"
         }
       ],
+      "groundLabels": [{"style": "seedsAndSpheres"}],
       "width": 1,
       "height": 1,
       "level": 150,
@@ -2063,6 +2143,7 @@
           "color": "violet"
         }
       ],
+      "groundLabels": [{"style": "seedsAndSpheres"}],
       "width": 1,
       "height": 1,
       "level": 102,
@@ -2094,6 +2175,7 @@
           "color": "violet"
         }
       ],
+      "groundLabels": [{"style": "seedsAndSpheres"}],
       "width": 1,
       "height": 1,
       "level": 122,
@@ -2125,6 +2207,7 @@
           "color": "violet"
         }
       ],
+      "groundLabels": [{"style": "seedsAndSpheres"}],
       "width": 1,
       "height": 1,
       "level": 132,
@@ -2138,6 +2221,16 @@
         "summoner": 1,
         "rageFighter": 1
       }
+    },
+    {
+      "number": 73,
+      "width": 1,
+      "height": 1
+    },
+    {
+      "number": 74,
+      "width": 1,
+      "height": 1
     },
     {
       "number": 100,
@@ -2156,6 +2249,7 @@
           "color": "violet"
         }
       ],
+      "groundLabels": [{"style": "seedsAndSpheres"}],
       "width": 1,
       "height": 1,
       "level": 1,
@@ -2187,6 +2281,7 @@
           "color": "violet"
         }
       ],
+      "groundLabels": [{"style": "seedsAndSpheres"}],
       "width": 1,
       "height": 1,
       "level": 1,
@@ -2218,6 +2313,7 @@
           "color": "violet"
         }
       ],
+      "groundLabels": [{"style": "seedsAndSpheres"}],
       "width": 1,
       "height": 1,
       "level": 1,
@@ -2249,6 +2345,7 @@
           "color": "violet"
         }
       ],
+      "groundLabels": [{"style": "seedsAndSpheres"}],
       "width": 1,
       "height": 1,
       "level": 1,
@@ -2280,6 +2377,7 @@
           "color": "violet"
         }
       ],
+      "groundLabels": [{"style": "seedsAndSpheres"}],
       "width": 1,
       "height": 1,
       "level": 1,
@@ -2311,6 +2409,7 @@
           "color": "violet"
         }
       ],
+      "groundLabels": [{"style": "seedsAndSpheres"}],
       "width": 1,
       "height": 1,
       "level": 1,
@@ -2342,6 +2441,7 @@
           "color": "violet"
         }
       ],
+      "groundLabels": [{"style": "seedsAndSpheres"}],
       "width": 1,
       "height": 1,
       "level": 2,
@@ -2373,6 +2473,7 @@
           "color": "violet"
         }
       ],
+      "groundLabels": [{"style": "seedsAndSpheres"}],
       "width": 1,
       "height": 1,
       "level": 2,
@@ -2404,6 +2505,7 @@
           "color": "violet"
         }
       ],
+      "groundLabels": [{"style": "seedsAndSpheres"}],
       "width": 1,
       "height": 1,
       "level": 2,
@@ -2435,6 +2537,7 @@
           "color": "violet"
         }
       ],
+      "groundLabels": [{"style": "seedsAndSpheres"}],
       "width": 1,
       "height": 1,
       "level": 2,
@@ -2466,6 +2569,7 @@
           "color": "violet"
         }
       ],
+      "groundLabels": [{"style": "seedsAndSpheres"}],
       "width": 1,
       "height": 1,
       "level": 2,
@@ -2497,6 +2601,7 @@
           "color": "violet"
         }
       ],
+      "groundLabels": [{"style": "seedsAndSpheres"}],
       "width": 1,
       "height": 1,
       "level": 2,
@@ -2528,6 +2633,7 @@
           "color": "violet"
         }
       ],
+      "groundLabels": [{"style": "seedsAndSpheres"}],
       "width": 1,
       "height": 1,
       "level": 3,
@@ -2559,6 +2665,7 @@
           "color": "violet"
         }
       ],
+      "groundLabels": [{"style": "seedsAndSpheres"}],
       "width": 1,
       "height": 1,
       "level": 3,
@@ -2590,6 +2697,7 @@
           "color": "violet"
         }
       ],
+      "groundLabels": [{"style": "seedsAndSpheres"}],
       "width": 1,
       "height": 1,
       "level": 3,
@@ -2621,6 +2729,7 @@
           "color": "violet"
         }
       ],
+      "groundLabels": [{"style": "seedsAndSpheres"}],
       "width": 1,
       "height": 1,
       "level": 3,
@@ -2652,6 +2761,7 @@
           "color": "violet"
         }
       ],
+      "groundLabels": [{"style": "seedsAndSpheres"}],
       "width": 1,
       "height": 1,
       "level": 3,
@@ -2683,6 +2793,7 @@
           "color": "violet"
         }
       ],
+      "groundLabels": [{"style": "seedsAndSpheres"}],
       "width": 1,
       "height": 1,
       "level": 3,
@@ -2714,6 +2825,9 @@
           "color": "violet"
         }
       ],
+      "groundLabels": [{"style": "seedsAndSpheres"}],
+      "width": 1,
+      "height": 1,
       "slot": "mainHand"
     },
     {
@@ -2733,6 +2847,9 @@
           "color": "violet"
         }
       ],
+      "groundLabels": [{"style": "seedsAndSpheres"}],
+      "width": 1,
+      "height": 1,
       "slot": "mainHand"
     },
     {
@@ -2752,6 +2869,9 @@
           "color": "violet"
         }
       ],
+      "groundLabels": [{"style": "seedsAndSpheres"}],
+      "width": 1,
+      "height": 1,
       "slot": "mainHand"
     },
     {
@@ -2771,6 +2891,9 @@
           "color": "violet"
         }
       ],
+      "groundLabels": [{"style": "seedsAndSpheres"}],
+      "width": 1,
+      "height": 1,
       "slot": "mainHand"
     },
     {
@@ -2790,6 +2913,9 @@
           "color": "violet"
         }
       ],
+      "groundLabels": [{"style": "seedsAndSpheres"}],
+      "width": 1,
+      "height": 1,
       "slot": "mainHand"
     },
     {
@@ -2809,6 +2935,9 @@
           "color": "violet"
         }
       ],
+      "groundLabels": [{"style": "seedsAndSpheres"}],
+      "width": 1,
+      "height": 1,
       "slot": "mainHand"
     },
     {
@@ -2828,6 +2957,9 @@
           "color": "violet"
         }
       ],
+      "groundLabels": [{"style": "seedsAndSpheres"}],
+      "width": 1,
+      "height": 1,
       "slot": "mainHand"
     },
     {
@@ -2847,6 +2979,9 @@
           "color": "violet"
         }
       ],
+      "groundLabels": [{"style": "seedsAndSpheres"}],
+      "width": 1,
+      "height": 1,
       "slot": "mainHand"
     },
     {
@@ -2866,6 +3001,9 @@
           "color": "violet"
         }
       ],
+      "groundLabels": [{"style": "seedsAndSpheres"}],
+      "width": 1,
+      "height": 1,
       "slot": "mainHand"
     },
     {
@@ -2885,6 +3023,9 @@
           "color": "violet"
         }
       ],
+      "groundLabels": [{"style": "seedsAndSpheres"}],
+      "width": 1,
+      "height": 1,
       "slot": "mainHand"
     },
     {
@@ -2904,6 +3045,9 @@
           "color": "violet"
         }
       ],
+      "groundLabels": [{"style": "seedsAndSpheres"}],
+      "width": 1,
+      "height": 1,
       "slot": "mainHand"
     },
     {
@@ -2923,6 +3067,9 @@
           "color": "violet"
         }
       ],
+      "groundLabels": [{"style": "seedsAndSpheres"}],
+      "width": 1,
+      "height": 1,
       "slot": "mainHand"
     },
     {
@@ -2947,6 +3094,7 @@
           "text": "@increaseSpeed"
         }
       ],
+      "groundLabels": [{"style": "smallWings"}],
       "width": 2,
       "height": 2,
       "slot": "wings",
@@ -2990,6 +3138,7 @@
           "text": "@increaseSpeed"
         }
       ],
+      "groundLabels": [{"style": "smallWings"}],
       "width": 3,
       "height": 2,
       "slot": "wings",
@@ -3033,6 +3182,7 @@
           "text": "@increaseSpeed"
         }
       ],
+      "groundLabels": [{"style": "smallWings"}],
       "width": 3,
       "height": 2,
       "slot": "wings",
@@ -3076,6 +3226,7 @@
           "text": "@increaseSpeed"
         }
       ],
+      "groundLabels": [{"style": "smallWings"}],
       "width": 3,
       "height": 2,
       "slot": "wings",
@@ -3120,6 +3271,7 @@
           "text": "@increaseSpeed"
         }
       ],
+      "groundLabels": [{"style": "smallWings"}],
       "width": 3,
       "height": 2,
       "slot": "wings",
@@ -3164,6 +3316,7 @@
           "text": "@increaseSpeed"
         }
       ],
+      "groundLabels": [{"style": "smallWings"}],
       "width": 2,
       "height": 2,
       "slot": "wings",
@@ -3194,6 +3347,26 @@
         "pt": "Lote de Joias da vida"
       },
       "tags": ["valuable"],
+      "description": [
+        {
+          "text": {
+            "en": "{bundleCount} Jewel of Life is combined",
+            "de": "{bundleCount} Juwel des Lebens kombiniert",
+            "es": "{bundleCount} joya de la vida se combina",
+            "id": "{bundleCount} Permata Kehidupan digabungkan",
+            "ja": "{bundleCount}の生命の宝石が合わせられた状態",
+            "pl": "{bundleCount} Jewel of Life jest połączone",
+            "pt": "{bundleCount} Jóia da Vida é combinado",
+            "ru": "{bundleCount} Жемчужина жизни комбинированный",
+            "tl": "{bundleCount} Hiyas ng Buhay ay pinagsama-sama",
+            "uk": "{bundleCount} Перлина життя комбінований",
+            "zh-TW": "{bundleCount} 生命寶石 組合"
+          }
+        },
+        {
+          "text": "@canBeUsedAfterDismantling"
+        }
+      ],
       "nameLines": [
         {
           "text": {
@@ -3202,6 +3375,7 @@
           "color": "yellow"
         }
       ],
+      "groundLabels": [{"style": "jewel"}],
       "width": 1,
       "height": 1,
       "level": 72,
@@ -3224,6 +3398,26 @@
         "pt": "Lote de Joias da criação"
       },
       "tags": ["valuable"],
+      "description": [
+        {
+          "text": {
+            "en": "{bundleCount} Jewel of Creation is combined",
+            "de": "{bundleCount} Juwel der Schöpfung kombiniert",
+            "es": "{bundleCount} Joya de la creación se combina",
+            "id": "{bundleCount} Permata Penciptaan digabungkan",
+            "ja": "{bundleCount}の創造の宝石が合わせられた状態",
+            "pl": "{bundleCount} Jewel of Creation jest połączone",
+            "pt": "{bundleCount} Jóia da Criação é combinado",
+            "ru": "{bundleCount} Драгоценность творения комбинированный",
+            "tl": "{bundleCount} Hiyas ng Paglikha ay pinagsama-sama",
+            "uk": "{bundleCount} Перлина Творіння комбінований",
+            "zh-TW": "{bundleCount} 創造寶石 組合"
+          }
+        },
+        {
+          "text": "@canBeUsedAfterDismantling"
+        }
+      ],
       "nameLines": [
         {
           "text": {
@@ -3232,6 +3426,7 @@
           "color": "yellow"
         }
       ],
+      "groundLabels": [{"style": "jewel"}],
       "width": 1,
       "height": 1,
       "level": 78,
@@ -3254,6 +3449,26 @@
         "pt": "Lote de Joias do guardião"
       },
       "tags": ["valuable"],
+      "description": [
+        {
+          "text": {
+            "en": "{bundleCount} Jewel of Guardian is combined",
+            "de": "{bundleCount} Juwel des Wächters kombiniert",
+            "es": "{bundleCount} Joya del guardián se combina",
+            "id": "{bundleCount} Permata Penjaga digabungkan",
+            "ja": "{bundleCount}の守護の宝石が合わせられた状態",
+            "pl": "{bundleCount} Jewel of Guardian jest połączone",
+            "pt": "{bundleCount} Jóia do Guardião é combinado",
+            "ru": "{bundleCount} Сокровище Хранителя комбинированный",
+            "tl": "{bundleCount} Hiyas ng Tagapangalaga ay pinagsama-sama",
+            "uk": "{bundleCount} Jewel of Guardian комбінований",
+            "zh-TW": "{bundleCount} 守護者寶石 組合"
+          }
+        },
+        {
+          "text": "@canBeUsedAfterDismantling"
+        }
+      ],
       "nameLines": [
         {
           "text": {
@@ -3262,6 +3477,7 @@
           "color": "yellow"
         }
       ],
+      "groundLabels": [{"style": "jewel"}],
       "width": 1,
       "height": 1,
       "level": 75,
@@ -3284,6 +3500,26 @@
         "pt": "Lote de Pedras preciosas"
       },
       "tags": ["valuable"],
+      "description": [
+        {
+          "text": {
+            "en": "{bundleCount} Jewel stone is combined",
+            "de": "{bundleCount} Juwelenstein kombiniert",
+            "es": "{bundleCount} piedra joya se combina",
+            "id": "{bundleCount} Batu permata digabungkan",
+            "ja": "{bundleCount}の調和の原石が合わせられた状態",
+            "pl": "{bundleCount} Jewel stone jest połączone",
+            "pt": "{bundleCount} Pedra joia é combinado",
+            "ru": "{bundleCount} Драгоценный камень комбинированный",
+            "tl": "{bundleCount} Bato ng hiyas ay pinagsama-sama",
+            "uk": "{bundleCount} Коштовний камінь комбінований",
+            "zh-TW": "{bundleCount} 寶石石 組合"
+          }
+        },
+        {
+          "text": "@canBeUsedAfterDismantling"
+        }
+      ],
       "nameLines": [
         {
           "text": {
@@ -3292,6 +3528,7 @@
           "color": "yellow"
         }
       ],
+      "groundLabels": [{"style": "jewel"}],
       "width": 1,
       "height": 1,
       "level": 25,
@@ -3314,6 +3551,26 @@
         "pt": "Lote de Joias da harmonia"
       },
       "tags": ["valuable"],
+      "description": [
+        {
+          "text": {
+            "en": "{bundleCount} Jewel of Harmony is combined",
+            "de": "{bundleCount} Juwel der Harmonie kombiniert",
+            "es": "{bundleCount} Joya de la armonía se combina",
+            "id": "{bundleCount} Permata Harmoni digabungkan",
+            "ja": "{bundleCount}の調和の宝石の使い方が合わせられた状態",
+            "pl": "{bundleCount} Jewel of Harmony jest połączone",
+            "pt": "{bundleCount} Jóia da Harmonia é combinado",
+            "ru": "{bundleCount} Жемчужина гармонии комбинированный",
+            "tl": "{bundleCount} Jewel of Harmony ay pinagsama-sama",
+            "uk": "{bundleCount} Перлина гармонії комбінований",
+            "zh-TW": "{bundleCount} 和諧寶石 組合"
+          }
+        },
+        {
+          "text": "@canBeUsedAfterDismantling"
+        }
+      ],
       "nameLines": [
         {
           "text": {
@@ -3322,6 +3579,7 @@
           "color": "yellow"
         }
       ],
+      "groundLabels": [{"style": "jewel"}],
       "width": 1,
       "height": 1,
       "level": 25,
@@ -3344,6 +3602,26 @@
         "pt": "Lote de Joias do caos"
       },
       "tags": ["valuable"],
+      "description": [
+        {
+          "text": {
+            "en": "{bundleCount} Jewel of Chaos is combined",
+            "de": "{bundleCount} Juwel des Chaos kombiniert",
+            "es": "{bundleCount} joya del caos se combina",
+            "id": "{bundleCount} Permata Kekacauan digabungkan",
+            "ja": "{bundleCount}の混沌の宝石が合わせられた状態",
+            "pl": "{bundleCount} Jewel of Chaos jest połączone",
+            "pt": "{bundleCount} Jóia do Caos é combinado",
+            "ru": "{bundleCount} Жемчужина хаоса комбинированный",
+            "tl": "{bundleCount} Hiyas ng Chaos ay pinagsama-sama",
+            "uk": "{bundleCount} Перлина Хаосу комбінований",
+            "zh-TW": "{bundleCount} 混沌寶石 組合"
+          }
+        },
+        {
+          "text": "@canBeUsedAfterDismantling"
+        }
+      ],
       "nameLines": [
         {
           "text": {
@@ -3352,6 +3630,7 @@
           "color": "yellow"
         }
       ],
+      "groundLabels": [{"style": "jewel"}],
       "width": 1,
       "height": 1,
       "level": 12,
@@ -3374,6 +3653,26 @@
         "pt": "Lote de Pedras refinadas inferiores"
       },
       "tags": ["valuable"],
+      "description": [
+        {
+          "text": {
+            "en": "{bundleCount} Lower Refining Stone is combined",
+            "de": "{bundleCount} Niederer Verfeinerungsstein kombiniert",
+            "es": "{bundleCount} Piedra de refinación inferior se combina",
+            "id": "{bundleCount} Batu Pemurnian Bawah digabungkan",
+            "ja": "{bundleCount}の下級製錬石が合わせられた状態",
+            "pl": "{bundleCount} Lower Refining Stone jest połączone",
+            "pt": "{bundleCount} Pedra de Refino Inferior é combinado",
+            "ru": "{bundleCount} Нижний очищающий камень комбинированный",
+            "tl": "{bundleCount} Lower Refining Stone ay pinagsama-sama",
+            "uk": "{bundleCount} Нижній очисний камінь комбінований",
+            "zh-TW": "{bundleCount} 下層精煉石 組合"
+          }
+        },
+        {
+          "text": "@canBeUsedAfterDismantling"
+        }
+      ],
       "nameLines": [
         {
           "text": {
@@ -3382,6 +3681,7 @@
           "color": "yellow"
         }
       ],
+      "groundLabels": [{"style": "jewel"}],
       "width": 1,
       "height": 1,
       "level": 25,
@@ -3404,6 +3704,26 @@
         "pt": "Lote de Pedras refinadas superiores"
       },
       "tags": ["valuable"],
+      "description": [
+        {
+          "text": {
+            "en": "{bundleCount} Higher Refining Stone is combined",
+            "de": "{bundleCount} Höherer Verfeinerungsstein kombiniert",
+            "es": "{bundleCount} Piedra de mayor refinamiento se combina",
+            "id": "{bundleCount} Batu Pemurnian Tinggi digabungkan",
+            "ja": "{bundleCount}の上級製錬石が合わせられた状態",
+            "pl": "{bundleCount} Higher Refining Stone jest połączone",
+            "pt": "{bundleCount} Pedra de alto refino é combinado",
+            "ru": "{bundleCount} Камень высшей очистки комбинированный",
+            "tl": "{bundleCount} Higher Refining Stone ay pinagsama-sama",
+            "uk": "{bundleCount} Вищий очисний камінь комбінований",
+            "zh-TW": "{bundleCount} 高等精煉石 組合"
+          }
+        },
+        {
+          "text": "@canBeUsedAfterDismantling"
+        }
+      ],
       "nameLines": [
         {
           "text": {
@@ -3412,6 +3732,7 @@
           "color": "yellow"
         }
       ],
+      "groundLabels": [{"style": "jewel"}],
       "width": 1,
       "height": 1,
       "level": 25,

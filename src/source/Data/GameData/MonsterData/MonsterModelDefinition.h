@@ -1,5 +1,8 @@
 #pragma once
 
+#include "Data/GameData/MapData/MapRef.h"
+#include "Core/Utilities/Random.h"
+
 #include <array>
 #include <optional>
 #include <string>
@@ -54,14 +57,14 @@ struct MonsterSoundSlots
 
 // How a sound event draws: rand_fps_check as the original client did, whose
 // chance depends on the frame rate when it is drawn once per step, attack,
-// hit or idle loop, or rand().
+// hit or idle loop, or Random::Rand().
 enum class MonsterSoundDraw
 {
     RandFps,
     Rand,
 };
 
-// A chance of one in `oneIn`: rand_fps_check(oneIn), or rand() % oneIn == 0.
+// A chance of one in `oneIn`: rand_fps_check(oneIn), or Random::Rand() % oneIn == 0.
 struct MonsterSoundChance
 {
     int oneIn = 1;
@@ -84,7 +87,7 @@ struct MonsterSoundEvent
     bool deathEffectArmed = false;
     std::optional<MonsterSoundChance> chance;
     // Plays the first of two sounds when a draw of one in two comes up
-    // (rand_fps_check(2), or rand() % 2 == 0), else the second.
+    // (rand_fps_check(2), or Random::Rand() % 2 == 0), else the second.
     std::optional<MonsterSoundDraw> pick;
     // The sounds, played together (one of the two with `pick`), each named
     // as a sound slot names it: by its id, or by the file of a sound of the
@@ -94,13 +97,14 @@ struct MonsterSoundEvent
     bool operator==(const MonsterSoundEvent&) const = default;
 };
 
-// Texture folders that the model uses on some maps instead of its own.
-struct MonsterModelWorldFolders
+// Texture folders that the model uses on some maps (server map numbers)
+// instead of its own.
+struct MonsterModelMapFolders
 {
-    std::vector<int> worlds;
+    std::vector<Data::Maps::MapRef> maps;
     std::vector<std::string> folders;
 
-    bool operator==(const MonsterModelWorldFolders&) const = default;
+    bool operator==(const MonsterModelMapFolders&) const = default;
 };
 
 // A bitmap the model loads into a fixed bitmap slot, which its drawing code
@@ -148,8 +152,9 @@ struct MonsterModelPart
     std::string slot;
     std::string effect;
     MonsterModelLoad load;
-    // Loaded when one of these maps loads, not with the model.
-    std::vector<int> worlds;
+    // Loaded when one of these maps (server map numbers) loads, not with the
+    // model.
+    std::vector<Data::Maps::MapRef> maps;
 
     bool operator==(const MonsterModelPart&) const = default;
 };
@@ -177,7 +182,7 @@ struct MonsterModelDefinition
     // A texture name that replaces the file's, by mesh (the Little Santas
     // share one file and have one texture each).
     std::vector<std::pair<int, std::string>> textureNames;
-    std::vector<MonsterModelWorldFolders> worldTextureFolders;
+    std::vector<MonsterModelMapFolders> mapTextureFolders;
     // nullopt: as the file has it.
     std::optional<int> headBone;
     std::optional<int> streamMesh;
@@ -189,8 +194,9 @@ struct MonsterModelDefinition
     // In order: one call can play several, and their draws come in this
     // order.
     std::vector<MonsterSoundEvent> soundEvents;
-    // The maps the sound events play on; empty: every map.
-    std::vector<int> soundEventWorlds;
+    // The maps (server map numbers) the sound events play on; empty: every
+    // map.
+    std::vector<Data::Maps::MapRef> soundEventMaps;
     std::vector<MonsterModelBitmap> bitmaps;
     std::vector<MonsterModelPart> parts;
     MonsterModelBody body;

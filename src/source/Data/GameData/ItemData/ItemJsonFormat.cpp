@@ -34,6 +34,8 @@ constexpr const char* When = "when";
 constexpr const char* Values = "values";
 constexpr const char* LevelValues = "levelValues";
 constexpr const char* NameLines = "nameLines";
+constexpr const char* GroundLabels = "groundLabels";
+constexpr const char* Style = "style";
 constexpr const char* Colors = "colors";
 constexpr const char* Bold = "bold";
 constexpr const char* After = "after";
@@ -263,11 +265,33 @@ OrderedJson WriteLevelValues(const std::vector<ItemLevelValues>& levelValues)
     return json;
 }
 
+// [{"style": "ticket"}, {"style": "giftBoxPink", "levels": [0, 1]}]: each rule's style, and its levels unless it holds
+// at every level.
+OrderedJson WriteGroundLabels(const std::vector<ItemGroundLabel>& groundLabels)
+{
+    OrderedJson json = OrderedJson::array();
+    for (const ItemGroundLabel& label : groundLabels)
+    {
+        OrderedJson entry;
+        entry[Keys::Style] = label.style;
+        if (label.hasLevels)
+        {
+            entry[Keys::Levels] = OrderedJson::array({label.minLevel, label.maxLevel});
+        }
+        json.push_back(std::move(entry));
+    }
+    return json;
+}
+
 OrderedJson WriteItemObject(const ItemDefinition& definition)
 {
     OrderedJson item;
     item[Keys::Number] = definition.number;
-    item[Keys::Name] = Json::WriteLocalizedString(definition.names);
+    // An entry without a name has none.
+    if (!definition.names.IsEmpty())
+    {
+        item[Keys::Name] = Json::WriteLocalizedString(definition.names);
+    }
     if (!definition.tags.IsEmpty())
     {
         item[Keys::Tags] = WriteTags(definition.tags);
@@ -283,6 +307,10 @@ OrderedJson WriteItemObject(const ItemDefinition& definition)
     if (!definition.nameLines.empty())
     {
         item[Keys::NameLines] = WriteNameLines(definition.nameLines);
+    }
+    if (!definition.groundLabels.empty())
+    {
+        item[Keys::GroundLabels] = WriteGroundLabels(definition.groundLabels);
     }
 
     const auto writeIfNotDefault = [](OrderedJson& target)
@@ -332,8 +360,8 @@ OrderedJson WriteItemObject(const ItemDefinition& definition)
 class ItemReader
 {
 public:
-    ItemReader(const std::string& source, int group, std::vector<ItemDataIssue>& issues)
-        : m_source(source), m_group(group), m_issues(issues)
+    ItemReader(const std::string& source, int group, std::vector<ItemDataIssue>& issues, bool nameRequired = true)
+        : m_source(source), m_group(group), m_issues(issues), m_nameRequired(nameRequired)
     {
     }
 
@@ -346,6 +374,8 @@ private:
     void ReadTags(const OrderedJson& json, ItemTagSet& tags);
     void ReadDescription(const OrderedJson& json, std::vector<ItemDescriptionLine>& description);
     void ReadNameLines(const OrderedJson& json, std::vector<ItemNameLine>& nameLines);
+    void ReadGroundLabels(const OrderedJson& json, std::vector<ItemGroundLabel>& groundLabels);
+    bool ReadLevelRange(const OrderedJson& json, const std::string& field, int& first, int& last);
     bool ReadLine(const OrderedJson& entry, const std::string& field, size_t maxLength, ItemDescriptionLine& line);
     void ReadDescriptionLevels(const OrderedJson& json, const std::string& field, ItemDescriptionLine& line);
     void ReadDescriptionConditions(const OrderedJson& json, const std::string& field, ItemDescriptionLine& line);
@@ -370,6 +400,9 @@ private:
     int m_number = ItemDataIssue::NoItem;
     bool m_hasFatal = false;
     std::vector<ItemDataIssue>& m_issues;
+    // An item file's entry without a name has none, and so has an item of an exchange file
+    // that does not carry the names.
+    bool m_nameRequired = true;
 };
 
 void ItemReader::AddIssue(ItemDataIssueSeverity severity, const std::string& field, const std::string& message)
@@ -449,10 +482,13 @@ bool ItemReader::ReadIdentity(const OrderedJson& json, ItemDefinition& definitio
     const auto name = json.find(Keys::Name);
     if (name == json.end())
     {
-        AddIssue(ItemDataIssueSeverity::Fatal, Keys::Name, "missing");
-        return false;
+        if (m_nameRequired)
+        {
+            AddIssue(ItemDataIssueSeverity::Fatal, Keys::Name, "missing");
+            return false;
+        }
     }
-    if (!ReadNames(*name, definition.names))
+    else if (!ReadNames(*name, definition.names))
     {
         return false;
     }
@@ -562,6 +598,43 @@ void ItemReader::ReadNameLines(const OrderedJson& json, std::vector<ItemNameLine
         {
             nameLines.push_back(std::move(line));
         }
+    }
+}
+
+// The ground label rules, each {"style": "<name>"} with "levels" when it holds only at those levels. Whether the style
+// is in the ground label file is checked with it (ValidateGroundLabels).
+void ItemReader::ReadGroundLabels(const OrderedJson& json, std::vector<ItemGroundLabel>& groundLabels)
+{
+    const auto list = json.find(Keys::GroundLabels);
+    if (list == json.end())
+    {
+        return;
+    }
+    if (!list->is_array())
+    {
+        AddIssue(ItemDataIssueSeverity::Fatal, Keys::GroundLabels,
+                 R"(must be a list of rules {"style": "<name>"}, with "levels": [first, last] when needed)");
+        return;
+    }
+    for (size_t index = 0; index < list->size(); ++index)
+    {
+        const OrderedJson& entry = (*list)[index];
+        const std::string field = std::string(Keys::GroundLabels) + "[" + std::to_string(index) + "]";
+        const auto style = entry.is_object() ? entry.find(Keys::Style) : entry.end();
+        if (style == entry.end() || !style->is_string() || !Json::IsName(style->get<std::string>()))
+        {
+            AddIssue(ItemDataIssueSeverity::Fatal, field,
+                     R"(must be {"style": "<name>"}, the name of a style of the ground label file)");
+            continue;
+        }
+        ItemGroundLabel label;
+        label.style = style->get<std::string>();
+        if (const auto levels = entry.find(Keys::Levels); levels != entry.end())
+        {
+            label.hasLevels = ReadLevelRange(*levels, field + "." + Keys::Levels, label.minLevel, label.maxLevel);
+        }
+        WarnAboutUnknownKeys(entry, {Keys::Style, Keys::Levels}, field + ".");
+        groundLabels.push_back(std::move(label));
     }
 }
 
@@ -776,23 +849,31 @@ void ItemReader::ReadDescriptionColors(const OrderedJson& json, const std::strin
     }
 }
 
-// [first, last]: the item levels a description line is shown at, both included.
-void ItemReader::ReadDescriptionLevels(const OrderedJson& json, const std::string& field, ItemDescriptionLine& line)
+// [first, last]: item levels, both included; false (with the problem added) for anything else.
+bool ItemReader::ReadLevelRange(const OrderedJson& json, const std::string& field, int& first, int& last)
 {
     // Read as a whole number first: a number outside int's range would wrap into a level.
     const auto readLevel = [](const OrderedJson& value, long long& level)
     { return ReadWholeNumber(value, level) && level >= 0 && level < ItemLevelCount; };
-    long long first = 0;
-    long long last = 0;
-    if (!json.is_array() || json.size() != 2 || !readLevel(json[0], first) || !readLevel(json[1], last) || first > last)
+    long long firstLevel = 0;
+    long long lastLevel = 0;
+    if (!json.is_array() || json.size() != 2 || !readLevel(json[0], firstLevel) || !readLevel(json[1], lastLevel) ||
+        firstLevel > lastLevel)
     {
         AddIssue(ItemDataIssueSeverity::Fatal, field,
                  "must be [first, last], two item levels from 0 to " + std::to_string(ItemLevelCount - 1) +
                      " with the first not above the last");
-        return;
+        return false;
     }
-    line.minLevel = static_cast<int>(first);
-    line.maxLevel = static_cast<int>(last);
+    first = static_cast<int>(firstLevel);
+    last = static_cast<int>(lastLevel);
+    return true;
+}
+
+// [first, last]: the item levels a description line is shown at, both included.
+void ItemReader::ReadDescriptionLevels(const OrderedJson& json, const std::string& field, ItemDescriptionLine& line)
+{
+    ReadLevelRange(json, field, line.minLevel, line.maxLevel);
 }
 
 void ItemReader::ReadStats(const OrderedJson& json, ItemDefinition& definition)
@@ -938,16 +1019,10 @@ void ItemReader::ReadRequirementsByLevel(const OrderedJson& json, ItemDefinition
 
 std::set<std::string, std::less<>> GetKnownItemKeys()
 {
-    std::set<std::string, std::less<>> keys{Keys::Number,
-                                            Keys::Name,
-                                            Keys::Tags,
-                                            Keys::Description,
-                                            Keys::LevelValues,
-                                            Keys::NameLines,
-                                            Keys::Requirements,
-                                            Keys::RequirementsByLevel,
-                                            Keys::ClassRequirements,
-                                            Keys::Resistances};
+    std::set<std::string, std::less<>> keys{
+        Keys::Number,     Keys::Name,         Keys::Tags,         Keys::Description,         Keys::LevelValues,
+        Keys::NameLines,  Keys::GroundLabels, Keys::Requirements, Keys::RequirementsByLevel, Keys::ClassRequirements,
+        Keys::Resistances};
     ItemDefinition unused;
     VisitStatFields(unused, [&](const char* key, auto&, const auto&) { keys.insert(key); });
     return keys;
@@ -969,6 +1044,7 @@ bool ItemReader::Read(const OrderedJson& json, ItemDefinition& definition)
     ReadDescription(json, definition.description);
     ReadLevelValues(json, definition.levelValues);
     ReadNameLines(json, definition.nameLines);
+    ReadGroundLabels(json, definition.groundLabels);
     ReadStats(json, definition);
     ReadRequirements(json, definition);
     ReadRequirementsByLevel(json, definition);
@@ -1002,9 +1078,12 @@ void ReadItemGroupJson(std::string_view text, const std::string& source, std::ve
     for (const OrderedJson& json : *itemList)
     {
         ItemDefinition definition;
-        ItemReader reader(source, group, issues);
+        // An entry without a name is a number the client uses without an item there.
+        ItemReader reader(source, group, issues, false);
         if (reader.Read(json, definition))
         {
+            // Only without the name key: an empty name is still an item without its English name.
+            definition.entryWithoutName = !json.contains(Keys::Name);
             items.push_back(std::move(definition));
         }
     }
@@ -1020,7 +1099,7 @@ std::string WriteItemGroupJson(int group, std::span<const ItemDefinition> items)
     std::vector<const ItemDefinition*> groupItems;
     for (const ItemDefinition& definition : items)
     {
-        if (definition.group == group && definition.Exists())
+        if (definition.group == group && definition.HasEntry())
         {
             groupItems.push_back(&definition);
         }
@@ -1048,15 +1127,16 @@ OrderedJson WriteItemJson(const ItemDefinition& definition)
 }
 
 bool ReadItemJson(const OrderedJson& json, const std::string& source, int group, ItemDefinition& definition,
-                  std::vector<ItemDataIssue>& issues)
+                  std::vector<ItemDataIssue>& issues, bool nameRequired)
 {
-    ItemReader reader(source, group, issues);
+    ItemReader reader(source, group, issues, nameRequired);
     return reader.Read(json, definition);
 }
 
 std::string LayOutItemJsonText(const std::string& text)
 {
     std::string laidOut = Json::PutListsOnOneLine(text, Keys::Tags);
+    laidOut = Json::PutListsOnOneLine(laidOut, Keys::GroundLabels);
     laidOut = Json::PutListsOnOneLine(laidOut, Keys::Levels);
     laidOut = Json::PutListsOnOneLine(laidOut, Keys::When);
     laidOut = Json::PutObjectsOnOneLine(laidOut, Keys::Values);

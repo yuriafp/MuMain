@@ -120,6 +120,52 @@ TEST_CASE("Item JSON output is sorted and stable [data][items]")
     CHECK(WriteItemGroupJson(0, result.items) == text);
 }
 
+TEST_CASE("An item file entry without a name is kept through read and write [data][items]")
+{
+    const std::string text = WriteItemGroupJson(0, std::vector<ItemDefinition>{MakeKris()});
+    const ReadResult kris = Read(text);
+    REQUIRE(kris.items.size() == 1);
+    CHECK_FALSE(kris.items.front().entryWithoutName);
+
+    const ReadResult result = Read(GroupFile(0, R"({"number": 3})"));
+    REQUIRE(result.issues.empty());
+    REQUIRE(result.items.size() == 1);
+    const ItemDefinition& entry = result.items.front();
+    CHECK(entry.entryWithoutName);
+    CHECK(entry.HasEntry());
+    CHECK_FALSE(entry.Exists());
+    CHECK(entry.number == 3);
+
+    const std::string written = WriteItemGroupJson(0, result.items);
+    CHECK(written.find("\"name\"") == std::string::npos);
+    CHECK(Read(written).items == result.items);
+
+    // Only its id is checked; an item without a name is still an error.
+    std::vector<ItemDataIssue> issues;
+    ValidateItems(result.items, issues);
+    CHECK(issues.empty());
+    ItemDefinition twice = entry;
+    ValidateItems(std::vector<ItemDefinition>{entry, twice}, issues);
+    CHECK(HasIssue(issues, ItemDataIssueSeverity::Fatal, "number"));
+}
+
+TEST_CASE("An empty item name is not an entry without a name [data][items]")
+{
+    for (const std::string name : {R"("")", "{}", R"({"en": ""})"})
+    {
+        INFO(name);
+        const ReadResult result = Read(GroupFile(0, R"({"number": 3, "name": )" + name + "}"));
+        REQUIRE(result.items.size() == 1);
+        CHECK_FALSE(result.items.front().entryWithoutName);
+        CHECK_FALSE(result.items.front().HasEntry());
+
+        // The English name is missing, as for any item.
+        std::vector<ItemDataIssue> issues;
+        ValidateItems(result.items, issues);
+        CHECK(HasIssue(issues, ItemDataIssueSeverity::Fatal, "name"));
+    }
+}
+
 TEST_CASE("Item JSON only writes items of the requested group [data][items]")
 {
     ItemDefinition otherGroup = MakeKris();
@@ -298,6 +344,26 @@ TEST_CASE("Item name language codes must be codes [data][items]")
     issues.clear();
     ValidateItems(std::vector<ItemDefinition>{valid}, issues);
     CHECK_FALSE(HasFatal(issues));
+}
+
+TEST_CASE("An item of a kind without class lines warns when it lacks noClassLines [data][items]")
+{
+    ItemDefinition elixir = MakeKris();
+    elixir.tags.Set(ItemTag::Elixir);
+    std::vector<ItemDataIssue> issues;
+    ValidateItems(std::vector<ItemDefinition>{elixir}, issues);
+    CHECK(HasIssue(issues, ItemDataIssueSeverity::Warning, "tags"));
+    CHECK_FALSE(HasFatal(issues));
+
+    elixir.tags.Set(ItemTag::NoClassLines);
+    issues.clear();
+    ValidateItems(std::vector<ItemDefinition>{elixir}, issues);
+    CHECK_FALSE(HasIssue(issues, ItemDataIssueSeverity::Warning, "tags"));
+
+    // Any other item may show its class lines.
+    issues.clear();
+    ValidateItems(std::vector<ItemDefinition>{MakeKris()}, issues);
+    CHECK_FALSE(HasIssue(issues, ItemDataIssueSeverity::Warning, "tags"));
 }
 
 TEST_CASE("Item tags, wing tier, potion priority and rule flags are kept through write and read [data][items]")

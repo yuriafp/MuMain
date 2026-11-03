@@ -46,6 +46,7 @@ Remaining Season 6 work includes Lucky Items.
 
 Hosted releases provide Windows native x64 Release, Linux x64 Release and macOS arm64 Release
 builds with the editor disabled; Semantic Release publishes all three as GitHub Release assets.
+Release builds run nightly or manually from main; merging a PR does not publish immediately.
 Each runtime excludes `Data/` and `fonts/`: its **Compatible game data** link points to the
 separate data release tagged `data-<id>`. Follow the platform-specific assembly steps in the
 [release instructions](docs/build/README.md#hosted-releases).
@@ -82,8 +83,10 @@ Native builds also build the network library and stage game assets beside the ex
 Run from that output directory so the client finds its data and libraries.
 
 Player presets disable the editor and control socket. The `-mueditor` presets enable
-both, plus the in-game tester. These configure-time choices are independent of Debug,
-Release or RelWithDebInfo; see [build options](docs/build/README.md#build-options).
+both, plus the in-game tester. The `-in-game-tests` presets are developer builds without
+the editor: the control socket and the [in-game tester](docs/in-game-tests.md). These
+configure-time choices are independent of Debug, Release or RelWithDebInfo; see
+[build options](docs/build/README.md#build-options).
 
 ## Running the client
 

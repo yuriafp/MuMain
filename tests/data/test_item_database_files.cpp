@@ -14,6 +14,7 @@
 #include "Data/DataHandler/ItemData/ItemDataHandler.h"
 #include "Data/DataHandler/ItemData/ItemDataLoader.h"
 #include "Data/DataHandler/ItemData/ItemJsonStorage.h"
+#include "Data/GameData/ColorFolders/ColorFolders.h"
 #include "Data/GameData/ItemData/ItemAttributeConversion.h"
 #include "Data/GameData/ItemData/ItemDataValidation.h"
 #include "Data/GameData/ItemData/ItemDatabase.h"
@@ -25,13 +26,16 @@
 #include "Data/GameData/EffectData/GlowColorList.h"
 #include "Data/GameData/ItemData/ItemModelDatabase.h"
 #include "Data/GameData/ItemData/ItemModelJsonFormat.h"
+#include "Data/GameData/ItemData/ItemModelSlots.h"
 #include "Data/GameData/ItemData/ItemStatFile.h"
 #include "Data/GameData/ItemData/ItemStatsJson.h"
 #include "Data/GameData/ItemData/ItemStructs.h"
 #include "Data/GameData/ItemData/ItemType.h"
 #include "Data/GameData/ItemData/ItemTypeUse.h"
+#include "Engine/Object/ItemTooltipSnapshot.h"
 #include "Engine/Object/ZzzCharacter.h"
 #include "Engine/Object/ZzzInfomation.h"
+#include "Engine/Object/ZzzInventory.h"
 #include "Engine/Physics/PhysicsManager.h"
 #include "GameLogic/Items/ItemStats.h"
 #include "Core/Text/Utf8.h"
@@ -43,11 +47,13 @@
 #include "UI/Common/MuEditorLayout.h"
 #include "UI/Common/MuEditorWindowIds.h"
 #include "UI/ItemEditor/ItemEditorActions.h"
+#include "UI/ItemEditor/ItemListModel.h"
 #include "UI/ItemTools/GlowColorDialog.h"
 #include "UI/ItemTools/ItemAddDialog.h"
 #include "UI/ItemTools/ItemEdits.h"
 #include "UI/ItemTools/ItemFieldWidgets.h"
 #include "UI/ItemTools/ItemHeldByCharacter.h"
+#include "UI/ItemTools/ItemLookUseCounts.h"
 #include "UI/ItemTools/ItemNamesakes.h"
 #include "UI/ItemTools/ItemRequirementTable.h"
 #include "UI/ItemTools/ItemRulesTable.h"
@@ -60,11 +66,12 @@
 #include "UI/ItemTools/MuItemCategoriesUI.h"
 #include "UI/DataChecks/MuDataChecksUI.h"
 #include "UI/ItemTools/MuItemFormulasUI.h"
-#include "UI/ItemTools/MuItemGlowColorsUI.h"
+#include "UI/Colors/MuColorsUI.h"
 #include "UI/ItemTools/MuItemModelUI.h"
 #include "UI/ItemTools/MuItemRequirementsUI.h"
 #include "UI/ItemTools/MuItemRulesUI.h"
 #include "UI/ItemTools/MuItemSyncUI.h"
+#include "UI/ItemTools/MuItemTooltipUI.h"
 #include "UI/ItemTranslations/MuItemTranslationsUI.h"
 #include "UI/MapEditor/MapEditorUI.h"
 #include "TestModelSlots.h"
@@ -260,6 +267,22 @@ TEST_CASE("The shipped descriptions' placeholders and shared texts are known [da
         INFO(issue.ToString());
         CHECK(false);
     }
+}
+
+TEST_CASE("The shipped ground labels load without problems and are written as they are read [data][items]")
+{
+    const std::filesystem::path file = DataDirectory / "Items" / "Tooltips" / GroundLabelsFileName;
+    const GroundLabelsLoadResult labels = LoadGroundLabelsFile(file);
+    std::vector<ItemDataIssue> issues = labels.issues;
+    // Every style the items and the standard rules name is in the file, and every style of the file is used.
+    ValidateGroundLabels(LoadItemDataDirectory(DataDirectory / "Items").items, labels.file, GroundLabelsFileName,
+                         issues);
+    for (const ItemDataIssue& issue : issues)
+    {
+        INFO(issue.ToString());
+        CHECK(false);
+    }
+    CHECK(WriteGroundLabelsJson(labels.file) == TestFiles::ReadWholeFile(file));
 }
 
 // The shipped tooltip file, read once.
@@ -1136,12 +1159,27 @@ TEST_CASE("Item names stay English while translated item names are off, also aft
 TEST_CASE("Item data errors stop loading [data][items]")
 {
     TemporaryClientFolder folder;
-    folder.WriteItemFile("Group00_Sword.json", R"({"formatVersion": 1, "group": 0, "items": [{"number": 0}]})");
+    // An entry without a name is fine; a name that is not a text is not.
+    folder.WriteItemFile("Group00_Sword.json",
+                         R"({"formatVersion": 1, "group": 0, "items": [{"number": 0, "name": 5}]})");
     ClientDataScope client(folder.Directory());
 
     std::string errorMessage;
     CHECK_FALSE(g_ItemDataHandler.Load(errorMessage));
     CHECK(errorMessage.find("Group00_Sword.json") != std::string::npos);
+}
+
+TEST_CASE("An empty item name stops loading [data][items]")
+{
+    // Unlike an entry without a name, which has no name key at all.
+    TemporaryClientFolder folder;
+    folder.WriteItemFile("Group00_Sword.json",
+                         R"({"formatVersion": 1, "group": 0, "items": [{"number": 0, "name": ""}]})");
+    ClientDataScope client(folder.Directory());
+
+    std::string errorMessage;
+    CHECK_FALSE(g_ItemDataHandler.Load(errorMessage));
+    CHECK(errorMessage.find("the English name is missing") != std::string::npos);
 }
 
 TEST_CASE("A description placeholder that names no table stops loading [data][items]")
@@ -1380,6 +1418,29 @@ TEST_CASE("A file that cannot be replaced is a write failure and leaves no tempo
     CHECK_FALSE(std::filesystem::exists(swordFile.string() + ".tmp"));
 }
 
+TEST_CASE("Every number with a model has an entry in the item files [data][items]")
+{
+    const ItemDataLoadResult items = LoadItemDataDirectory(DataDirectory / "Items");
+    REQUIRE_FALSE(HasFatal(items.issues));
+    const ItemModelDataLoadResult models = LoadItemModelDataDirectory(DataDirectory / "Items" / "Models");
+    std::vector<ItemDataIssue> issues;
+    ValidateModelsHaveItemEntries(items.items, models.models, issues);
+    for (const ItemDataIssue& issue : issues)
+    {
+        INFO(issue.group << "," << issue.number << ": " << issue.message);
+        CHECK(false);
+    }
+
+    // Sphere 4 and 5: the client draws them and code names them, but has no item there yet.
+    for (const int number : {73, 74})
+    {
+        const auto entry = std::ranges::find_if(items.items, [number](const ItemDefinition& item)
+                                                { return item.group == 12 && item.number == number; });
+        REQUIRE(entry != items.items.end());
+        CHECK(entry->entryWithoutName);
+    }
+}
+
 // The items and their models are saved together: when one of the files
 // cannot be written, none is replaced, so a moved item never loses its model
 // on disk.
@@ -1394,12 +1455,12 @@ TEST_CASE("A save that cannot write all its files replaces none of them [data][i
     TemporaryClientFolder folder;
     folder.CopyShippedItems();
     const std::filesystem::path itemDirectory = folder.Directory() / GetItemDataDirectory();
-    // Kris moves to a free number, so its group file changes.
+    // Kris's price changes, so its group file changes.
     std::vector<ItemDefinition> items = shipped.items;
     const auto kris = std::find_if(items.begin(), items.end(), [](const ItemDefinition& item)
                                    { return MakeItemType(item.group, item.number) == KrisType; });
     REQUIRE(kris != items.end());
-    kris->number = 100;
+    kris->buyPrice += 1;
     // A file where the model folder should be: no model file can be written.
     const std::filesystem::path blockedModels = folder.Directory() / "blocked";
     std::ofstream(blockedModels) << "not a folder";
@@ -2030,6 +2091,81 @@ TEST_CASE("A bmd import moves the models of moved items back [data][items][edito
           TestFiles::ReadWholeFile(DataDirectory / "Items" / "Models" / swordFile));
 }
 
+TEST_CASE("A bmd import puts a moved entry without a name back with its model [data][items][editor]")
+{
+    TemporaryClientFolder folder;
+    folder.CopyShippedItems();
+    folder.CopyShippedGlowColors();
+    ClientDataScope client(folder.Directory());
+    ItemModelDatabaseScope models;
+    I18N::SetLocale("en");
+    std::string errorMessage;
+    REQUIRE(g_ItemDataHandler.Load(errorMessage));
+    REQUIRE_MESSAGE(g_ItemDataHandler.LoadModels(errorMessage), errorMessage);
+    std::string changeLog;
+    REQUIRE(g_ItemDataHandler.ExportAsBmd(changeLog));
+    // Sphere 4 moves to a free number; the bmd files have no item at either number.
+    const int sphere4Type = MakeItemType(12, 73);
+    const int movedType = MakeItemType(12, GetNextFreeItemNumber(12, 75));
+    REQUIRE(g_ItemDatabase.GetAllSlots()[sphere4Type].entryWithoutName);
+    REQUIRE(g_ItemModelDatabase.Find(sphere4Type) != nullptr);
+    const std::string sphere4ModelFile = g_ItemModelDatabase.Find(sphere4Type)->file;
+    REQUIRE(g_ItemDataHandler.MoveItem(sphere4Type, movedType));
+    REQUIRE(g_ItemModelDatabase.Find(sphere4Type) == nullptr);
+
+    const ItemBmdImportResult result = g_ItemDataHandler.ImportFromBmd();
+    REQUIRE_FALSE(HasFatal(result.issues));
+    CHECK(g_ItemDatabase.GetAllSlots()[sphere4Type].entryWithoutName);
+    REQUIRE(g_ItemModelDatabase.Find(sphere4Type) != nullptr);
+    CHECK(g_ItemModelDatabase.Find(sphere4Type)->file == sphere4ModelFile);
+    CHECK(IsFreeItemType(movedType));
+    std::vector<ItemDataIssue> issues;
+    ValidateModelsHaveItemEntries(g_ItemDatabase.GetAllSlots(), g_ItemModelDatabase.GetAllSlots(), issues);
+    CHECK(issues.empty());
+}
+
+TEST_CASE("After a bmd import every number with a model has an entry [data][items][editor]")
+{
+    TemporaryClientFolder folder;
+    folder.CopyShippedItems();
+    folder.CopyShippedGlowColors();
+    ClientDataScope client(folder.Directory());
+    ItemModelDatabaseScope models;
+    I18N::SetLocale("en");
+    std::string errorMessage;
+    REQUIRE(g_ItemDataHandler.Load(errorMessage));
+    REQUIRE_MESSAGE(g_ItemDataHandler.LoadModels(errorMessage), errorMessage);
+    std::string changeLog;
+    REQUIRE(g_ItemDataHandler.ExportAsBmd(changeLog));
+    // Items the bmd files do not have: Sphere 4 named since the start, and an item added with a model.
+    const int sphere4Type = MakeItemType(12, 73);
+    ItemDefinition sphere4 = g_ItemDatabase.GetAllSlots()[sphere4Type];
+    sphere4.names = Data::LocalizedString::Parse("Sphere 4");
+    g_ItemDataHandler.SetItem(sphere4);
+    REQUIRE(g_ItemDatabase.Find(sphere4Type) != nullptr);
+    const int addedType = MakeItemType(0, 100);
+    REQUIRE(IsFreeItemType(addedType));
+    ItemDefinition added;
+    added.group = 0;
+    added.number = 100;
+    added.names = Data::LocalizedString::Parse("Added Sword");
+    REQUIRE(g_ItemModelDatabase.Find(KrisType) != nullptr);
+    REQUIRE(g_ItemDataHandler.AddItem(added, g_ItemModelDatabase.Find(KrisType)));
+
+    const ItemBmdImportResult result = g_ItemDataHandler.ImportFromBmd();
+    REQUIRE_FALSE(HasFatal(result.issues));
+    for (const int itemType : {sphere4Type, addedType})
+    {
+        CAPTURE(itemType);
+        CHECK(g_ItemDatabase.Find(itemType) == nullptr);
+        CHECK(g_ItemDatabase.GetAllSlots()[itemType].entryWithoutName);
+        CHECK(g_ItemModelDatabase.Find(itemType) != nullptr);
+    }
+    std::vector<ItemDataIssue> issues;
+    ValidateModelsHaveItemEntries(g_ItemDatabase.GetAllSlots(), g_ItemModelDatabase.GetAllSlots(), issues);
+    CHECK(issues.empty());
+}
+
 // The names of a language whose item.bmd is missing stay as they are, like
 // the names of the languages that have none (German).
 // Export as bmd writes the weights the original client grows into the requirements the client
@@ -2122,6 +2258,43 @@ TEST_CASE("Exporting the items as bmd and importing them again gives the same da
         CHECK(WriteItemGroupJson(group, g_ItemDatabase.GetAllSlots()) ==
               TestFiles::ReadWholeFile(DataDirectory / "Items" / GetItemGroupFileName(group)));
     }
+}
+
+TEST_CASE("A bmd import keeps the entries without a name as they are and does not count them [data][items][editor]")
+{
+    TemporaryClientFolder folder;
+    folder.CopyShippedItems();
+    folder.CopyShippedGlowColors();
+    ClientDataScope client(folder.Directory());
+    ItemModelDatabaseScope restoreModels;
+    I18N::SetLocale("en");
+    std::string errorMessage;
+    REQUIRE(g_ItemDataHandler.Load(errorMessage));
+    REQUIRE(g_ItemDataHandler.LoadModels(errorMessage));
+    std::string changeLog;
+    REQUIRE(g_ItemDataHandler.ExportAsBmd(changeLog));
+    // An entry without a name with the Healing Orb's profile and requirements: values, which the
+    // import must not take for the weights of a bmd file.
+    const ItemDefinition* healingOrb = g_ItemDatabase.Find(12, 8);
+    REQUIRE(healingOrb != nullptr);
+    REQUIRE(HasRequirementWeightsInBmd(g_ItemDatabase.GetStatProfiles(), *healingOrb));
+    const int entryType = MakeItemType(12, 20);
+    ItemDefinition entry = g_ItemDatabase.GetAllSlots()[entryType];
+    REQUIRE(entry.entryWithoutName);
+    entry.statProfile = healingOrb->statProfile.empty()
+                            ? DeriveStatProfile(g_ItemDatabase.GetStatProfiles(), *healingOrb)
+                            : healingOrb->statProfile;
+    entry.level = healingOrb->level;
+    entry.requirements = healingOrb->requirements;
+    g_ItemDataHandler.RestoreItems(std::span<const ItemDefinition>(&entry, 1));
+    REQUIRE(HasRequirementWeightsInBmd(g_ItemDatabase.GetStatProfiles(), entry));
+
+    const ItemBmdImportResult result = g_ItemDataHandler.ImportFromBmd();
+    REQUIRE_FALSE(HasFatal(result.issues));
+    CHECK(g_ItemDatabase.GetAllSlots()[entryType] == entry);
+    // The imported items are the ones of the bmd files.
+    CHECK(std::ranges::none_of(result.items, [](const ItemDefinition& item) { return item.entryWithoutName; }));
+    CHECK(static_cast<int>(result.items.size()) == g_ItemDatabase.GetExistingItemCount());
 }
 
 // Export as bmd writes a missing name as the English one; the import must not
@@ -2519,6 +2692,73 @@ TEST_CASE("The usage of an item lists its tags, its model and the code that name
     CHECK(nothing.tags.empty());
 }
 
+TEST_CASE("A number that is not free names what takes it [data][items][editor]")
+{
+    TemporaryClientFolder folder;
+    folder.CopyShippedItems();
+    folder.CopyShippedGlowColors();
+    ClientDataScope client(folder.Directory());
+    ItemModelDatabaseScope restoreModels;
+    I18N::SetLocale("en");
+    std::string errorMessage;
+    REQUIRE(g_ItemDataHandler.Load(errorMessage));
+    REQUIRE(g_ItemDataHandler.LoadModels(errorMessage));
+
+    const MuEditor::Items::ItemNumberHolder kris = MuEditor::Items::FindItemNumberHolder(KrisType);
+    CHECK(kris.item == "Kris (0,0)");
+    CHECK(kris.model.empty());
+
+    // Sphere 4 has its entry without a name and its model, but no item yet.
+    const int sphere4Type = MakeItemType(12, 73);
+    REQUIRE_FALSE(IsFreeItemType(sphere4Type));
+    const MuEditor::Items::ItemNumberHolder sphere4 = MuEditor::Items::FindItemNumberHolder(sphere4Type);
+    CHECK(sphere4.item.empty());
+    CHECK(sphere4.entryWithoutName);
+    CHECK(sphere4.model == "Data/Item/s30_sphere_body04.bmd");
+    CHECK(MuEditor::Items::GetEntryLabel(sphere4Type) == "Entry without a name (12,73)");
+    CHECK(MuEditor::Items::GetEntryLabel(KrisType) == "Kris (0,0)");
+    CHECK(std::string(MuEditor::Items::GetNumberWithoutItemLabel(sphere4Type)) == "Entry without a name");
+    CHECK(std::string(MuEditor::Items::GetNumberWithoutItemLabel(MakeItemType(0, 100))) == "No item at this number");
+    // The editor was built from these sources, which name it.
+    CHECK(sphere4.codeName == "ITEM_SPHERE_4");
+
+    const MuEditor::Items::ItemNumberHolder freeNumber = MuEditor::Items::FindItemNumberHolder(MakeItemType(0, 100));
+    CHECK(freeNumber.item.empty());
+    CHECK_FALSE(freeNumber.entryWithoutName);
+    CHECK(freeNumber.model.empty());
+    CHECK(freeNumber.codeName.empty());
+}
+
+TEST_CASE("An entry without a name moves and goes as an item does [data][items][editor]")
+{
+    TemporaryClientFolder folder;
+    folder.CopyShippedItems();
+    folder.CopyShippedGlowColors();
+    ClientDataScope client(folder.Directory());
+    ItemModelDatabaseScope restoreModels;
+    std::string errorMessage;
+    REQUIRE(g_ItemDataHandler.Load(errorMessage));
+    REQUIRE(g_ItemDataHandler.LoadModels(errorMessage));
+    g_ItemEdits.GetHistory().Clear();
+    const int sphere4Type = MakeItemType(12, 73);
+    const int freeType = MakeItemType(12, GetNextFreeItemNumber(12, 75));
+    REQUIRE(IsFreeItemType(freeType));
+
+    REQUIRE(g_ItemEdits.MoveItem("Move", sphere4Type, freeType));
+    CHECK(IsFreeItemType(sphere4Type));
+    CHECK(g_ItemDatabase.GetAllSlots()[freeType].entryWithoutName);
+    CHECK(g_ItemModelDatabase.Find(freeType) != nullptr);
+    REQUIRE(g_ItemEdits.Undo());
+    CHECK(g_ItemDatabase.GetAllSlots()[sphere4Type].entryWithoutName);
+
+    REQUIRE(g_ItemEdits.RemoveItem("Remove", sphere4Type));
+    CHECK(IsFreeItemType(sphere4Type));
+    REQUIRE(g_ItemEdits.Undo());
+    CHECK(g_ItemDatabase.GetAllSlots()[sphere4Type].entryWithoutName);
+    CHECK(g_ItemModelDatabase.Find(sphere4Type) != nullptr);
+    g_ItemEdits.GetHistory().Clear();
+}
+
 namespace
 {
 // The id of a field an item tool window draws, inside the ID scopes it pushes
@@ -2599,7 +2839,8 @@ void RenderItemTools()
     g_MuItemRulesUI.Render(&open);
     g_MuItemCategoriesUI.Render(&open);
     g_MuItemModelUI.Render(&open);
-    g_MuItemGlowColorsUI.Render(&open);
+    g_MuColorsUI.Render(&open);
+    g_MuItemTooltipUI.Render(&open);
     g_MuItemSyncUI.Render(&open);
     g_MuItemFormulasUI.Render(&open);
     g_MuDataChecksUI.Render(&open);
@@ -3340,7 +3581,8 @@ TEST_CASE("The shared model form follows an undo of meshes typed without spaces 
 }
 
 // Items with the same name: the lucky sets have a tag their namesakes do not,
-// the Seals of Wealth and the seed sphere tiers count up by number.
+// the Seals of Wealth and the seed sphere tiers count up by number (13/44's
+// noClassLines only leaves tooltip lines out, so it does not tell them apart).
 TEST_CASE("The item lists tell items with the same name apart [data][items][editor]")
 {
     ClientDataScope client(ShippedClientDirectory);
@@ -4172,6 +4414,262 @@ TEST_CASE("The item tools add glow colors, change them and remove unused ones [d
 
     edits.GetHistory().Clear();
     g_GlowColors.Build(shipped);
+}
+
+// D26 for the ground label styles (D68): a changed look reaches every label that takes it at once and is saved in its
+// place, and only a style that no item and no standard rule names is removed.
+TEST_CASE("The item tools change ground label styles and remove unused ones [data][items][editor]")
+{
+    TemporaryClientFolder folder;
+    folder.CopyShippedItems();
+    ClientDataScope client(folder.Directory());
+    I18N::SetLocale("en");
+    std::string errorMessage;
+    REQUIRE(g_ItemDataHandler.Load(errorMessage));
+    const GroundLabelFile shipped = g_ItemDatabase.GetGroundLabels();
+    const std::filesystem::path labelsFile = folder.Directory() / GetGroundLabelsFile();
+    const std::string shippedText = TestFiles::ReadWholeFile(labelsFile);
+    MuEditor::Items::ItemEdits& edits = g_ItemEdits;
+    edits.GetHistory().Clear();
+    const auto labels = [] { return g_ItemDatabase.GetGroundLabels(); };
+    // The Devil Square Ticket's label, which its own rule gives the style "ticket".
+    const auto ticketLabel = []
+    {
+        ITEM item;
+        FillItemFromParameters(item, Engine::Items::TooltipSnapshot::FullItemParameters(13, 46));
+        OBJECT object{};
+        object.Type = Data::Items::ToModelSlot(item.Type);
+        return DescribeGroundItemLabel(&object, &item);
+    };
+
+    SUBCASE("a changed look is on the ground at once, saved in its place and read back")
+    {
+        // Nothing changed: the save leaves the file as it is.
+        std::vector<ItemDataIssue> issues;
+        REQUIRE(g_ItemDataHandler.Save(issues) == ItemDataSaveResult::Saved);
+        CHECK(TestFiles::ReadWholeFile(labelsFile) == shippedText);
+
+        GroundLabelStyle ticket = *shipped.FindStyle("ticket");
+        ticket.color = {0x12, 0x34, 0x56};
+        ticket.bold = true;
+        edits.SetGroundLabelStyle("Change a label style", ticket);
+        CHECK(ticketLabel().textColor == 0xFF563412u);
+        CHECK(ticketLabel().bold);
+        // The style keeps its place in the file, and the standard rules stay.
+        REQUIRE(labels().styles.size() == shipped.styles.size());
+        for (size_t index = 0; index < shipped.styles.size(); ++index)
+        {
+            CHECK(labels().styles[index].name == shipped.styles[index].name);
+        }
+        CHECK(labels().standard == shipped.standard);
+
+        issues.clear();
+        REQUIRE(g_ItemDataHandler.Save(issues) == ItemDataSaveResult::Saved);
+        const GroundLabelsLoadResult saved = LoadGroundLabelsFile(labelsFile);
+        CHECK(saved.issues.empty());
+        CHECK(saved.file == labels());
+
+        REQUIRE(edits.Undo());
+        CHECK(labels() == shipped);
+        CHECK_FALSE(ticketLabel().bold);
+        REQUIRE(edits.Redo());
+
+        // The next start reads it back.
+        REQUIRE(g_ItemDataHandler.Load(errorMessage));
+        CHECK(*labels().FindStyle("ticket") == ticket);
+    }
+
+    SUBCASE("only styles no item and no standard rule names are removed")
+    {
+        edits.SetGroundLabelStyle("New label style", {"spare", {1, 2, 3}});
+        CHECK(labels().styles.back().name == "spare");
+        CHECK(MuEditor::Items::FindGroundLabelStyleUsers("spare").empty());
+        CHECK_FALSE(MuEditor::Items::FindGroundLabelStyleUsers("ticket").empty());
+        REQUIRE(shipped.IsStandardRuleStyle("level0"));
+        const std::string names[] = {"spare", "ticket", "level0"};
+        REQUIRE(edits.RemoveGroundLabelStyles("Remove unused label styles", names));
+        CHECK(labels().FindStyle("spare") == nullptr);
+        CHECK(labels().FindStyle("ticket") != nullptr);
+        CHECK(labels().FindStyle("level0") != nullptr);
+        const std::string used[] = {"ticket"};
+        CHECK_FALSE(edits.RemoveGroundLabelStyles("Remove a label style", used));
+
+        REQUIRE(edits.Undo());
+        CHECK(labels().FindStyle("spare") != nullptr);
+        REQUIRE(edits.Undo());
+        CHECK(labels() == shipped);
+    }
+
+    SUBCASE("a new style made in a folder is one undo step")
+    {
+        const std::vector<Data::Colors::ColorFolder> folders{{"Shop", {}, {}}};
+        edits.SetColorFolders("New folder", MuEditor::Items::ItemEdits::GroundLabelFolders, folders);
+        edits.GetHistory().Clear();
+
+        const Data::Colors::ColorFolderPath shop{0};
+        edits.AddGroundLabelStyle("New label style", {"spare", {1, 2, 3}}, shop);
+        CHECK(labels().FindStyle("spare") != nullptr);
+        CHECK(Data::Colors::FindFolderOfColor(labels().folders, "spare") == shop);
+        CHECK(edits.GetHistory().GetUndoLabel() == std::string("New label style"));
+
+        REQUIRE(edits.Undo());
+        CHECK(labels().FindStyle("spare") == nullptr);
+        CHECK(labels().folders == folders);
+        CHECK_FALSE(edits.GetHistory().CanUndo());
+
+        REQUIRE(edits.Redo());
+        CHECK(Data::Colors::FindFolderOfColor(labels().folders, "spare") == shop);
+    }
+
+    SUBCASE("the item tools count each item that names a style once")
+    {
+        MuEditor::Items::ItemLookUseCounts counts;
+        for (const GroundLabelStyle& style : shipped.styles)
+        {
+            INFO(style.name);
+            CHECK(counts.GroundLabelStyle(style.name) ==
+                  static_cast<int>(MuEditor::Items::FindGroundLabelStyleUsers(style.name).size()));
+        }
+        CHECK(counts.GroundLabelStyle("level0") == 0);
+        CHECK(counts.GroundLabelStyle("ticket") > 0);
+    }
+
+    edits.GetHistory().Clear();
+}
+
+// Item Tooltip (D71): Add rule gives the item a rule for the previewed level, with the style its label has there,
+// before its rule that holds there (one after it would not be used there), as one undo step.
+TEST_CASE("Item Tooltip adds an item's ground label rule as an undo step [data][items][editor]")
+{
+    TemporaryClientFolder folder;
+    folder.CopyShippedItems();
+    ClientDataScope client(folder.Directory());
+    I18N::SetLocale("en");
+    std::string errorMessage;
+    REQUIRE(g_ItemDataHandler.Load(errorMessage));
+    TestImGuiContext context;
+    g_ItemEdits.GetHistory().Clear();
+    // The Devil Square Ticket: one rule, "ticket" at every level.
+    const int ticketType = MakeItemType(13, 46);
+    g_ItemSelection.Select(ticketType);
+    const std::vector<ItemGroundLabel> shipped = g_ItemDatabase.Find(ticketType)->groundLabels;
+    REQUIRE(shipped == std::vector<ItemGroundLabel>{{"ticket"}});
+    const auto frame = []
+    {
+        ImGui::NewFrame();
+        bool open = true;
+        g_MuItemTooltipUI.Render(&open);
+        ImGui::Render();
+        CHECK(ImGui::GetCurrentContext()->ErrorCountCurrentFrame == 0);
+    };
+    frame();
+    const ImGuiWindow* window = ImGui::FindWindowByName(MuEditor::WindowIds::ItemTooltip);
+    REQUIRE(window != nullptr);
+    ImGui::ActivateItemByID(
+        ImGui::GetIDWithSeed(I18N::Editor::AddRule, nullptr, ImGui::GetIDWithSeed(ticketType, window->ID)));
+    frame();
+
+    const ItemGroundLabel added{"ticket", true, 0, 0};
+    CHECK(g_ItemDatabase.Find(ticketType)->groundLabels == std::vector<ItemGroundLabel>{added, shipped[0]});
+    CHECK(g_ItemEdits.GetHistory().GetUndoLabel() == I18N::Editor::ChangeTheGroundLabelRules);
+    REQUIRE(g_ItemEdits.Undo());
+    CHECK(g_ItemDatabase.Find(ticketType)->groundLabels == shipped);
+    g_ItemEdits.GetHistory().Clear();
+}
+
+// Item Tooltip: From left after a change by a click into To is stored the frame after, which takes the item back as
+// stored. To, drawn after From in that frame, reads the rule as stored: To isn't changed by it, and a level typed into
+// it keeps both levels. (It read the freed rule before; the Debug heap's fill of freed memory made that an edit.)
+TEST_CASE("Item Tooltip's To field reads the rule as stored in the frame From is stored [data][items][editor]")
+{
+    TemporaryClientFolder folder;
+    folder.CopyShippedItems();
+    ClientDataScope client(folder.Directory());
+    I18N::SetLocale("en");
+    std::string errorMessage;
+    REQUIRE(g_ItemDataHandler.Load(errorMessage));
+    TestImGuiContext context;
+    g_ItemEdits.GetHistory().Clear();
+    // The Devil Square Ticket with a rule for the levels +0 to +15.
+    const int ticketType = MakeItemType(13, 46);
+    EditItem(ticketType, [](ItemDefinition& ticket) { ticket.groundLabels = {{"ticket", true, 0, 15}}; });
+    g_ItemSelection.Select(ticketType);
+    RenderItemTool(g_MuItemTooltipUI, true);
+    const ImGuiID from = ItemToolFieldId(MuEditor::WindowIds::ItemTooltip, {ticketType, 0}, I18N::Editor::From);
+    const ImGuiID to = ItemToolFieldId(MuEditor::WindowIds::ItemTooltip, {ticketType, 0}, I18N::Editor::To);
+
+    // Activation selects the field's text: the typed text replaces it.
+    ImGui::ActivateItemByID(from);
+    RenderItemTool(g_MuItemTooltipUI, true);
+    REQUIRE(ImGui::GetActiveID() == from);
+    RenderItemTool(g_MuItemTooltipUI, true, "3");
+    // A click into To; From is stored in the next frame, before To is drawn. To, untouched, isn't edited by it.
+    ImGui::ActivateItemByID(to);
+    RenderItemTool(g_MuItemTooltipUI, true);
+    REQUIRE(ImGui::GetActiveID() == to);
+    RenderItemTool(g_MuItemTooltipUI, true);
+    CHECK(g_ItemDatabase.Find(ticketType)->groundLabels[0].minLevel == 3);
+    CHECK_FALSE(ImGui::GetCurrentContext()->ActiveIdHasBeenEditedBefore);
+    RenderItemTool(g_MuItemTooltipUI, true, "9");
+    ImGui::ClearActiveID();
+    RenderItemTool(g_MuItemTooltipUI, true);
+    RenderItemTool(g_MuItemTooltipUI, true);
+
+    const ItemGroundLabel typed{"ticket", true, 3, 9};
+    CHECK(g_ItemDatabase.Find(ticketType)->groundLabels == std::vector<ItemGroundLabel>{typed});
+    g_ItemEdits.GetHistory().Clear();
+}
+
+// Item Tooltip: Add rule puts the new rule before the item's rule that holds at the previewed level, also when that
+// rule has levels; after it the new rule would not be used there.
+TEST_CASE("Item Tooltip adds a rule before the item's ranged rule that holds at the level [data][items][editor]")
+{
+    TemporaryClientFolder folder;
+    folder.CopyShippedItems();
+    ClientDataScope client(folder.Directory());
+    I18N::SetLocale("en");
+    std::string errorMessage;
+    REQUIRE(g_ItemDataHandler.Load(errorMessage));
+    TestImGuiContext context;
+    g_ItemEdits.GetHistory().Clear();
+    // The Devil Square Ticket with a rule for the levels +0 to +3, previewed at +0.
+    const int ticketType = MakeItemType(13, 46);
+    const ItemGroundLabel ranged{"jewel", true, 0, 3};
+    EditItem(ticketType, [&ranged](ItemDefinition& ticket) { ticket.groundLabels = {ranged}; });
+    g_ItemSelection.Select(ticketType);
+    RenderItemTool(g_MuItemTooltipUI, true);
+    ImGui::ActivateItemByID(ItemToolFieldId(MuEditor::WindowIds::ItemTooltip, {ticketType}, I18N::Editor::AddRule));
+    RenderItemTool(g_MuItemTooltipUI, true);
+
+    const ItemGroundLabel added{"jewel", true, 0, 0};
+    CHECK(g_ItemDatabase.Find(ticketType)->groundLabels == std::vector<ItemGroundLabel>{added, ranged});
+    g_ItemEdits.GetHistory().Clear();
+}
+
+// Item Tooltip: for an item without a rule of its own at the level, Add rule takes the style the standard rules give
+// there by its name, not the first style of the same look.
+TEST_CASE("Item Tooltip adds the standard rules' style for an item without rules of its own [data][items][editor]")
+{
+    TemporaryClientFolder folder;
+    folder.CopyShippedItems();
+    ClientDataScope client(folder.Directory());
+    I18N::SetLocale("en");
+    std::string errorMessage;
+    REQUIRE(g_ItemDataHandler.Load(errorMessage));
+    TestImGuiContext context;
+    g_ItemEdits.GetHistory().Clear();
+    // A Kris at +0 takes "level0", whose grey "orbOfSummoning" has too, earlier in the file.
+    const GroundLabelFile& labels = g_ItemDatabase.GetGroundLabels();
+    REQUIRE(labels.FindStyle("orbOfSummoning")->color == labels.FindStyle("level0")->color);
+    REQUIRE(g_ItemDatabase.Find(KrisType)->groundLabels.empty());
+    g_ItemSelection.Select(KrisType);
+    RenderItemTool(g_MuItemTooltipUI, true);
+    ImGui::ActivateItemByID(ItemToolFieldId(MuEditor::WindowIds::ItemTooltip, {KrisType}, I18N::Editor::AddRule));
+    RenderItemTool(g_MuItemTooltipUI, true);
+
+    const ItemGroundLabel added{"level0", true, 0, 0};
+    CHECK(g_ItemDatabase.Find(KrisType)->groundLabels == std::vector<ItemGroundLabel>{added});
+    g_ItemEdits.GetHistory().Clear();
 }
 
 TEST_CASE("A description placeholder that names no table stops the save [editor][items]")

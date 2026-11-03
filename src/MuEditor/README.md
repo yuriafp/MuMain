@@ -46,9 +46,9 @@ stores it when a field is left.
 - **MuItemRulesUI** - The rule flags of many items at once (ItemRulesTable, ItemRuleFlags)
 - **MuItemCategoriesUI** - The items of a tag
 - **MuItemModelUI** - The model entry with a preview, file picker, shared models and looks (ItemModelPreview, ItemModelFilePicker, ItemSharedModelForm, ItemModelForms)
-- **MuItemGlowColorsUI** - The glow color list: new colors, changed values and unused colors removed (GlowColorDialog, which the model tool's color fields open too)
 - **MuItemFormulasUI** - The item stat file: drop level bonus, default, profiles, level bonus tables and profile rules, changed on a copy and applied after the list of the items it reaches (ItemStatTermFields, ItemStatFileChange)
 - **ItemCheckArea** - The items in Data Checks: the checks of a save, each leading to its item and field (ItemCheckTargets)
+- **MuItemTooltipUI** - Item Tooltip: the item's ground label previewed at a level and with options (drawn by the game's own label function), and the item's own label rules
 - **MuItemSyncUI** - Import and Export of the item exchange file with OpenMU: the import's diff of the items and formulas with a box per field (ItemSyncDiff, which also keeps the known differences), applied as one undo step after a confirmation; the export of the client's data, confirmed when it replaces a file (ItemSyncApply); and a read-only comparison of two files
 - **ItemToolWindow** - What every item tool window shares: its title, the selected item, and the item edit history as the editor bar's undo target
 
@@ -59,6 +59,14 @@ stores it when a field is left.
 ### Item Translations
 - **MuItemTranslationsUI.h/cpp** - Item names as a grid of items and languages, with missing counts, on the shared names grid with ItemNameRows as its rows (docs/translation-system.md)
 
+### Colors (UI/Colors)
+- **MuColorsUI.h/cpp** - The Colors window: the named colors as a tree, a root per use with the user's folders (Data/GameData/ColorFolders), drag and drop within a root (Windows > Colors, Items > Glow Colors, Items > Ground Label Styles and the Server List window's Edit colors on their root); it docks with the item tools, and each root's changes go to its own history
+- **NamedColorList.h/cpp** - The panel the picked entry of any root is drawn with: its value with Apply, Revert and Remove, its users, the list of the users a change reaches, and for a picked root the unused entries removed at once; a root gives it its entries through **NamedColorSource.h**
+- **GlowColorsRoot.h/cpp** - The Glow root: new colors, changed values and unused colors removed (GlowColorDialog, which the model tool's color fields open too)
+- **GroundLabelStylesRoot.h/cpp** - The Ground labels root: new label styles (GroundLabelStyleDialog), changed looks and unused styles removed; the styles of the standard rules stay
+- **ServerListColorsRoot.h/cpp** - The Server list root: the themes' colors the list uses (written into each theme's tokens.ini on Apply) and the server list's own colors with a shade per theme, used by the button color rules and the load; the own colors' changes are steps of the Server List window's history
+- **GroundLabelWidgets.h/cpp** - A label style's fields, a label drawn in a style, its swatch and the style combo, for the Ground labels root and Item Tooltip
+
 ### Monster Tools (UI/MonsterTools)
 One selected monster (**MonsterSelection**) is shown by every monster tool.
 Changes go through **MonsterEdits** (the monster data handler plus the
@@ -67,7 +75,7 @@ each step ("Budge Dragon (2): kind").
 - **MuMonsterBrowserUI** - The monster list with search and filters (MonsterBrowserList, MonsterListModel), Save and Revert (MonsterFileActions), the kind combo of each row (MonsterKindField), and the add, copy and remove dialogs (MonsterAddDialog, MonsterRemoveDialog) with what uses a number: the quest data (MonsterDataUsers) and the source lines (MonsterCodeReferences, MonsterCodeLine, MonsterCodeReferenceIndex)
 - **MuMonsterModelUI** - The model entry of the selected monster's model: file (MonsterModelFiles), texture folders, animation speeds and held last frames (MonsterModelValues), sounds, sound slots and sound events (MonsterSoundEventsEditor), and what the game's code adds (MonsterAnimationFacts); the model is opened for the tools when shown (MonsterShownModel)
 - **MuMonsterPreviewUI** - The selected monster's model in a preview with the item preview's camera: any animation with play, pause and a frame slider, the slot sounds, the hit frame and the game's speed factors (MonsterPreviewScene, with the effect preview's pose, PreviewModelPose)
-- **MuMonsterAttacksUI** - The attacks of the selected monster: the animation each monster skill and player skill plays, what any other attack plays (or a draw), when the monster skill is cleared, their sound, and the handlers that read them (MonsterAttackReaders)
+- **MuMonsterAttacksUI** - The attacks of the selected monster, on all maps or in one of its map variants: the animation each monster skill and player skill plays, what any other attack plays (an animation, a rotation, the generic pattern or a draw), when the monster skill is cleared, their sound, and the handlers that read them (MonsterAttackReaders)
 - **MuMonsterTranslationsUI** - Monster names as a grid of numbers and languages (the shared names grid, with MonsterNameRows as its rows), and the import and export of the old NpcName txt files (MonsterNpcNameFiles)
 - **MonsterCheckArea** - The monsters and the monster models in Data Checks: the checks of a save and of the attacks, each leading to its monster and field (MonsterChecks, MonsterAttackChecks, MonsterCheckTargets)
 - **MonsterToolWindow** - What every monster tool window shares: the monster tools' frame, and the monster edit history as the editor bar's undo target while a monster tool is open
@@ -82,12 +90,14 @@ The problems of all game data in one window:
 ### Shared Tool Parts (UI/Common)
 Parts the item tools and the monster tools both use:
 - **NamesGrid.h/cpp**, **NamesGridRows.h** - The names x languages grid of Item Translations and Monster Translations; the rows say what is listed and how a name is stored
+- **MapPicker.h/cpp** - The one way the tools pick maps: the server's map numbers, the rounds of an event (Devil Square, Blood Castle, Kalima, ...) under one name, each with its server number and world folder (docs/monster-data.md)
 - **TextSearch.h/cpp** - The search of the editor's lists (a part of a name, A to Z in either case, or a whole number)
 - **CodeTokenLine.h/cpp**, **CodeRanges.h/cpp**, **CodeReference.h**, **CodeReferenceList.h/cpp** - Reading the sources for the lines that name an item or a monster, and their list in the remove dialogs
 
 ### Server List (UI/ServerList)
-- **MuServerListUI.h/cpp** - The server groups of the login screen (Data/Local/ServerList.json): order, names, test server and channel types, shown on the login screen right away (docs/server-list.md)
+- **MuServerListUI.h/cpp** - The server groups of the login screen (Data/Local/ServerList.json): order, names, test server, the channels' PvP and VIP type, the VIP types and the texts that name a channel, shown on the login screen right away (docs/server-list.md)
 - **ServerListEdits.h/cpp** - The groups being changed, what the file has, and their undo history (the editor bar's Undo and Redo while the window was used last)
+- **ServerListOfflinePreviewUI.h/cpp** - The preview of the servers the connect server didn't send: the toolbar's switch and Their load, and each offline channel's Show box and own load in the channel list
 - **ServerListStepLabel.h/cpp** - What each undo step did ("Remove Helheim", "Valhalla: channel 3"), for the tooltips of the editor bar's Undo and Redo
 
 ### Input Management

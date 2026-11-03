@@ -307,6 +307,7 @@
           "levels": [1, 1]
         }
       ],
+      "groundLabels": [{"style": "white"}],
       "width": 1,
       "height": 1,
       "durability": 255,
@@ -391,7 +392,7 @@
         "es": "Anillo de Transformación",
         "pt": "Anel de Transformação"
       },
-      "tags": ["transformationRing", "noDurabilityLine"],
+      "tags": ["transformationRing", "noDurabilityLine", "noClassLines"],
       "description": [
         {
           "text": {
@@ -518,6 +519,7 @@
           "levels": [5, 5]
         }
       ],
+      "groundLabels": [{"style": "white"}],
       "width": 1,
       "height": 1,
       "slot": "ring",
@@ -565,6 +567,7 @@
           "levels": [1, 1]
         }
       ],
+      "groundLabels": [{"style": "white"}],
       "width": 1,
       "height": 1,
       "durability": 255,
@@ -713,6 +716,7 @@
           "color": "yellow"
         }
       ],
+      "groundLabels": [{"style": "eventItem", "levels": [1, 1]}, {"style": "jewel"}],
       "width": 1,
       "height": 2,
       "statProfile": "helper",
@@ -895,6 +899,7 @@
           "color": "yellow"
         }
       ],
+      "groundLabels": [{"style": "eventItem"}],
       "width": 1,
       "height": 1,
       "repairable": false,
@@ -1031,7 +1036,7 @@
         "es": "Arma Absoluta de Arcángel",
         "pt": "Arma absoluta do arcanjo"
       },
-      "tags": ["valuable", "noDurabilityLine"],
+      "tags": ["valuable", "noDurabilityLine", "noClassLines"],
       "description": [
         {
           "text": "@questItem"
@@ -1600,19 +1605,7 @@
           "levels": [1, 2]
         },
         {
-          "text": {
-            "en": "Cannot be sold.",
-            "de": "Kann nicht verkauft werden.",
-            "es": "No se puede vender.",
-            "id": "Tidak bisa dijual.",
-            "ja": "売却不可",
-            "pl": "Nie można sprzedać.",
-            "pt": "Não pode ser vendido.",
-            "ru": "Не подлежит продаже.",
-            "tl": "Hindi maaaring ibenta.",
-            "uk": "Не можна продати.",
-            "zh-TW": "不能出售。"
-          },
+          "text": "@cannotBeSold",
           "color": "red",
           "levels": [1, 2]
         },
@@ -1667,6 +1660,7 @@
           "color": "yellow"
         }
       ],
+      "groundLabels": [{"style": "eventItem", "levels": [0, 3]}],
       "width": 1,
       "height": 1,
       "slot": "ring",
@@ -1935,6 +1929,7 @@
         "es": "Armadura de Guardia",
         "pt": "Armadura do guarda"
       },
+      "tags": ["noClassLines"],
       "width": 2,
       "height": 2,
       "repairable": false,
@@ -2094,6 +2089,7 @@
           "levels": [1, 1]
         }
       ],
+      "groundLabels": [{"style": "eventItem"}],
       "width": 1,
       "height": 1,
       "classRequirements": {
@@ -2346,7 +2342,7 @@
         "es": "Cuerno de Fenrir",
         "pt": "Chifre de Fenrir"
       },
-      "tags": ["mount", "hornMount", "flying", "valuable", "noDurabilityLine"],
+      "tags": ["mount", "hornMount", "flying", "valuable", "noDurabilityLine", "noClassLines"],
       "description": [
         {
           "text": "@life",
@@ -2502,7 +2498,7 @@
         "es": "Aro Esqueleto Traslado Élite",
         "pt": "Anel Esqueleto Transf. Acel."
       },
-      "tags": ["transformationRing"],
+      "tags": ["transformationRing", "noClassLines"],
       "description": [
         {
           "text": {
@@ -2578,7 +2574,7 @@
         "es": "Anillo de Jack O'Lantern",
         "pt": "Anel do Jack Olantern"
       },
-      "tags": ["transformationRing"],
+      "tags": ["transformationRing", "noClassLines"],
       "description": [
         {
           "text": "@unableToEquipWithADifferentTransformationRing",
@@ -2614,7 +2610,7 @@
         "es": "Aro de Traslado de Navidad",
         "pt": "Anel do Natal de Transf."
       },
-      "tags": ["transformationRing"],
+      "tags": ["transformationRing", "noClassLines"],
       "description": [
         {
           "text": {
@@ -2709,7 +2705,7 @@
         "es": "Anillo de GM",
         "pt": "Anel de GM"
       },
-      "tags": ["transformationRing"],
+      "tags": ["transformationRing", "noClassLines"],
       "description": [
         {
           "text": {
@@ -2872,7 +2868,7 @@
         "es": "Sello de Ascensión",
         "pt": "Selo da ascensão"
       },
-      "tags": ["cashShop"],
+      "tags": ["cashShop", "noClassLines"],
       "description": [
         {
           "text": "@increasesExperience",
@@ -2891,6 +2887,7 @@
           "color": "yellow"
         }
       ],
+      "groundLabels": [{"style": "seal"}],
       "width": 1,
       "height": 1,
       "slot": "ring",
@@ -2918,7 +2915,7 @@
         "es": "Sello de Riqueza",
         "pt": "Selo da riqueza"
       },
-      "tags": ["cashShop"],
+      "tags": ["cashShop", "noClassLines"],
       "description": [
         {
           "text": "@increasesExperienceAndDrops",
@@ -2937,6 +2934,7 @@
           "color": "yellow"
         }
       ],
+      "groundLabels": [{"style": "seal"}],
       "width": 1,
       "height": 1,
       "slot": "ring",
@@ -2964,7 +2962,7 @@
         "es": "Sello de Sustento",
         "pt": "Selo do sustento"
       },
-      "tags": ["cashShop"],
+      "tags": ["cashShop", "noClassLines"],
       "description": [
         {
           "text": {
@@ -2991,6 +2989,7 @@
           "color": "yellow"
         }
       ],
+      "groundLabels": [{"style": "seal"}],
       "width": 1,
       "height": 1,
       "slot": "ring",
@@ -3018,7 +3017,7 @@
         "es": "Boleto de la Plaza del Diablo",
         "pt": "Bilhete da Praça do Diabo"
       },
-      "tags": ["cashShop", "noDurabilityLine"],
+      "tags": ["cashShop", "noDurabilityLine", "noClassLines"],
       "description": [
         {
           "text": {
@@ -3047,6 +3046,7 @@
           "text": "@usableTimes"
         }
       ],
+      "groundLabels": [{"style": "ticket"}],
       "width": 1,
       "height": 1,
       "durability": 10,
@@ -3073,7 +3073,7 @@
         "es": "Boleto al Castillo Sangriento",
         "pt": "Bilhete do Castelo de Sangue"
       },
-      "tags": ["cashShop", "noDurabilityLine"],
+      "tags": ["cashShop", "noDurabilityLine", "noClassLines"],
       "description": [
         {
           "text": {
@@ -3102,6 +3102,7 @@
           "text": "@usableTimes"
         }
       ],
+      "groundLabels": [{"style": "ticket"}],
       "width": 1,
       "height": 1,
       "durability": 10,
@@ -3128,7 +3129,7 @@
         "es": "Boleto de Kalima",
         "pt": "Bilhete de Kalima"
       },
-      "tags": ["cashShop", "noDurabilityLine"],
+      "tags": ["cashShop", "noDurabilityLine", "noClassLines"],
       "description": [
         {
           "text": {
@@ -3157,6 +3158,7 @@
           "text": "@usableTimes"
         }
       ],
+      "groundLabels": [{"style": "ticket"}],
       "width": 1,
       "height": 1,
       "durability": 10,
@@ -3201,6 +3203,7 @@
           "color": "blue"
         }
       ],
+      "groundLabels": [{"style": "questItem"}],
       "width": 1,
       "height": 1,
       "repairable": false,
@@ -3240,6 +3243,7 @@
           "color": "blue"
         }
       ],
+      "groundLabels": [{"style": "questItem"}],
       "width": 1,
       "height": 2,
       "repairable": false,
@@ -3279,6 +3283,7 @@
           "color": "blue"
         }
       ],
+      "groundLabels": [{"style": "questItem"}],
       "width": 2,
       "height": 2,
       "durability": 1,
@@ -3363,7 +3368,8 @@
         "es": "Reiniciar Fruto de Fuerza",
         "pt": "Reiniciar força da fruta"
       },
-      "tags": ["cashShop", "noDurabilityLine"],
+      "tags": ["cashShop", "noDurabilityLine", "noClassLines"],
+      "groundLabels": [{"style": "resetFruit"}],
       "width": 1,
       "height": 1,
       "durability": 100,
@@ -3390,7 +3396,8 @@
         "es": "Reiniciar Fruto de Rapidez",
         "pt": "Reiniciar rapidez da fruta"
       },
-      "tags": ["cashShop", "noDurabilityLine"],
+      "tags": ["cashShop", "noDurabilityLine", "noClassLines"],
+      "groundLabels": [{"style": "resetFruit"}],
       "width": 1,
       "height": 1,
       "durability": 100,
@@ -3417,7 +3424,8 @@
         "es": "Reiniciar Fruto de Salud",
         "pt": "Reiniciar saúde da Fruta"
       },
-      "tags": ["cashShop", "noDurabilityLine"],
+      "tags": ["cashShop", "noDurabilityLine", "noClassLines"],
+      "groundLabels": [{"style": "resetFruit"}],
       "width": 1,
       "height": 1,
       "durability": 100,
@@ -3444,7 +3452,8 @@
         "es": "Reiniciar Fruto de Energía",
         "pt": "Reiniciar energia da fruta"
       },
-      "tags": ["cashShop", "noDurabilityLine"],
+      "tags": ["cashShop", "noDurabilityLine", "noClassLines"],
+      "groundLabels": [{"style": "resetFruit"}],
       "width": 1,
       "height": 1,
       "durability": 100,
@@ -3471,7 +3480,8 @@
         "es": "Reiniciar Fruto de Control",
         "pt": "Reiniciar controle da fruta"
       },
-      "tags": ["cashShop", "noDurabilityLine"],
+      "tags": ["cashShop", "noDurabilityLine", "noClassLines"],
+      "groundLabels": [{"style": "resetFruit"}],
       "width": 1,
       "height": 1,
       "durability": 100,
@@ -3498,7 +3508,7 @@
         "es": "Sello de Movilidad",
         "pt": "Selo da mobilidade"
       },
-      "tags": ["cashShop"],
+      "tags": ["cashShop", "noClassLines"],
       "description": [
         {
           "text": {
@@ -3517,6 +3527,7 @@
           "color": "blue"
         }
       ],
+      "groundLabels": [{"style": "seal"}],
       "width": 1,
       "height": 1,
       "tradable": false,
@@ -3542,7 +3553,7 @@
         "es": "Indulgencia",
         "pt": "Indulgência"
       },
-      "tags": ["cashShop"],
+      "tags": ["cashShop", "noClassLines"],
       "description": [
         {
           "text": {
@@ -3561,6 +3572,7 @@
           "color": "blue"
         }
       ],
+      "groundLabels": [{"style": "cashShopItem"}],
       "width": 1,
       "height": 2,
       "tradable": false,
@@ -3586,7 +3598,7 @@
         "es": "Boleto al Templo de Ilusión",
         "pt": "Bilhete do Templo da Ilusão"
       },
-      "tags": ["cashShop", "noDurabilityLine"],
+      "tags": ["cashShop", "noDurabilityLine", "noClassLines"],
       "description": [
         {
           "text": {
@@ -3615,6 +3627,7 @@
           "text": "@usableTimes"
         }
       ],
+      "groundLabels": [{"style": "ticket"}],
       "width": 1,
       "height": 1,
       "durability": 10,
@@ -3641,7 +3654,7 @@
         "es": "Sello de Curación",
         "pt": "Selo da cura"
       },
-      "tags": ["cashShop"],
+      "tags": ["cashShop", "noClassLines"],
       "description": [
         {
           "text": {
@@ -3696,6 +3709,7 @@
           "color": "yellow"
         }
       ],
+      "groundLabels": [{"style": "seal"}],
       "width": 1,
       "height": 1,
       "tradable": false,
@@ -3721,7 +3735,7 @@
         "es": "Sello de Divinidad",
         "pt": "Selo da divindade"
       },
-      "tags": ["cashShop"],
+      "tags": ["cashShop", "noClassLines"],
       "description": [
         {
           "text": {
@@ -3772,6 +3786,7 @@
           "color": "blue"
         }
       ],
+      "groundLabels": [{"style": "seal"}],
       "width": 1,
       "height": 1,
       "tradable": false,
@@ -3797,7 +3812,7 @@
         "es": "Demonio",
         "pt": "Demônio"
       },
-      "tags": ["guardianPet", "cashShop", "valuable", "noDurabilityLine"],
+      "tags": ["guardianPet", "cashShop", "valuable", "noDurabilityLine", "noClassLines"],
       "description": [
         {
           "text": {
@@ -3824,6 +3839,7 @@
           "when": ["!timed"]
         }
       ],
+      "groundLabels": [{"style": "pet"}],
       "width": 1,
       "height": 1,
       "slot": "pet",
@@ -3857,7 +3873,7 @@
         "es": "Espír. Guardián",
         "pt": "Espír. Guardião"
       },
-      "tags": ["guardianPet", "cashShop", "valuable", "noDurabilityLine"],
+      "tags": ["guardianPet", "cashShop", "valuable", "noDurabilityLine", "noClassLines"],
       "description": [
         {
           "text": {
@@ -3896,6 +3912,7 @@
           "when": ["!timed"]
         }
       ],
+      "groundLabels": [{"style": "pet"}],
       "width": 1,
       "height": 1,
       "slot": "pet",
@@ -3954,6 +3971,7 @@
           "after": "options"
         }
       ],
+      "groundLabels": [{"style": "santaInvitation"}],
       "width": 1,
       "height": 1,
       "durability": 10,
@@ -3976,7 +3994,7 @@
         "es": "Mascota Rudolf",
         "pt": "Animal de estimação Rodolfo"
       },
-      "tags": ["noDurabilityLine"],
+      "tags": ["noDurabilityLine", "noClassLines"],
       "description": [
         {
           "text": "@collectsSurroundingZen",
@@ -3987,6 +4005,7 @@
           "when": ["!timed"]
         }
       ],
+      "groundLabels": [{"style": "pet"}],
       "width": 1,
       "height": 1,
       "slot": "pet",
@@ -4015,7 +4034,7 @@
         "es": "Aro Mutación Hombre de Nieve",
         "pt": "Anel Transf. Homem da Neve"
       },
-      "tags": ["transformationRing"],
+      "tags": ["transformationRing", "noClassLines"],
       "description": [
         {
           "text": "@unableToEquipWithADifferentTransformationRing",
@@ -4023,6 +4042,7 @@
           "after": "options"
         }
       ],
+      "groundLabels": [{"style": "transformationRing"}],
       "width": 1,
       "height": 1,
       "slot": "ring",
@@ -4051,7 +4071,7 @@
         "es": "Talismán de Resurrección",
         "pt": "Talismã da ressurreição"
       },
-      "tags": ["cashShop"],
+      "tags": ["cashShop", "noClassLines"],
       "width": 1,
       "height": 1,
       "tradable": false,
@@ -4077,7 +4097,7 @@
         "es": "Talismán de Movilidad",
         "pt": "Talismã da mobilidade"
       },
-      "tags": ["cashShop", "noDurabilityLine"],
+      "tags": ["cashShop", "noDurabilityLine", "noClassLines"],
       "description": [
         {
           "text": {
@@ -4156,7 +4176,7 @@
         "es": "Espada/Maza/Jabalina",
         "pt": "Espada/Maça/Lança"
       },
-      "tags": ["gambleItem", "noDurabilityLine"],
+      "tags": ["gambleItem", "noDurabilityLine", "noClassLines"],
       "description": [
         {
           "text": "@itemSkillLuckOptionWillBeRandomlyAdded"
@@ -4185,7 +4205,7 @@
         "es": "Báculo",
         "pt": "Bastão"
       },
-      "tags": ["gambleItem", "noDurabilityLine"],
+      "tags": ["gambleItem", "noDurabilityLine", "noClassLines"],
       "description": [
         {
           "text": "@itemSkillLuckOptionWillBeRandomlyAdded"
@@ -4214,7 +4234,7 @@
         "es": "Arco/Ballesta",
         "pt": "Arco/Besta"
       },
-      "tags": ["gambleItem", "noDurabilityLine"],
+      "tags": ["gambleItem", "noDurabilityLine", "noClassLines"],
       "description": [
         {
           "text": "@itemSkillLuckOptionWillBeRandomlyAdded"
@@ -4243,7 +4263,7 @@
         "es": "Cetro",
         "pt": "Cetro"
       },
-      "tags": ["gambleItem", "noDurabilityLine"],
+      "tags": ["gambleItem", "noDurabilityLine", "noClassLines"],
       "description": [
         {
           "text": "@itemSkillLuckOptionWillBeRandomlyAdded"
@@ -4272,7 +4292,7 @@
         "es": "Vara",
         "pt": "Cajado"
       },
-      "tags": ["gambleItem", "noDurabilityLine"],
+      "tags": ["gambleItem", "noDurabilityLine", "noClassLines"],
       "description": [
         {
           "text": "@itemSkillLuckOptionWillBeRandomlyAdded"
@@ -4301,7 +4321,7 @@
         "es": "Anillo Panda",
         "pt": "Anel do Panda"
       },
-      "tags": ["pandaOrSkeleton", "transformationRing", "valuable"],
+      "tags": ["pandaOrSkeleton", "transformationRing", "valuable", "noClassLines"],
       "description": [
         {
           "text": {
@@ -4364,6 +4384,7 @@
           "after": "options"
         }
       ],
+      "groundLabels": [{"style": "transformationRing"}],
       "width": 1,
       "height": 1,
       "slot": "ring",
@@ -4397,7 +4418,7 @@
         "es": "Mascota Panda",
         "pt": "Animal de estimação Panda"
       },
-      "tags": ["pandaOrSkeleton", "valuable", "noDurabilityLine"],
+      "tags": ["pandaOrSkeleton", "valuable", "noDurabilityLine", "noClassLines"],
       "description": [
         {
           "text": "@autoCollectsZen",
@@ -4428,6 +4449,7 @@
           "when": ["!timed"]
         }
       ],
+      "groundLabels": [{"style": "pet"}],
       "width": 1,
       "height": 1,
       "slot": "pet",
@@ -4461,7 +4483,7 @@
         "es": "Talismán de Guardián",
         "pt": "Talismã do Guardião"
       },
-      "tags": ["cashShop"],
+      "tags": ["cashShop", "noClassLines"],
       "description": [
         {
           "text": {
@@ -4537,7 +4559,7 @@
         "es": "Talismán Protección de Ítems",
         "pt": "Talismã de Proteção de Item"
       },
-      "tags": ["cashShop"],
+      "tags": ["cashShop", "noClassLines"],
       "description": [
         {
           "text": {
@@ -4613,6 +4635,7 @@
         "es": "Talismán de Alas de Satán",
         "pt": "Talismã das Asas de Satã"
       },
+      "tags": ["noClassLines"],
       "description": [
         {
           "text": "@increasesYourLuckToCreateWingOfYourWish"
@@ -4626,6 +4649,7 @@
           "when": ["durability"]
         }
       ],
+      "groundLabels": [{"style": "talismanOfWings"}],
       "width": 1,
       "height": 1,
       "droppable": false,
@@ -4649,6 +4673,7 @@
         "es": "Talismán de Alas de Cielo",
         "pt": "Talismã das Asas do Paraíso"
       },
+      "tags": ["noClassLines"],
       "description": [
         {
           "text": "@increasesYourLuckToCreateWingOfYourWish"
@@ -4662,6 +4687,7 @@
           "when": ["durability"]
         }
       ],
+      "groundLabels": [{"style": "talismanOfWings"}],
       "width": 1,
       "height": 1,
       "droppable": false,
@@ -4685,6 +4711,7 @@
         "es": "Talismán de Alas de Elfo",
         "pt": "Talismã das Asas do Elfo"
       },
+      "tags": ["noClassLines"],
       "description": [
         {
           "text": "@increasesYourLuckToCreateWingOfYourWish"
@@ -4698,6 +4725,7 @@
           "when": ["durability"]
         }
       ],
+      "groundLabels": [{"style": "talismanOfWings"}],
       "width": 1,
       "height": 1,
       "droppable": false,
@@ -4721,6 +4749,7 @@
         "es": "Talismán de Alas de Maldición",
         "pt": "Talismã da Asa da Maldição"
       },
+      "tags": ["noClassLines"],
       "description": [
         {
           "text": "@increasesYourLuckToCreateWingOfYourWish"
@@ -4734,6 +4763,7 @@
           "when": ["durability"]
         }
       ],
+      "groundLabels": [{"style": "talismanOfWings"}],
       "width": 1,
       "height": 1,
       "droppable": false,
@@ -4757,6 +4787,7 @@
         "es": "Talismán de Capa de Emperador",
         "pt": "Talismã da Capa do Imperador"
       },
+      "tags": ["noClassLines"],
       "description": [
         {
           "text": "@increasesYourLuckToCreateWingOfYourWish"
@@ -4770,6 +4801,7 @@
           "when": ["durability"]
         }
       ],
+      "groundLabels": [{"style": "talismanOfWings"}],
       "width": 1,
       "height": 1,
       "droppable": false,
@@ -4793,6 +4825,7 @@
         "es": "Talismán de Alas de Dragón",
         "pt": "Talismã das Asas do Dragão"
       },
+      "tags": ["noClassLines"],
       "description": [
         {
           "text": "@increasesYourLuckToCreateWingOfYourWish"
@@ -4806,6 +4839,7 @@
           "when": ["durability"]
         }
       ],
+      "groundLabels": [{"style": "talismanOfWings"}],
       "width": 1,
       "height": 1,
       "droppable": false,
@@ -4829,6 +4863,7 @@
         "es": "Talismán de Alas del Alma",
         "pt": "Talismã das Asas da Alma"
       },
+      "tags": ["noClassLines"],
       "description": [
         {
           "text": "@increasesYourLuckToCreateWingOfYourWish"
@@ -4842,6 +4877,7 @@
           "when": ["durability"]
         }
       ],
+      "groundLabels": [{"style": "talismanOfWings"}],
       "width": 1,
       "height": 1,
       "droppable": false,
@@ -4865,6 +4901,7 @@
         "es": "Talismán de Alas de Espíritus",
         "pt": "Talismã das Asas dos Esp."
       },
+      "tags": ["noClassLines"],
       "description": [
         {
           "text": "@increasesYourLuckToCreateWingOfYourWish"
@@ -4878,6 +4915,7 @@
           "when": ["durability"]
         }
       ],
+      "groundLabels": [{"style": "talismanOfWings"}],
       "width": 1,
       "height": 1,
       "droppable": false,
@@ -4901,6 +4939,7 @@
         "es": "Talismán Alas de Desolación",
         "pt": "Talismã da Asa do Desespero"
       },
+      "tags": ["noClassLines"],
       "description": [
         {
           "text": "@increasesYourLuckToCreateWingOfYourWish"
@@ -4914,6 +4953,7 @@
           "when": ["durability"]
         }
       ],
+      "groundLabels": [{"style": "talismanOfWings"}],
       "width": 1,
       "height": 1,
       "droppable": false,
@@ -4937,6 +4977,7 @@
         "es": "Talismán de Alas de Oscuridad",
         "pt": "Talismã das Asas da Escuridão"
       },
+      "tags": ["noClassLines"],
       "description": [
         {
           "text": "@increasesYourLuckToCreateWingOfYourWish"
@@ -4950,6 +4991,7 @@
           "when": ["durability"]
         }
       ],
+      "groundLabels": [{"style": "talismanOfWings"}],
       "width": 1,
       "height": 1,
       "droppable": false,
@@ -4973,7 +5015,7 @@
         "es": "Sello Maestro de Ascensión",
         "pt": "Selo Mestre da Ascensão"
       },
-      "tags": ["cashShop"],
+      "tags": ["cashShop", "noClassLines"],
       "description": [
         {
           "text": "@increasesExperience",
@@ -4988,6 +5030,7 @@
           "when": ["durability"]
         }
       ],
+      "groundLabels": [{"style": "seal"}],
       "width": 1,
       "height": 1,
       "tradable": false,
@@ -5014,7 +5057,7 @@
         "es": "Sello Maestro de Riqueza",
         "pt": "Selo Mestre da Riqueza"
       },
-      "tags": ["cashShop"],
+      "tags": ["cashShop", "noClassLines"],
       "description": [
         {
           "text": "@increasesExperienceAndDrops",
@@ -5092,6 +5135,7 @@
         "es": "Tarjeta de Personaje del Gladiador Mago",
         "pt": "Carta de Personagem - Gladiador Mágico"
       },
+      "groundLabels": [{"style": "cashShopService"}],
       "tradable": false,
       "droppable": false,
       "personalShopSellable": false
@@ -5104,6 +5148,7 @@
         "es": "Tarjeta de Personaje del Señor Oscuro",
         "pt": "Carta de Personagem - Lorde Sombrio"
       },
+      "groundLabels": [{"style": "cashShopService"}],
       "tradable": false,
       "droppable": false,
       "personalShopSellable": false
@@ -5116,6 +5161,7 @@
         "es": "Clave de Ranura de Personaje",
         "pt": "Fenda de Chave de Personagem"
       },
+      "groundLabels": [{"style": "cashShopService"}],
       "slot": "mainHand",
       "tradable": false,
       "droppable": false,
@@ -5261,7 +5307,7 @@
         "es": "Unicornio",
         "pt": "Unic. Est."
       },
-      "tags": ["cashShop", "noDurabilityLine"],
+      "tags": ["cashShop", "noDurabilityLine", "noClassLines"],
       "description": [
         {
           "text": "@autoCollectsZen",
@@ -5292,6 +5338,7 @@
           "when": ["!timed"]
         }
       ],
+      "groundLabels": [{"style": "pet"}],
       "width": 1,
       "height": 1,
       "slot": "pet",
@@ -5389,6 +5436,7 @@
           }
         }
       ],
+      "groundLabels": [{"style": "eventJewelry"}],
       "width": 1,
       "height": 1,
       "slot": "ring",
@@ -5437,6 +5485,7 @@
           }
         }
       ],
+      "groundLabels": [{"style": "eventJewelry"}],
       "width": 1,
       "height": 1,
       "slot": "ring",
@@ -5485,6 +5534,7 @@
           }
         }
       ],
+      "groundLabels": [{"style": "eventJewelry"}],
       "width": 1,
       "height": 1,
       "slot": "ring",
@@ -5533,6 +5583,7 @@
           }
         }
       ],
+      "groundLabels": [{"style": "eventJewelry"}],
       "width": 1,
       "height": 1,
       "slot": "ring",
@@ -5581,6 +5632,7 @@
           }
         }
       ],
+      "groundLabels": [{"style": "eventJewelry"}],
       "width": 1,
       "height": 1,
       "slot": "pendant",
@@ -5629,6 +5681,7 @@
           }
         }
       ],
+      "groundLabels": [{"style": "eventJewelry"}],
       "width": 1,
       "height": 1,
       "slot": "pendant",
@@ -5665,6 +5718,7 @@
           "text": "@increasesAcquisitionRateOfManaAfterHuntingMonstersMana8"
         }
       ],
+      "groundLabels": [{"style": "eventJewelry"}],
       "width": 1,
       "height": 1,
       "slot": "pendant",
@@ -5711,6 +5765,7 @@
           "color": "blue"
         }
       ],
+      "groundLabels": [{"style": "seal"}],
       "width": 1,
       "height": 1,
       "slot": "ring",
@@ -5817,7 +5872,7 @@
         "es": "Boleto Abierto; Castillo Caos",
         "pt": "Bilhete Ac. Livre Cast. Caos"
       },
-      "tags": ["cashShop", "noDurabilityLine"],
+      "tags": ["cashShop", "noDurabilityLine", "noClassLines"],
       "description": [
         {
           "text": {
@@ -5849,6 +5904,7 @@
           "when": ["timed"]
         }
       ],
+      "groundLabels": [{"style": "eventItem"}],
       "width": 1,
       "height": 1,
       "durability": 10,
@@ -5875,7 +5931,7 @@
         "es": "Aro Mutación de Esqueleto",
         "pt": "Anel Transf. de Esqueleto"
       },
-      "tags": ["pandaOrSkeleton", "transformationRing", "valuable"],
+      "tags": ["pandaOrSkeleton", "transformationRing", "valuable", "noClassLines"],
       "description": [
         {
           "text": {
@@ -5959,6 +6015,7 @@
           "after": "options"
         }
       ],
+      "groundLabels": [{"style": "transformationRing"}],
       "width": 1,
       "height": 1,
       "slot": "ring",
@@ -6073,6 +6130,7 @@
           "after": "options"
         }
       ],
+      "groundLabels": [{"style": "pet"}],
       "width": 1,
       "height": 1,
       "slot": "pet",
@@ -6166,7 +6224,7 @@
         "es": "Boleto Acceso a Doppenganger",
         "pt": "Bilhete Ac. Livre Doppeganger"
       },
-      "tags": ["cashShop", "noDurabilityLine"],
+      "tags": ["cashShop", "noDurabilityLine", "noClassLines"],
       "description": [
         {
           "text": {
@@ -6191,6 +6249,7 @@
           "text": "@usableTimes"
         }
       ],
+      "groundLabels": [{"style": "ticket"}],
       "width": 1,
       "height": 1,
       "durability": 10,
@@ -6217,7 +6276,7 @@
         "es": "Boleto Acceso a Varka",
         "pt": "Bilhete Ac. Livre Varka"
       },
-      "tags": ["cashShop", "noDurabilityLine"],
+      "tags": ["cashShop", "noDurabilityLine", "noClassLines"],
       "description": [
         {
           "text": {
@@ -6257,6 +6316,7 @@
           }
         }
       ],
+      "groundLabels": [{"style": "ticket"}],
       "width": 1,
       "height": 1,
       "durability": 10,
@@ -6283,7 +6343,7 @@
         "es": "Boleto Acceso Mapa 7 de Varka",
         "pt": "Bil. Ac. Livre Mapa 7 Varka"
       },
-      "tags": ["cashShop", "noDurabilityLine"],
+      "tags": ["cashShop", "noDurabilityLine", "noClassLines"],
       "description": [
         {
           "text": {
@@ -6323,6 +6383,7 @@
           }
         }
       ],
+      "groundLabels": [{"style": "ticket"}],
       "width": 1,
       "height": 1,
       "durability": 3,
@@ -6349,6 +6410,7 @@
         "es": "Figura de Halcón",
         "pt": "Estatueta de falcão"
       },
+      "groundLabels": [{"style": "charm"}],
       "width": 1,
       "height": 1,
       "slot": "ring",
@@ -6371,6 +6433,7 @@
         "es": "Figura de Cabra",
         "pt": "Estatueta de bode"
       },
+      "groundLabels": [{"style": "charm"}],
       "width": 1,
       "height": 1,
       "slot": "ring",
@@ -6393,6 +6456,7 @@
         "es": "Amuleto de Roble",
         "pt": "Amuleto de carvalho"
       },
+      "groundLabels": [{"style": "charm"}],
       "width": 1,
       "height": 1,
       "slot": "ring",
@@ -6415,6 +6479,7 @@
         "es": "Amuleto de Arce",
         "pt": "Amuleto de bordo"
       },
+      "groundLabels": [{"style": "charm"}],
       "width": 1,
       "height": 1,
       "slot": "ring",
@@ -6437,6 +6502,7 @@
         "es": "Amuleto Dorado de Roble",
         "pt": "Amuleto de carvalho dourado"
       },
+      "groundLabels": [{"style": "charm"}],
       "width": 1,
       "height": 2,
       "slot": "ring",
@@ -6459,6 +6525,7 @@
         "es": "Amuleto Dorado de Arce",
         "pt": "Amuleto de bordo dourado"
       },
+      "groundLabels": [{"style": "charm"}],
       "width": 1,
       "height": 2,
       "slot": "ring",
@@ -6481,6 +6548,7 @@
         "es": "Herradura usada",
         "pt": "Ferradura gasta"
       },
+      "groundLabels": [{"style": "charm"}],
       "width": 1,
       "height": 1,
       "slot": "ring",

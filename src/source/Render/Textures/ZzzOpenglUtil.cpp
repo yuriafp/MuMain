@@ -5,6 +5,7 @@
 #include "ZzzOpenglUtil.h"
 #include "ZzzTexture.h"
 #include "Render/Renderer/MuRenderer.h"
+#include "Render/Drawing/StateCalls.h"
 #include "Render/Renderer/Overlay2DRecorder.h"
 #include "Render/Sprites/GlobalBitmap.h"
 #include "Render/Renderer/RenderUtils.h"
@@ -149,6 +150,88 @@ int  GrabScreen = 0;
 // opengl render util
 ///////////////////////////////////////////////////////////////////////////////
 
+namespace
+{
+Render::Drawing::StateCallRecorder* s_stateCallRecorder = nullptr;
+
+// While a drawer that draws later records, a state call is recorded with its draws instead of made now.
+bool RecordsStateCall(Render::Drawing::StateCall call, int argument)
+{
+    if (s_stateCallRecorder == nullptr)
+        return false;
+    s_stateCallRecorder->RecordStateCall(call, argument);
+    return true;
+}
+} // namespace
+
+namespace Render::Drawing
+{
+void SetStateCallRecorder(StateCallRecorder* recorder)
+{
+    s_stateCallRecorder = recorder;
+}
+
+StateCallRecorder* ActiveStateCallRecorder()
+{
+    return s_stateCallRecorder;
+}
+
+void MakeStateCall(StateCall call, int argument)
+{
+    switch (call)
+    {
+    case StateCall::BindTexture:
+        BindTexture(argument);
+        break;
+    case StateCall::EnableDepthTest:
+        EnableDepthTest();
+        break;
+    case StateCall::DisableDepthTest:
+        DisableDepthTest();
+        break;
+    case StateCall::EnableDepthMask:
+        EnableDepthMask();
+        break;
+    case StateCall::DisableDepthMask:
+        DisableDepthMask();
+        break;
+    case StateCall::EnableCullFace:
+        EnableCullFace();
+        break;
+    case StateCall::DisableCullFace:
+        DisableCullFace();
+        break;
+    case StateCall::DisableTexture:
+        DisableTexture(argument != 0);
+        break;
+    case StateCall::DisableAlphaBlend:
+        DisableAlphaBlend();
+        break;
+    case StateCall::EnableAlphaTest:
+        EnableAlphaTest(argument != 0);
+        break;
+    case StateCall::EnableAlphaBlend:
+        EnableAlphaBlend();
+        break;
+    case StateCall::EnableAlphaBlendMinus:
+        EnableAlphaBlendMinus();
+        break;
+    case StateCall::EnableAlphaBlend2:
+        EnableAlphaBlend2();
+        break;
+    case StateCall::EnableAlphaBlend3:
+        EnableAlphaBlend3();
+        break;
+    case StateCall::EnableAlphaBlend4:
+        EnableAlphaBlend4();
+        break;
+    case StateCall::EnableLightMap:
+        EnableLightMap();
+        break;
+    }
+}
+} // namespace Render::Drawing
+
 int  CachTexture = -1;
 bool TextureEnable;
 bool DepthTestEnable;
@@ -159,6 +242,8 @@ int  AlphaBlendType;
 
 void BindTexture(int tex)
 {
+    if (RecordsStateCall(Render::Drawing::StateCall::BindTexture, tex))
+        return;
     // Always forward to the renderer. In the deferred SDL renderer this only
     // updates logical state, and caching can desync when callers bind directly.
     mu::GetRenderer().BindTexture(tex);
@@ -246,6 +331,8 @@ void FlushGL()
 
 void EnableDepthTest()
 {
+    if (RecordsStateCall(Render::Drawing::StateCall::EnableDepthTest, 0))
+        return;
     if (!DepthTestEnable)
     {
         DepthTestEnable = true;
@@ -255,6 +342,8 @@ void EnableDepthTest()
 
 void DisableDepthTest()
 {
+    if (RecordsStateCall(Render::Drawing::StateCall::DisableDepthTest, 0))
+        return;
     if (DepthTestEnable)
     {
         DepthTestEnable = false;
@@ -264,6 +353,8 @@ void DisableDepthTest()
 
 void EnableDepthMask()
 {
+    if (RecordsStateCall(Render::Drawing::StateCall::EnableDepthMask, 0))
+        return;
     if (!DepthMaskEnable)
     {
         DepthMaskEnable = true;
@@ -273,6 +364,8 @@ void EnableDepthMask()
 
 void DisableDepthMask()
 {
+    if (RecordsStateCall(Render::Drawing::StateCall::DisableDepthMask, 0))
+        return;
     if (DepthMaskEnable)
     {
         DepthMaskEnable = false;
@@ -282,6 +375,8 @@ void DisableDepthMask()
 
 void EnableCullFace()
 {
+    if (RecordsStateCall(Render::Drawing::StateCall::EnableCullFace, 0))
+        return;
     if (!CullFaceEnable)
     {
         CullFaceEnable = true;
@@ -291,6 +386,8 @@ void EnableCullFace()
 
 void DisableCullFace()
 {
+    if (RecordsStateCall(Render::Drawing::StateCall::DisableCullFace, 0))
+        return;
     if (CullFaceEnable)
     {
         CullFaceEnable = false;
@@ -300,6 +397,8 @@ void DisableCullFace()
 
 void DisableTexture(bool AlphaTest)
 {
+    if (RecordsStateCall(Render::Drawing::StateCall::DisableTexture, AlphaTest))
+        return;
     EnableDepthMask();
     if (AlphaTest == true)
     {
@@ -326,6 +425,8 @@ void DisableTexture(bool AlphaTest)
 
 void DisableAlphaBlend()
 {
+    if (RecordsStateCall(Render::Drawing::StateCall::DisableAlphaBlend, 0))
+        return;
     if (AlphaBlendType != 0)
     {
         AlphaBlendType = 0;
@@ -349,6 +450,8 @@ void DisableAlphaBlend()
 
 void EnableAlphaTest(bool DepthMask)
 {
+    if (RecordsStateCall(Render::Drawing::StateCall::EnableAlphaTest, DepthMask))
+        return;
     if (AlphaBlendType != 2)
     {
         AlphaBlendType = 2;
@@ -373,6 +476,8 @@ void EnableAlphaTest(bool DepthMask)
 
 void EnableAlphaBlend()
 {
+    if (RecordsStateCall(Render::Drawing::StateCall::EnableAlphaBlend, 0))
+        return;
     if (AlphaBlendType != 3)
     {
         AlphaBlendType = 3;
@@ -396,6 +501,8 @@ void EnableAlphaBlend()
 
 void EnableAlphaBlendMinus()
 {
+    if (RecordsStateCall(Render::Drawing::StateCall::EnableAlphaBlendMinus, 0))
+        return;
     if (AlphaBlendType != 4)
     {
         AlphaBlendType = 4;
@@ -419,6 +526,8 @@ void EnableAlphaBlendMinus()
 
 void EnableAlphaBlend2()
 {
+    if (RecordsStateCall(Render::Drawing::StateCall::EnableAlphaBlend2, 0))
+        return;
     if (AlphaBlendType != 5)
     {
         AlphaBlendType = 5;
@@ -442,6 +551,8 @@ void EnableAlphaBlend2()
 
 void EnableAlphaBlend3()
 {
+    if (RecordsStateCall(Render::Drawing::StateCall::EnableAlphaBlend3, 0))
+        return;
     if (AlphaBlendType != 6)
     {
         AlphaBlendType = 6;
@@ -465,6 +576,8 @@ void EnableAlphaBlend3()
 
 void EnableAlphaBlend4()
 {
+    if (RecordsStateCall(Render::Drawing::StateCall::EnableAlphaBlend4, 0))
+        return;
     if (AlphaBlendType != 7)
     {
         AlphaBlendType = 7;
@@ -488,6 +601,8 @@ void EnableAlphaBlend4()
 
 void EnableLightMap()
 {
+    if (RecordsStateCall(Render::Drawing::StateCall::EnableLightMap, 0))
+        return;
     if (AlphaBlendType != 1)
     {
         AlphaBlendType = 1;
@@ -592,12 +707,23 @@ float ConvertPositionY(float y)
     return ConvertY(y) + g_fScreenOffset_y;
 }
 
-void BeginOpengl(int x, int y, int Width, int Height)
+static void ToWindowPixels(int& x, int& y, int& Width, int& Height)
 {
     x = static_cast<int>(ConvertPositionX(static_cast<float>(x)));
     y = static_cast<int>(ConvertPositionY(static_cast<float>(y)));
     Width = static_cast<int>(ConvertX(static_cast<float>(Width)));
     Height = static_cast<int>(ConvertY(static_cast<float>(Height)));
+}
+
+void UpdateCameraView(int x, int y, int Width, int Height)
+{
+    ToWindowPixels(x, y, Width, Height);
+    CameraProjection::UpdateView(g_Camera, x, y, Width, Height);
+}
+
+void BeginOpengl(int x, int y, int Width, int Height)
+{
+    ToWindowPixels(x, y, Width, Height);
     BeginOpenglPhysical(x, y, Width, Height);
 }
 
@@ -614,26 +740,12 @@ void BeginOpenglForTarget(int width, int height)
     width = std::max(width, 1);
     height = std::max(height, 1);
 
+    // The view was built in the update (CameraProjection::UpdateView); the draw only applies it.
     mu::GetRenderer().SetMatrixMode(GL_PROJECTION);
     mu::GetRenderer().PushMatrix();
-    mu::GetRenderer().LoadIdentity();
-
-    // Calculate aspect ratio dynamically from viewport dimensions
-    // This ensures camera adapts to window resizing (WM_SIZE updates WindowWidth/WindowHeight)
-    // FOV stays constant, aspect ratio scales the horizontal view accordingly
-    const float aspectRatio = static_cast<float>(width) / height;
-
-    // Apply RENDER_DISTANCE_MULTIPLIER for consistent rendering distance across all systems
-    CameraProjection::SetupPerspective(g_Camera, g_Camera.FOV, aspectRatio, g_Camera.ViewNear, g_Camera.ViewFar * RENDER_DISTANCE_MULTIPLIER);
-
     mu::GetRenderer().SetMatrixMode(GL_MODELVIEW);
     mu::GetRenderer().PushMatrix();
-    mu::GetRenderer().LoadIdentity();
-    mu::GetRenderer().Rotate(g_Camera.Angle[1], 0.f, 1.f, 0.f);
-    if (g_Camera.TopViewEnable == false)
-        mu::GetRenderer().Rotate(g_Camera.Angle[0], 1.f, 0.f, 0.f);
-    mu::GetRenderer().Rotate(g_Camera.Angle[2], 0.f, 0.f, 1.f);
-    mu::GetRenderer().Translate(-g_Camera.Position[0], -g_Camera.Position[1], -g_Camera.Position[2]);
+    CameraProjection::ApplyView(g_Camera, width, height);
 
     mu::GetRenderer().SetAlphaTest(false);
     mu::GetRenderer().SetTexture2D(true);
@@ -685,8 +797,6 @@ void BeginOpenglForTarget(int width, int height)
     {
         mu::GetRenderer().SetFogEnabled(false);
     }
-
-    CameraProjection::GetOpenGLMatrix(g_Camera.Matrix);
 }
 
 void EndOpengl()
@@ -695,18 +805,6 @@ void EndOpengl()
     mu::GetRenderer().PopMatrix();
     mu::GetRenderer().SetMatrixMode(GL_PROJECTION);
     mu::GetRenderer().PopMatrix();
-}
-
-void UpdateMousePositionn()
-{
-    vec3_t vPos;
-
-    mu::GetRenderer().LoadIdentity();
-    mu::GetRenderer().Translate(-g_Camera.Position[0], -g_Camera.Position[1], -g_Camera.Position[2]);
-    CameraProjection::GetOpenGLMatrix(g_Camera.Matrix);
-
-    Vector(-g_Camera.Matrix[0][3], -g_Camera.Matrix[1][3], -g_Camera.Matrix[2][3], vPos);
-    VectorIRotate(vPos, g_Camera.Matrix, MousePosition);
 }
 
 #ifdef LDS_ADD_MULTISAMPLEANTIALIASING
@@ -986,7 +1084,7 @@ void RenderSpriteUV(int Texture, vec3_t Position, float Width, float Height, flo
     mu::GetRenderer().RenderQuad3D(vertices, static_cast<std::uint32_t>(Texture));
 }
 
-void RenderNumber(vec3_t Position, int Num, vec3_t Color, float Alpha, float Scale)
+void RenderNumber(const vec3_t Position, int Num, const vec3_t Color, float Alpha, float Scale)
 {
     vec3_t p;
     VectorCopy(Position, p);
@@ -1472,11 +1570,7 @@ int InsideTest(float x, float y, float z, int n, float* v1, float* v2, float* v3
         flag <<= 3;
 
     int i;
-    vec3_t* vtx[4];
-    vtx[0] = (vec3_t*)v1;
-    vtx[1] = (vec3_t*)v2;
-    vtx[2] = (vec3_t*)v3;
-    vtx[3] = (vec3_t*)v4;
+    const float* vtx[4] = {v1, v2, v3, v4};
 
     int j = n - 1;
     switch (flag)
@@ -1484,7 +1578,7 @@ int InsideTest(float x, float y, float z, int n, float* v1, float* v2, float* v3
     case 1:
         for (i = 0; i < n; j = i, i++)
         {
-            float d = ((*vtx[i])[1] - y) * ((*vtx[j])[2] - z) - ((*vtx[j])[1] - y) * ((*vtx[i])[2] - z);
+            float d = (vtx[i][1] - y) * (vtx[j][2] - z) - (vtx[j][1] - y) * (vtx[i][2] - z);
             if (d <= 0.f)
                 return false;
         }
@@ -1492,7 +1586,7 @@ int InsideTest(float x, float y, float z, int n, float* v1, float* v2, float* v3
     case 2:
         for (i = 0; i < n; j = i, i++)
         {
-            float d = ((*vtx[i])[2] - z) * ((*vtx[j])[0] - x) - ((*vtx[j])[2] - z) * ((*vtx[i])[0] - x);
+            float d = (vtx[i][2] - z) * (vtx[j][0] - x) - (vtx[j][2] - z) * (vtx[i][0] - x);
             if (d <= 0.f)
                 return false;
         }
@@ -1500,7 +1594,7 @@ int InsideTest(float x, float y, float z, int n, float* v1, float* v2, float* v3
     case 4:
         for (i = 0; i < n; j = i, i++)
         {
-            float d = ((*vtx[i])[0] - x) * ((*vtx[j])[1] - y) - ((*vtx[j])[0] - x) * ((*vtx[i])[1] - y);
+            float d = (vtx[i][0] - x) * (vtx[j][1] - y) - (vtx[j][0] - x) * (vtx[i][1] - y);
             if (d <= 0.f)
                 return false;
         }
@@ -1508,7 +1602,7 @@ int InsideTest(float x, float y, float z, int n, float* v1, float* v2, float* v3
     case 8:
         for (i = 0; i < n; j = i, i++)
         {
-            float d = ((*vtx[i])[1] - y) * ((*vtx[j])[2] - z) - ((*vtx[j])[1] - y) * ((*vtx[i])[2] - z);
+            float d = (vtx[i][1] - y) * (vtx[j][2] - z) - (vtx[j][1] - y) * (vtx[i][2] - z);
             if (d >= 0.f)
                 return false;
         }
@@ -1516,7 +1610,7 @@ int InsideTest(float x, float y, float z, int n, float* v1, float* v2, float* v3
     case 16:
         for (i = 0; i < n; j = i, i++)
         {
-            float d = ((*vtx[i])[2] - z) * ((*vtx[j])[0] - x) - ((*vtx[j])[2] - z) * ((*vtx[i])[0] - x);
+            float d = (vtx[i][2] - z) * (vtx[j][0] - x) - (vtx[j][2] - z) * (vtx[i][0] - x);
             if (d >= 0.f)
                 return false;
         }
@@ -1524,7 +1618,7 @@ int InsideTest(float x, float y, float z, int n, float* v1, float* v2, float* v3
     case 32:
         for (i = 0; i < n; j = i, i++)
         {
-            float d = ((*vtx[i])[0] - x) * ((*vtx[j])[1] - y) - ((*vtx[j])[0] - x) * ((*vtx[i])[1] - y);
+            float d = (vtx[i][0] - x) * (vtx[j][1] - y) - (vtx[j][0] - x) * (vtx[i][1] - y);
             if (d >= 0.f)
                 return false;
         }

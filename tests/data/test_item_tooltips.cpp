@@ -13,8 +13,11 @@
 #include "Data/DataHandler/SkillData/SkillDataHandler.h"
 #include "Data/GameData/ItemData/ItemDatabase.h"
 #include "Data/GameData/ItemData/ItemDescriptionPlaceholders.h"
+#include "Data/GameData/ItemData/ItemModelSlots.h"
+#include "Data/GameData/ItemData/ItemType.h"
 #include "Engine/Object/ZzzCharacter.h"
 #include "Engine/Object/ZzzInfomation.h"
+#include "Engine/Object/ItemDropModel.h"
 #include "Engine/Object/ItemTooltipSnapshot.h"
 #include "Engine/Object/ItemTooltipValues.h"
 #include "Engine/Object/ZzzInventory.h"
@@ -218,6 +221,41 @@ public:
 
 private:
     std::string m_previous;
+};
+
+// The UI's language for the scope; the language before it comes back also when the test stops early.
+class UiLocaleScope
+{
+public:
+    explicit UiLocaleScope(const char* locale) : m_previous(I18N::GetCurrentLocale())
+    {
+        I18N::SetLocale(locale);
+    }
+    ~UiLocaleScope()
+    {
+        I18N::SetLocale(m_previous.c_str());
+    }
+    UiLocaleScope(const UiLocaleScope&) = delete;
+    UiLocaleScope& operator=(const UiLocaleScope&) = delete;
+
+private:
+    std::string m_previous;
+};
+
+// A test's measure of description text for the scope; afterwards the game's font measures it again.
+class TextMeasureScope
+{
+public:
+    explicit TextMeasureScope(ItemTooltipTextMeasure measure)
+    {
+        SetItemTooltipTextMeasure(measure);
+    }
+    ~TextMeasureScope()
+    {
+        SetItemTooltipTextMeasure(nullptr);
+    }
+    TextMeasureScope(const TextMeasureScope&) = delete;
+    TextMeasureScope& operator=(const TextMeasureScope&) = delete;
 };
 } // namespace
 
@@ -542,6 +580,112 @@ TEST_CASE("An item's add option values come from its add option [data][items][to
     CHECK_FALSE(duration->empty());
 }
 
+// A bundle holds ten jewels per level step; every other item holds none, a single jewel and any equipment too.
+TEST_CASE("Only a bundle has a bundle count [data][items][tooltip]")
+{
+    ClientDataScope client(ClientDirectory);
+    std::string errorMessage;
+    REQUIRE(g_ItemDataHandler.Load(errorMessage));
+    TooltipDataScope data;
+    TooltipHeroScope hero;
+    MakeNewDarkWizard(hero.Hero());
+
+    const auto bundleCount = [](int group, int number, int level)
+    {
+        ItemCreationParams params = Engine::Items::TooltipSnapshot::FullItemParameters(group, number);
+        params.Level = static_cast<BYTE>(level);
+        ITEM item;
+        FillItemFromParameters(item, params);
+        return Engine::Items::TooltipValues::ComputeItemTooltipValues(item).bundleCount;
+    };
+    CHECK(bundleCount(12, 30, 2) == 30); // Bundle of Jewel of Bless +2
+    CHECK(bundleCount(14, 13, 0) == 0);  // Jewel of Bless
+    CHECK(bundleCount(0, 0, 3) == 0);    // Kris +3
+}
+
+// The ground labels take the basic values while their rules name none of the stat lines' values: every other value and
+// state is the full computation's, and the left-out ones stay 0.
+TEST_CASE("The basic tooltip values are the full ones but for the stat lines' [data][items][tooltip]")
+{
+    ClientDataScope client(ClientDirectory);
+    std::string errorMessage;
+    REQUIRE(g_ItemDataHandler.Load(errorMessage));
+    TooltipDataScope data;
+    TooltipHeroScope hero;
+    MakeNewDarkWizard(hero.Hero());
+
+    using namespace Engine::Items::TooltipValues;
+    using Data::Items::TooltipState;
+    using Data::Items::TooltipValue;
+    const auto at = [](int group, int number, int level)
+    {
+        ItemCreationParams params = Engine::Items::TooltipSnapshot::FullItemParameters(group, number);
+        params.Level = static_cast<BYTE>(level);
+        return params;
+    };
+    ItemCreationParams rapier = at(0, 2, 9); // Ceto's Rapier +9, excellent, with luck
+    rapier.IsAncient = true;
+    rapier.AncientDiscriminator = 1;
+    rapier.HasExcellentOption = true;
+    rapier.ExcellentFlags = 1;
+    rapier.WithLuck = true;
+    ItemCreationParams kris = at(0, 0, 13); // a Jewel of Harmony option lowering the strength requirement
+    kris.HasHarmonyOption = true;
+    kris.HarmonyOptionType = 3;
+    kris.HarmonyOptionLevel = 13;
+    // With the set item and the Kris: a bundle, a seal (its add option), second-tier wings and a skill book.
+    const std::vector<ItemCreationParams> items{rapier, kris, at(12, 30, 2), at(13, 62, 0), at(12, 3, 5), at(15, 0, 0)};
+    for (const ItemCreationParams& params : items)
+    {
+        CAPTURE(params.Group);
+        CAPTURE(params.Number);
+        ITEM item;
+        FillItemFromParameters(item, params);
+        const ItemTooltipValues all = ComputeItemTooltipValues(item);
+        const ItemTooltipValues basics = ComputeItemTooltipValues(item, TooltipValueScope::Basics);
+        for (size_t index = 0; index < static_cast<size_t>(TooltipValue::Count); ++index)
+        {
+            const auto value = static_cast<TooltipValue>(index);
+            const std::string name(Data::Items::GetBuiltInPlaceholderName(value));
+            CAPTURE(name);
+            if (NeedsAllTooltipValues(value))
+            {
+                CHECK(GetItemTooltipValue(basics, value).value_or(0) == 0);
+            }
+            else
+            {
+                CHECK(GetItemTooltipValue(basics, value) == GetItemTooltipValue(all, value));
+            }
+        }
+        CHECK(std::wstring(GetItemTooltipText(basics, TooltipValue::Name)) ==
+              GetItemTooltipText(all, TooltipValue::Name));
+        for (size_t index = 0; index < static_cast<size_t>(TooltipState::Count); ++index)
+        {
+            const auto state = static_cast<TooltipState>(index);
+            CAPTURE(index);
+            if (NeedsAllTooltipValues(state))
+            {
+                CHECK_FALSE(GetItemTooltipState(basics, state));
+            }
+            else
+            {
+                CHECK(GetItemTooltipState(basics, state) == GetItemTooltipState(all, state));
+            }
+        }
+    }
+
+    // Today's standard rules need only the basic values; a rule on a requirement needs them all.
+    for (const Data::Items::GroundLabelRule& rule : g_ItemDatabase.GetGroundLabels().standard)
+    {
+        CAPTURE(rule.style);
+        CHECK_FALSE(NeedsAllTooltipValues(rule.when));
+    }
+    Data::Items::TooltipCondition strength;
+    strength.kind = Data::Items::TooltipCondition::Kind::Value;
+    strength.value = TooltipValue::RequiredStrength;
+    CHECK(NeedsAllTooltipValues(std::vector<Data::Items::TooltipCondition>{strength}));
+}
+
 TEST_CASE("An item's duration text follows the UI's language [data][items][tooltip]")
 {
     ClientDataScope client(ClientDirectory);
@@ -667,6 +811,172 @@ TEST_CASE("The item names of windows and ground labels come from the name lines 
     GetItemName(ITEM_BOX_OF_LUCK, 4, name);
     CHECK(std::wstring(name) == L"Olive of love");
     CHECK(GetItemNameText(-1, 0).empty());
+}
+
+// The item cases moved into the data with their translations: a lost language or a broken placeholder shows here, as
+// the tooltip snapshot is English.
+TEST_CASE("The item cases' lines are in the UI's language [data][items][tooltip]")
+{
+    ClientDataScope client(ClientDirectory);
+    std::string errorMessage;
+    REQUIRE(g_ItemDataHandler.Load(errorMessage));
+    TooltipDataScope data;
+    TooltipHeroScope hero;
+    MakeBladeMaster(hero.Hero());
+    TextMeasureScope measure(&FixedWidthMeasure);
+    UiLocaleScope german("de");
+
+    const auto lines = [](int group, int number, int level)
+    {
+        ItemCreationParams params = Engine::Items::TooltipSnapshot::FullItemParameters(group, number);
+        params.Level = static_cast<BYTE>(level);
+        std::vector<std::wstring> texts;
+        for (const ItemTooltipLine& line : Engine::Items::TooltipSnapshot::TooltipOfParameters(params))
+        {
+            texts.push_back(line.text);
+        }
+        return texts;
+    };
+    const auto has = [](const std::vector<std::wstring>& texts, const std::wstring& text)
+    { return std::find(texts.begin(), texts.end(), text) != texts.end(); };
+
+    const std::vector<std::wstring> bundle = lines(12, 30, 0);
+    const std::vector<std::wstring> arrows = lines(4, 15, 1);
+    const std::vector<std::wstring> boxOfLuck = lines(14, 11, 14);
+    const std::vector<std::wstring> jackOLantern = lines(14, 46, 0);
+
+    CHECK(has(bundle, L"10 Juwel des Segens kombiniert"));
+    CHECK(has(bundle, L"Kann nach dem Zerlegen verwendet werden"));
+    CHECK(has(arrows, L"Erhöht den Schaden um 3%"));
+    CHECK(has(arrows, L"Zusätzlicher Schaden +1"));
+    CHECK(has(boxOfLuck, L"Freier Eintritt nach Kalima"));
+    CHECK(has(boxOfLuck, L"Kann nicht verkauft werden."));
+    CHECK(std::any_of(jackOLantern.begin(), jackOLantern.end(),
+                      [](const std::wstring& text)
+                      {
+                          return text.starts_with(L"Angriffsgeschwindigkeit +") &&
+                                 text.find(L'{') == std::wstring::npos;
+                      }));
+}
+
+TEST_CASE("A ground label takes its look from the item's own style or else the standard rules [data][items][tooltip]")
+{
+    ClientDataScope client(ClientDirectory);
+    std::string errorMessage;
+    REQUIRE(g_ItemDataHandler.Load(errorMessage));
+    TooltipDataScope data;
+    TooltipHeroScope hero;
+    MakeBladeMaster(hero.Hero());
+
+    // The item at `level`, dropped and drawn with `modelType` (its own model when left out), as CreateItemDrop does.
+    const auto at = [](int group, int number, int level)
+    {
+        ItemCreationParams params = Engine::Items::TooltipSnapshot::FullItemParameters(group, number);
+        params.Level = static_cast<BYTE>(level);
+        return params;
+    };
+    const auto label = [](const ItemCreationParams& params, int modelType = -1)
+    {
+        ITEM item;
+        FillItemFromParameters(item, params);
+        OBJECT object{};
+        object.Type = modelType >= 0 ? modelType : Data::Items::ToModelSlot(item.Type);
+        return DescribeGroundItemLabel(&object, &item);
+    };
+    const auto rgb = [](DWORD red, DWORD green, DWORD blue) { return red + (green << 8) + (blue << 16) + 0xFF000000u; };
+    const DWORD black = rgb(0, 0, 0);
+
+    // An item's own style: a ticket, a jewel in bold.
+    const GroundItemLabel ticket = label(at(13, 46, 0));
+    CHECK(ticket.text == L"Devil Square Ticket");
+    CHECK(ticket.textColor == rgb(0xe5, 0x87, 0x21));
+    CHECK(ticket.backgroundColor == black);
+    CHECK_FALSE(ticket.bold);
+    CHECK(ticket.style == "ticket");
+    const GroundItemLabel bless = label(at(14, 13, 0));
+    CHECK(bless.textColor == rgb(0xff, 0xcc, 0x19));
+    CHECK(bless.bold);
+    // Only at its levels: the Pink Chocolate Box is pink at +0 and +1 (drawn as an event model at +1), white above.
+    CHECK(label(at(14, 32, 1), MODEL_EVENT + 21).textColor == rgb(0xff, 0x4c, 0xff));
+    CHECK(label(at(14, 32, 2)).textColor == rgb(0xff, 0xff, 0xff));
+    // An own style has no options after the name.
+    ItemCreationParams luckyTicket = at(13, 46, 0);
+    luckyTicket.WithLuck = true;
+    CHECK(label(luckyTicket).text == L"Devil Square Ticket");
+
+    // The standard rules: by level, ...
+    CHECK(label(at(0, 0, 0)).textColor == rgb(0xb2, 0xb2, 0xb2));
+    CHECK(label(at(0, 0, 3)).textColor == rgb(0xff, 0x7f, 0x33));
+    CHECK(label(at(0, 0, 9)).textColor == rgb(0xff, 0xcc, 0x19));
+    // (by the style's name: other styles look the same, such as "orbOfSummoning" as "level0")
+    CHECK(label(at(0, 0, 0)).style == "level0");
+    CHECK(label(at(0, 0, 9)).style == "level7up");
+    // ... blue with an option below +7, the options after the name, ...
+    ItemCreationParams luckyKris = at(0, 0, 3);
+    luckyKris.WithLuck = true;
+    const GroundItemLabel lucky = label(luckyKris);
+    CHECK(lucky.textColor == rgb(0x66, 0xb2, 0xff));
+    CHECK(lucky.text == std::wstring(L"Kris +3") + I18N::Game::Luck);
+    CHECK(lucky.style == "withOptions");
+    // ... green when excellent, also first-tier wings, but not the second-tier wings, ...
+    const auto excellent = [&](int group, int number)
+    {
+        ItemCreationParams params = at(group, number, 0);
+        params.HasExcellentOption = true;
+        params.ExcellentFlags = 1;
+        return label(params).textColor;
+    };
+    CHECK(excellent(0, 0) == rgb(0x19, 0xff, 0x7f));
+    CHECK(excellent(12, 0) == rgb(0x19, 0xff, 0x7f));
+    CHECK(excellent(12, 3) == rgb(0xb2, 0xb2, 0xb2));
+    // ... a set item green on blue and bold after its set's name, but not an item whose discriminator names no set.
+    ItemCreationParams rapier = at(0, 2, 0);
+    rapier.IsAncient = true;
+    rapier.AncientDiscriminator = 1;
+    const GroundItemLabel setItem = label(rapier);
+    CHECK(setItem.text == L"Ceto's Rapier");
+    CHECK(setItem.textColor == rgb(0, 0xff, 0));
+    CHECK(setItem.backgroundColor == rgb(0x3c, 0x3c, 0xc8));
+    CHECK(setItem.bold);
+    ItemCreationParams kris = at(0, 0, 0);
+    kris.IsAncient = true;
+    kris.AncientDiscriminator = 1;
+    CHECK(label(kris).textColor == rgb(0xb2, 0xb2, 0xb2));
+    // The set name is the item's, also for an item drawn as an event model, whose model names no item.
+    const GroundItemLabel eventModelSetItem = label(rapier, MODEL_EVENT + 5);
+    CHECK(eventModelSetItem.text == L"Ceto's Rapier");
+    CHECK(eventModelSetItem.textColor == rgb(0, 0xff, 0));
+    // A tag is the drawn model's item's: the Weapon of Archangel at +0 is drawn as the divine staff.
+    CHECK(label(at(13, 19, 0), MODEL_DIVINE_STAFF_OF_ARCHANGEL).textColor == rgb(0xff, 0x19, 0xff));
+    CHECK(label(at(13, 19, 3)).textColor == rgb(0xff, 0x7f, 0x33));
+
+    // Zen shows its amount, its level.
+    ITEM zen;
+    FillItemFromParameters(zen, at(14, 15, 0));
+    zen.Level = 123456;
+    OBJECT zenObject{};
+    zenObject.Type = MODEL_ZEN;
+    const GroundItemLabel zenLabel = DescribeGroundItemLabel(&zenObject, &zen);
+    CHECK(zenLabel.text == L"Zen 123456");
+    CHECK(zenLabel.textColor == rgb(0xff, 0xcc, 0x19));
+}
+
+// The drawn model a drop takes, which the ground label's tag conditions read: the Weapon of Archangel's level picks one of
+// the divine weapons, a chocolate box opened at +1 and a Box of Luck's kinds have models of their own.
+TEST_CASE("A dropped item is drawn with its own model but for some items at some levels [data][items][tooltip]")
+{
+    using Engine::Items::Drops::DrawnModel;
+    CHECK(DrawnModel(ITEM_WEAPON_OF_ARCHANGEL, 0) == MODEL_DIVINE_STAFF_OF_ARCHANGEL);
+    CHECK(DrawnModel(ITEM_WEAPON_OF_ARCHANGEL, 1) == MODEL_DIVINE_SWORD_OF_ARCHANGEL);
+    CHECK(DrawnModel(ITEM_WEAPON_OF_ARCHANGEL, 2) == MODEL_DIVINE_CB_OF_ARCHANGEL);
+    CHECK(DrawnModel(ITEM_WEAPON_OF_ARCHANGEL, 3) == Data::Items::ToModelSlot(ITEM_WEAPON_OF_ARCHANGEL));
+    CHECK(DrawnModel(ITEM_RED_CHOCOLATE_BOX, 1) == MODEL_EVENT + 22);
+    CHECK(DrawnModel(ITEM_RED_CHOCOLATE_BOX, 0) == Data::Items::ToModelSlot(ITEM_RED_CHOCOLATE_BOX));
+    CHECK(DrawnModel(ITEM_BOX_OF_LUCK, 2) == MODEL_EVENT + 5);
+    CHECK(DrawnModel(ITEM_BOX_OF_LUCK, 4) == Data::Items::ToModelSlot(ITEM_BOX_OF_LUCK));
+    CHECK(DrawnModel(ITEM_GEMSTONE, 0) == MODEL_GEMSTONE);
+    CHECK(DrawnModel(ITEM_ZEN, 0) == MODEL_ZEN);
+    CHECK(DrawnModel(Data::Items::MakeItemType(0, 1), 9) == Data::Items::ToModelSlot(Data::Items::MakeItemType(0, 1)));
 }
 
 // The option lines are the lines the full item has and the plain one doesn't (luck, skill, the option, the excellent

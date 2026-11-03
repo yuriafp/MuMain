@@ -131,9 +131,15 @@ option(ENABLE_CONTROL_SOCKET "Developer control socket for scripted clients (nev
 # In-game tests (docs/in-game-tests.md): publishes the tester, which plays test
 # scenarios with the client through the control socket, next to Main, and adds
 # the InGameTests / InGameTestsGui targets. Developers only, like the socket.
-option(ENABLE_IN_GAME_TESTS "Publish the in-game tester next to Main (developer builds with the control socket)" OFF)
+# The tester needs the socket, so while the tests are on, the socket is on too.
+# Only for this configure: the cache keeps ENABLE_CONTROL_SOCKET as it was set,
+# so turning the tests off again drops the socket. PARENT_SCOPE hands the value
+# to tests/, which the top-level CMakeLists.txt adds after src/.
+option(ENABLE_IN_GAME_TESTS "Publish the in-game tester next to Main (turns on ENABLE_CONTROL_SOCKET)" OFF)
 if(ENABLE_IN_GAME_TESTS AND NOT ENABLE_CONTROL_SOCKET)
-  message(FATAL_ERROR "ENABLE_IN_GAME_TESTS needs ENABLE_CONTROL_SOCKET: the tester drives the client through it")
+  message(STATUS "ENABLE_IN_GAME_TESTS turns on ENABLE_CONTROL_SOCKET: the tester drives the client through it")
+  set(ENABLE_CONTROL_SOCKET ON)
+  set(ENABLE_CONTROL_SOCKET ON PARENT_SCOPE)
 endif()
 
 # ---------------------------------------------------------------------------
@@ -278,8 +284,9 @@ target_compile_definitions(MuClient PUBLIC GLM_FORCE_DEPTH_ZERO_TO_ONE)
 target_link_libraries(MuClient PUBLIC SDL3::SDL3 glm::glm spdlog::spdlog)
 find_package(OpenSSL REQUIRED COMPONENTS Crypto)
 if(CMAKE_SYSTEM_NAME STREQUAL "Linux" AND MU_LINK_SDL_PLATFORM_BACKENDS)
-  # SDL also dlopen()s libvulkan.so.1; the same option makes it a DT_NEEDED entry of Main
-  # (linked below) so the loader resolves through the RUNPATH.
+  # SDL dlopen()s libvulkan.so.1 even with this option. Linking the loader into Main (below)
+  # records its directory in Main's RUNPATH, which that dlopen() searches, and makes it a
+  # DT_NEEDED entry: a missing loader then stops Main at start-up, and ldd lists it.
   find_package(Vulkan REQUIRED)
 endif()
 target_link_libraries(MuClient PUBLIC OpenSSL::Crypto)
@@ -419,7 +426,16 @@ endif()
 target_compile_features(Main PUBLIC cxx_std_20)
 target_link_libraries(Main PRIVATE MuClient::MuClient)
 if(CMAKE_SYSTEM_NAME STREQUAL "Linux" AND MU_LINK_SDL_PLATFORM_BACKENDS)
-  target_link_libraries(Main PRIVATE Vulkan::Vulkan)
+  # Main never calls Vulkan itself, so a linker running with --as-needed (GCC's default on Ubuntu
+  # and Debian) drops a plain Vulkan::Vulkan from DT_NEEDED; the RUNPATH stays either way.
+  # MuNoAsNeeded keeps the entry by wrapping the library in --push-state,--no-as-needed and
+  # --pop-state, so the linker must support --push-state (GNU ld and gold do). Link
+  # Vulkan::Vulkan into Main only through this feature: CMake stops with an error when the same
+  # item comes both with and without it.
+  set(CMAKE_LINK_LIBRARY_USING_MuNoAsNeeded
+    "LINKER:--push-state,--no-as-needed" "<LINK_ITEM>" "LINKER:--pop-state")
+  set(CMAKE_LINK_LIBRARY_USING_MuNoAsNeeded_SUPPORTED TRUE)
+  target_link_libraries(Main PRIVATE "$<LINK_LIBRARY:MuNoAsNeeded,Vulkan::Vulkan>")
 endif()
 
 if (MSVC)
@@ -615,8 +631,16 @@ file(MAKE_DIRECTORY "${MU_NUGET_CACHE_DIR}")
 # same package the .NET ClientLibrary consumes (see MUnique.Client.Library.csproj).
 # Sourcing from NuGet means a single versioned dependency instead of vendoring
 # the entire OpenMU repository as a submodule.
-set(OPENMU_PACKETS_VERSION "0.9.11" CACHE STRING
-    "Version of MUnique.OpenMU.Network.Packets to source packet XML from")
+# The version the ClientLibrary builds against, so the guards check the same packet definitions.
+set(_packets_version_source "${CMAKE_CURRENT_SOURCE_DIR}/../ClientLibrary/MUnique.Client.Library.csproj")
+# A version bump must reconfigure, or an existing build keeps checking the old packets.
+set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS "${_packets_version_source}")
+file(STRINGS "${_packets_version_source}" _packets_version REGEX "<OpenMuPacketsVersion>")
+string(REGEX REPLACE ".*<OpenMuPacketsVersion>([^<]+)</OpenMuPacketsVersion>.*" "\\1"
+       OPENMU_PACKETS_VERSION "${_packets_version}")
+if (NOT OPENMU_PACKETS_VERSION MATCHES "^[0-9]+\\.[0-9]+\\.[0-9]+")
+  message(FATAL_ERROR "Could not read <OpenMuPacketsVersion> from MUnique.Client.Library.csproj")
+endif()
 set(OPENMU_PACKETS_XML
     "${MU_NUGET_CACHE_DIR}/munique.openmu.network.packets/${OPENMU_PACKETS_VERSION}/contentFiles/any/net10.0/ServerToClient/ServerToClientPackets.xml")
 
@@ -773,6 +797,42 @@ if (MSVC)
     COMMENT "Staging linked-target runtime DLLs"
     VERBATIM
   )
+endif()
+
+if (MSVC)
+  # A build dir whose cached CMakeSystem.cmake came from a configure without
+  # the vcpkg toolchain silently stops loading vcpkg.cmake, which drops its
+  # applocal step, imported-config maps and manifest installs. VCPKG_TOOLCHAIN
+  # is a normal variable set on every load, so a stale cache can't fake it.
+  if(DEFINED CACHE{VCPKG_TARGET_TRIPLET} AND NOT VCPKG_TOOLCHAIN)
+    message(WARNING "The vcpkg toolchain was not loaded for this configure. "
+      "Delete ${CMAKE_BINARY_DIR}/CMakeFiles and reconfigure.")
+  endif()
+
+  # TARGET_RUNTIME_DLLS misses DLLs of non-SHARED imported targets (FindOpenSSL's
+  # libcrypto) and DLLs loaded through other DLLs (libcurl's zlib). Stage those
+  # from vcpkg without relying on vcpkg's toolchain-injected applocal step.
+  if(VCPKG_INSTALLED_DIR AND VCPKG_TARGET_TRIPLET)
+    get_filename_component(MU_LINKER_DIR "${CMAKE_LINKER}" DIRECTORY)
+    find_program(MU_DUMPBIN dumpbin HINTS "${MU_LINKER_DIR}")
+    if(MU_DUMPBIN)
+      add_custom_command(TARGET Main POST_BUILD
+        COMMAND "${CMAKE_COMMAND}"
+          "-DEXE=$<TARGET_FILE:Main>"
+          "-DDLL_DIR=${VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}$<$<CONFIG:Debug>:/debug>/bin"
+          "-DDUMPBIN=${MU_DUMPBIN}"
+          -P "${REPO_ROOT}/cmake/StageVcpkgRuntimeDlls.cmake"
+        COMMENT "Staging vcpkg runtime DLLs"
+        VERBATIM
+      )
+    else()
+      message(WARNING "dumpbin not found (searched next to the linker and on PATH); "
+        "vcpkg runtime DLLs are staged only if vcpkg's applocal step runs.")
+    endif()
+  elseif(VCPKG_TARGET_TRIPLET)
+    message(WARNING "VCPKG_INSTALLED_DIR is not set; vcpkg runtime DLLs are staged "
+      "only if vcpkg's applocal step runs.")
+  endif()
 endif()
 
 # .NET Client Library and tools (platform-agnostic, requires dotnet SDK)
@@ -1111,6 +1171,10 @@ if (DOTNET_EXECUTABLE)
 else()
   message(WARNING ".NET SDK not found. MUnique.Client.Library.dll will NOT be built. "
     "The game will run but cannot connect to the server. Install .NET SDK 10.0+ to enable.")
+  if (ENABLE_IN_GAME_TESTS)
+    message(WARNING "ENABLE_IN_GAME_TESTS: without the .NET SDK there is no in-game tester and no "
+      "InGameTests / InGameTestsGui targets, so the -gui build presets fail. Install .NET SDK 10.0+.")
+  endif()
 endif()
 
 # DXP-10 step 4: state-wrapper monopoly guard. Fails the build if a raw gl*()
@@ -1247,4 +1311,25 @@ endif()
 # code retains its existing OpenGL system-library links above.
 if(ENABLE_EDITOR)
   target_link_libraries(MuClient PUBLIC imgui)
+endif()
+
+# MuEditor remembers the OpenMU API key in the system's key store
+# (MuEditor/Core/SecretStore.cpp): the Windows Credential Manager (advapi32,
+# linked above), the macOS Keychain, and the Linux keyring when libsecret is
+# found. Without libsecret the editor keeps the key only while it runs.
+if(ENABLE_EDITOR)
+  if(APPLE)
+    target_link_libraries(MuClient PUBLIC "-framework Security")
+  elseif(UNIX AND NOT ANDROID)
+    find_package(PkgConfig QUIET)
+    if(PkgConfig_FOUND)
+      pkg_check_modules(MU_LIBSECRET QUIET IMPORTED_TARGET libsecret-1)
+    endif()
+    if(MU_LIBSECRET_FOUND)
+      target_link_libraries(MuClient PUBLIC PkgConfig::MU_LIBSECRET)
+      target_compile_definitions(MuClient PRIVATE MU_HAS_LIBSECRET)
+    else()
+      message(STATUS "libsecret-1 not found: MuEditor cannot remember the OpenMU API key")
+    endif()
+  endif()
 endif()

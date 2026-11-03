@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Data/GameData/ItemData/ItemDefinition.h"
+#include "Data/GameData/ItemData/ItemGroundLabels.h"
 #include "Data/GameData/ItemData/ItemStatProfiles.h"
 #include "Data/GameData/ItemData/ItemTooltipLayouts.h"
 #include "Data/GameData/ItemData/ItemType.h"
@@ -54,6 +55,21 @@ public:
     }
 
     const ItemDefinition* Find(int group, int number) const;
+
+    // Like Find, but also an entry without a name: what the item file has at
+    // the number (ItemDefinition::HasEntry). The game uses Find.
+    const ItemDefinition* FindEntry(int itemType) const
+    {
+        if (!IsValidItemType(itemType))
+        {
+            return nullptr;
+        }
+
+        const ItemDefinition& definition = m_definitions[itemType];
+        return definition.HasEntry() ? &definition : nullptr;
+    }
+
+    const ItemDefinition* FindEntry(int group, int number) const;
 
     // Fast checks for the rule code. They read a small table next to the
     // definitions. Invalid ids and empty slots have no tags, slot, wing tier
@@ -110,6 +126,18 @@ public:
     const ItemTooltipFile& GetTooltipFile() const
     {
         return m_tooltipFile;
+    }
+
+    // The ground label styles and standard rules (Data/Items/Tooltips/GroundLabels.json).
+    void SetGroundLabels(GroundLabelFile file)
+    {
+        ++m_version;
+        m_groundLabels = std::move(file);
+    }
+
+    const GroundLabelFile& GetGroundLabels() const
+    {
+        return m_groundLabels;
     }
 
     // The item's stat profile laid over the default; the default for empty
@@ -212,6 +240,7 @@ private:
     std::vector<RuleData> m_ruleData;
     ItemStatProfiles m_statProfiles;
     ItemTooltipFile m_tooltipFile;
+    GroundLabelFile m_groundLabels;
     // GetItemTypesWithTag's lists, one per tag.
     std::array<std::vector<int>, static_cast<size_t>(ItemTag::Count)> m_itemTypesByTag;
     // GetItemTypesWithTagInUseOrder's lists, one per tag.
