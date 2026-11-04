@@ -58,6 +58,8 @@
 #include "Network/Server/TransformViewportEntry.h"
 #include "Network/Server/WeeklyGoalPacket.h"
 #include "GameLogic/Events/WeeklyGoal.h"
+#include "Network/Server/JewelBankPacket.h"
+#include "GameLogic/Items/JewelBank.h"
 #include "GameLogic/NPCs/npcGateSwitch.h"
 #include "GameLogic/Items/CComGem.h"
 #include "GameLogic/Items/InventoryUtils.h"
@@ -13382,6 +13384,20 @@ static void ReceiveWeeklyGoal(std::span<const BYTE> ReceiveBuffer)
     UI::Windows::Show(mu::ui::window::INTERFACE_WEEKLY_GOAL);
 }
 
+// The jewels which Ella, the Banqueira of our server, keeps for the account
+// (Network/Server/JewelBankPacket.h): keep them, and open her window when the player talked to her.
+static void ReceiveJewelBank(std::span<const BYTE> ReceiveBuffer)
+{
+    GameLogic::Items::JewelBankContents contents;
+    bool open = false;
+    if (!Network::JewelBank::Read(ReceiveBuffer.data(), ReceiveBuffer.size(), contents, open))
+        return;
+
+    GameLogic::Items::SetCurrentJewelBank(std::move(contents));
+    if (open)
+        UI::Windows::Show(mu::ui::window::INTERFACE_JEWEL_BANK);
+}
+
 void ReceiveDarkside(const BYTE* ReceiveBuffer)
 {
     auto Data = (LPPRECEIVE_DARKSIDE_INDEX)ReceiveBuffer;
@@ -14915,6 +14931,8 @@ static void ProcessPacket(const BYTE* ReceiveBuffer, int32_t Size)
         auto Data = (LPPHEADER_DEFAULT_SUBCODE)ReceiveBuffer;
         if (Data->SubCode == Network::WeeklyGoal::SubCode)
             ReceiveWeeklyGoal(received_span);
+        else if (Data->SubCode == Network::JewelBank::ContentsSubCode)
+            ReceiveJewelBank(received_span);
     }
     break;
     default:

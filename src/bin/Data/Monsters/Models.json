@@ -4190,6 +4190,11 @@
       "soundEvents": [
         {"animations": ["die"], "sounds": ["SOUND_DOPPELGANGER_JEWELBOX_OPEN"]}
       ]
+    },
+    {
+      "slot": "MODEL_JEWEL_BANKER",
+      "file": "Data/NPC/NpcElin.bmd",
+      "textureFolders": ["NPC"]
     }
   ]
 }

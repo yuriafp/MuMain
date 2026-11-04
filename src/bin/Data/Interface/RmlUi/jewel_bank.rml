@@ -1,0 +1,59 @@
+<rml>
+	<!-- bound-geometry: a jewel's icon follows its name, at the width the native font draws it -->
+<head>
+	<title>Jewel Bank</title>
+	<link type="text/rcss" href="base.rcss"/>
+	<link type="text/rcss" href="docked_panel_frame.rcss"/>
+	<link type="text/rcss" href="jewel_bank.rcss"/>
+</head>
+<body>
+	<!-- Ella, the Banqueira of our server (CJewelBankWindow), docked right next to the inventory: her
+	     fees, the jewels which the account keeps (a click selects one), Keep for the selected kind
+	     and Keep all, then the withdrawals of the selected jewel (1, 10 or 30), and a hint. The
+	     workspace slot places and scales #panel; everything inside is reference px; text is
+	     .sharp-text at the native size, counter-scaled out of the panel. C++ keeps the jewels the
+	     server sent, the selection and the requests; the buttons lock while a request waits. -->
+	<div id="panel" data-model="jewel_bank">
+		<div class="frame-piece frame-top"></div>
+		<div class="frame-piece frame-left"></div>
+		<div class="frame-piece frame-right"></div>
+		<div class="frame-piece frame-bottom"></div>
+
+		<span class="sharp-text" id="title" data-style-font-size="bold_text_px + 'px'">{{title}}</span>
+		<span class="sharp-text fee" id="jb_deposit_fee" data-style-font-size="text_px + 'px'">{{deposit_fee}}</span>
+		<span class="sharp-text fee" id="jb_withdrawal_fee" data-style-font-size="text_px + 'px'">{{withdrawal_fee}}</span>
+
+		<!-- One row per jewel, in the server's order; the theme puts each on its own line. -->
+		<div class="rows">
+			<div class="row" data-for="row : rows" data-class-selected="row.selected" data-class-empty="row.empty"
+			     data-event-click="jewel_bank_select(row.index)">
+				<span class="sharp-text row-name" data-style-font-size="row.name_px + 'px'">{{row.name}}</span>
+				<img class="row-icon" data-if="row.icon != ''" data-attr-src="row.icon" data-style-left="row.icon_left + 'px'"/>
+				<span class="sharp-text row-amount" data-style-font-size="text_px + 'px'">{{row.amount}}</span>
+			</div>
+		</div>
+
+		<div class="jb-btn" id="btn_keep" data-class-locked="busy" data-event-click="jewel_bank_deposit">
+			<span class="sharp-text sharp-middle btn-label keep-label" data-style-font-size="text_px + 'px'"
+			      data-style-line-height="label_line_px + 'px'">{{deposit_text}}</span>
+		</div>
+		<div class="jb-btn" id="btn_keep_all" data-class-locked="busy" data-event-click="jewel_bank_deposit_all">
+			<span class="sharp-text sharp-middle btn-label keep-all-label" data-style-font-size="text_px + 'px'"
+			      data-style-line-height="label_line_px + 'px'">{{deposit_all_text}}</span>
+		</div>
+
+		<span class="sharp-text" id="jb_withdraw_title" data-style-font-size="text_px + 'px'">{{withdraw_title}}</span>
+		<div class="withdraw-buttons">
+			<div class="jb-btn withdraw-btn" data-for="button : withdraw_buttons" data-class-enabled="button.enabled"
+			     data-event-click="jewel_bank_withdraw(button.amount)">
+				<span class="sharp-text sharp-middle btn-label withdraw-label" data-style-font-size="bold_text_px + 'px'"
+				      data-style-line-height="label_line_px + 'px'">{{button.label}}</span>
+			</div>
+		</div>
+
+		<div class="sharp-text sharp-flow" id="jb_hint" data-style-font-size="text_px + 'px'">{{hint}}</div>
+
+		<div id="frame_corner_close" data-event-click="window_close"></div>
+	</div>
+</body>
+</rml>

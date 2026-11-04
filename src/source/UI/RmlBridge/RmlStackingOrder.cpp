@@ -84,6 +84,7 @@ constexpr DocumentPlacement Placements[] = {
     {"guild_make.rml", 4.3f, MainScene},
     {"guild_info.rml", 4.5f, MainScene},
     {"npc_shop.rml", 4.55f, MainScene},
+    {"jewel_bank.rml", 4.55f, MainScene},
     {"inventory_extension.rml", 4.55f, MainScene},
     {"castle_window.rml", 5.0f, MainScene},
     {"guard_window.rml", 5.0f, MainScene},

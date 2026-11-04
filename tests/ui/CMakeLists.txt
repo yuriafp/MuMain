@@ -65,6 +65,14 @@ mu_add_test(
 )
 
 mu_add_test(
+    NAME jewel_bank_tests
+    SOURCES
+        test_jewel_bank.cpp
+        ${CMAKE_SOURCE_DIR}/src/source/GameLogic/Items/JewelBank.cpp
+        ${CMAKE_SOURCE_DIR}/src/source/Network/Server/JewelBankPacket.cpp
+)
+
+mu_add_test(
     NAME buy_option_selection_tests
     SOURCES
         test_buy_option_selection.cpp

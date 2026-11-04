@@ -5,8 +5,8 @@
 class CHARACTER;
 class OBJECT;
 
-// The monsters of our server, outside the original numbers (1000 on): the
-// Alquimista of the Oficina, the treasure chests and the bosses of the boss
+// The monsters of our server, outside the original numbers (669, and 1000 on): the
+// Banqueira, the Alquimista of the Oficina, the treasure chests and the bosses of the boss
 // invasion. Their models are only in the local client (Mu Kronus, the Season 8
 // client), never in the public fork. Also the Season 6 bosses of the invasion
 // on maps other than their own, whose code is the only one which creates them.

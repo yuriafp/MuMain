@@ -9737,4 +9737,25 @@
   <data name="WeeklyGoalListLast" xml:space="preserve">
     <value>%ls and %ls</value>
   </data>
+  <data name="JewelBankTitle" xml:space="preserve">
+    <value>Ella the Banker</value>
+  </data>
+  <data name="JewelBankDepositFee" xml:space="preserve">
+    <value>Keeping: %ls zen per jewel</value>
+  </data>
+  <data name="JewelBankWithdrawalFee" xml:space="preserve">
+    <value>Taking out: %ls zen per jewel</value>
+  </data>
+  <data name="JewelBankKeep" xml:space="preserve">
+    <value>Keep</value>
+  </data>
+  <data name="JewelBankKeepAll" xml:space="preserve">
+    <value>Keep all</value>
+  </data>
+  <data name="JewelBankTakeOut" xml:space="preserve">
+    <value>Take out of the selected jewel:</value>
+  </data>
+  <data name="JewelBankHint" xml:space="preserve">
+    <value>Keep takes the jewels and packs of the selected kind from the inventory; a pack counts its jewels.</value>
+  </data>
 </root>

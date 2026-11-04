@@ -182,7 +182,7 @@ TEST_CASE("Monster models: the shipped model list loads; its only warning is Mol
     REQUIRE(issues.size() == 1);
     CHECK(issues[0].severity == ItemDataIssueSeverity::Warning);
     CHECK(issues[0].field == "model MONSTER_MODEL_MOLT file");
-    CHECK(result.models.size() == 305);
+    CHECK(result.models.size() == 306);
 }
 
 TEST_CASE("Monster models: the shipped model list is written as its writer writes it [data][monsters]")

@@ -1347,6 +1347,7 @@ enum
     MODEL_WORKSHOP,
     MODEL_TREASURE_CHEST_NPC,
     MODEL_GOLDEN_TREASURE_CHEST_NPC,
+    MODEL_JEWEL_BANKER,
     MODEL_NPC_END,
     // player
     MODEL_PLAYER,
@@ -5114,6 +5115,10 @@ enum EMonsterType : int
     MONSTER_CAPTURED_STONE_STATUE_8 = 666,
     MONSTER_CAPTURED_STONE_STATUE_9 = 667,
     MONSTER_CAPTURED_STONE_STATUE_10 = 668,
+
+    // The Banqueira of our server, who keeps the jewels of an account: the number of Ellin of the
+    // later seasons, with her model.
+    MONSTER_JEWEL_BANKER = 669,
 
     // The NPCs of our server, outside the original numbers.
     MONSTER_WORKSHOP = 1000,

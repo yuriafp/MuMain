@@ -13,6 +13,10 @@ namespace Engine::Object::ServerMonsters
 {
 namespace
 {
+// The Ellin of the Season 8 client is about 350 units tall; this scale gives her about the height of
+// Julia and Lala, the NPCs of the original game near her.
+constexpr float JewelBankerScale = 0.75f;
+
 // The Mu Kronus treasure chest is about 2.6 tiles wide; these scales give it about the size of the
 // reward boxes of the Doppelganger, the golden one bigger.
 constexpr float TreasureChestScale = 0.5f;
@@ -272,7 +276,13 @@ CHARACTER* Create(EMonsterType type, int positionX, int positionY, int key)
     switch (type)
     {
     case MONSTER_WORKSHOP:
-        return CreateNpc(MODEL_WORKSHOP, L"Alquimista", positionX, positionY, key);
+        return CreateNpc(MODEL_WORKSHOP, L"Lyra, a Alquimista", positionX, positionY, key);
+    case MONSTER_JEWEL_BANKER:
+    {
+        CHARACTER* c = CreateNpc(MODEL_JEWEL_BANKER, L"Ella, a Banqueira", positionX, positionY, key);
+        c->Object.Scale = JewelBankerScale;
+        return c;
+    }
     case MONSTER_TREASURE_CHEST:
         return CreateTreasureChest(MODEL_TREASURE_CHEST_NPC, L"Treasure Chest", TreasureChestScale, positionX,
                                    positionY, key);

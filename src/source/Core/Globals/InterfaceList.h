@@ -134,6 +134,9 @@ enum INTERFACE_LIST
     // CWeeklyGoalWindow (UI/Events/WeeklyGoalWindow.h) -- our server's weekly goal, opened by
     // /meta. Same reasoning as INTERFACE_CREDITS above.
     INTERFACE_WEEKLY_GOAL,
+    // CJewelBankWindow (UI/NPCs/JewelBankWindow.h) -- Ella, the Banqueira of our server, opened by
+    // talking to her. Same reasoning as INTERFACE_CREDITS above.
+    INTERFACE_JEWEL_BANK,
     INTERFACE_END,
     INTERFACE_COUNT = INTERFACE_END - 2,
 };

@@ -3849,8 +3849,14 @@
       "model": "MONSTER_MODEL_BULL_FIGHTER"
     },
     {
+      "number": 669,
+      "name": {"en": "Ella the Banker", "es": "Ella la Banquera", "pt": "Ella, a Banqueira"},
+      "kind": "npc",
+      "model": "MODEL_JEWEL_BANKER"
+    },
+    {
       "number": 1000,
-      "name": {"en": "Alquimista", "es": "Alquimista", "pt": "Alquimista"},
+      "name": {"en": "Lyra the Alchemist", "es": "Lyra la Alquimista", "pt": "Lyra, a Alquimista"},
       "kind": "npc",
       "model": "MODEL_WORKSHOP"
     },

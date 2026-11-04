@@ -9342,4 +9342,25 @@
   <data name="WeeklyGoalListLast" xml:space="preserve">
     <value>%ls e %ls</value>
   </data>
+  <data name="JewelBankTitle" xml:space="preserve">
+    <value>Ella, a Banqueira</value>
+  </data>
+  <data name="JewelBankDepositFee" xml:space="preserve">
+    <value>Guardar: %ls zen por joia</value>
+  </data>
+  <data name="JewelBankWithdrawalFee" xml:space="preserve">
+    <value>Retirar: %ls zen por joia</value>
+  </data>
+  <data name="JewelBankKeep" xml:space="preserve">
+    <value>Guardar</value>
+  </data>
+  <data name="JewelBankKeepAll" xml:space="preserve">
+    <value>Guardar tudo</value>
+  </data>
+  <data name="JewelBankTakeOut" xml:space="preserve">
+    <value>Retirar da joia escolhida:</value>
+  </data>
+  <data name="JewelBankHint" xml:space="preserve">
+    <value>Guardar leva do inventário as joias e os pacotes do tipo escolhido; um pacote conta as suas joias.</value>
+  </data>
 </root>
