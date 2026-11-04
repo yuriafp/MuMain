@@ -889,7 +889,7 @@ void CMapManager::Load() // OK
     else
     {
         wchar_t DirName[32];
-        const int iMapWorld = GetFilesFolder(this->WorldActive);
+        const int iMapWorld = GetObjectsFolder(this->WorldActive);
 
         mu_swprintf(DirName, L"Data\\Object%d\\", iMapWorld);
         for (i = MODEL_WORLD_OBJECT; i < MAX_WORLD_OBJECTS; i++)
@@ -997,11 +997,16 @@ int CMapManager::GetFilesFolder(int serverMap)
     {
         return WD_45CURSEDTEMPLE_LV1 + 2;
     }
-    if (world == WD_43ICARUS2)
+    return world + 1;
+}
+
+int CMapManager::GetObjectsFolder(int serverMap)
+{
+    if (GetLoadedWorld(serverMap) == WD_43ICARUS2)
     {
         return WD_10HEAVEN + 1;
     }
-    return world + 1;
+    return GetFilesFolder(serverMap);
 }
 
 void CMapManager::LoadWorld(int Map)
