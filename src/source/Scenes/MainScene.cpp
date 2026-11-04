@@ -571,7 +571,10 @@ static void RenderGameWorld(BYTE& byWaterMap, int width, int height)
                 { FRAME_PROFILE(Terrain); RenderTerrain(false); }
         }
         else
-            if (!IsHeavenWorld(gMapManager.WorldActive) && gMapManager.WorldActive != -1)
+            // Icarus has no ground to draw; Icarus 2 draws its platforms and walkways (the tiles of
+            // the void are marked no ground), so the players see where they can walk.
+            if ((!IsHeavenWorld(gMapManager.WorldActive) || gMapManager.WorldActive == WD_43ICARUS2) &&
+                gMapManager.WorldActive != -1)
             {
                 if ((gMapManager.IsPKField() || IsDoppelGanger2()) && renderStatic)
                 {
