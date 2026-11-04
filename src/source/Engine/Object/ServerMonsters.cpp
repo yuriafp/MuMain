@@ -18,9 +18,10 @@ namespace
 constexpr float JewelBankerScale = 0.75f;
 
 // The Mu Kronus treasure chest is about 2.6 tiles wide; these scales give it about the size of the
-// reward boxes of the Doppelganger, the golden one bigger.
-constexpr float TreasureChestScale = 0.5f;
-constexpr float GoldenTreasureChestScale = 0.7f;
+// reward boxes of the Doppelganger, then half again (the user, 2026-11-04: easier to see), the golden
+// one bigger.
+constexpr float TreasureChestScale = 0.75f;
+constexpr float GoldenTreasureChestScale = 1.05f;
 constexpr float TreasureChestEdgeScale = 1.1f;
 
 constexpr short NoWeapon = -1;
