@@ -25,7 +25,7 @@ template <typename T> void Put(std::vector<std::uint8_t>& data, std::size_t offs
 // 1,500,000 zen, and an item of the account for 10 Soul whose sale ended.
 std::vector<std::uint8_t> ServerPage(std::uint8_t entries)
 {
-    std::vector<std::uint8_t> data(38 + 48 * static_cast<std::size_t>(entries));
+    std::vector<std::uint8_t> data(42 + 48 * static_cast<std::size_t>(entries));
     data[0] = 0xC2;
     data[1] = static_cast<std::uint8_t>(data.size() >> 8);
     data[2] = static_cast<std::uint8_t>(data.size() & 0xFF);
@@ -44,10 +44,12 @@ std::vector<std::uint8_t> ServerPage(std::uint8_t entries)
     data[26] = 7;
     data[27] = 20;
     data[28] = 4;
+    data[29] = 1; // the cheapest first
     Put<std::int64_t>(data, 30, 3000000000LL);
+    Put<std::int32_t>(data, 38, 17);
     if (entries >= 1)
     {
-        const std::size_t e = 38;
+        const std::size_t e = 42;
         Put<std::int64_t>(data, e, 42);
         data[e + 8] = 0;
         Put<std::uint32_t>(data, e + 12, 1500000);
@@ -59,7 +61,7 @@ std::vector<std::uint8_t> ServerPage(std::uint8_t entries)
     }
     if (entries >= 2)
     {
-        const std::size_t e = 38 + 48;
+        const std::size_t e = 42 + 48;
         Put<std::int64_t>(data, e, 43);
         data[e + 8] = 2;
         data[e + 9] = 1 | 2;
@@ -91,6 +93,8 @@ TEST_CASE("A page of Otto reads with its entries")
     CHECK(page.maxItemsPerAccount == 20);
     CHECK(page.accountItems == 4);
     CHECK(page.zenToClaim == 3000000000LL);
+    CHECK(page.sort == GameLogic::Items::AuctionSort::PriceLow);
+    CHECK(page.total == 17);
     REQUIRE(page.entries.size() == 2);
 
     const auto& kris = page.entries[0];
@@ -183,12 +187,12 @@ TEST_CASE("The currencies step around, the filter with any")
     CHECK(GameLogic::Items::StepKind(AuctionCategory::All, -1) == AuctionCategory::Pets);
 }
 
-TEST_CASE("A list takes parts of six rows")
+TEST_CASE("A list takes parts of eight rows")
 {
     CHECK(GameLogic::Items::AuctionRowPages(0) == 1);
-    CHECK(GameLogic::Items::AuctionRowPages(6) == 1);
-    CHECK(GameLogic::Items::AuctionRowPages(7) == 2);
-    CHECK(GameLogic::Items::AuctionRowPages(20) == 4);
+    CHECK(GameLogic::Items::AuctionRowPages(8) == 1);
+    CHECK(GameLogic::Items::AuctionRowPages(9) == 2);
+    CHECK(GameLogic::Items::AuctionRowPages(20) == 3);
     CHECK(GameLogic::Items::MainInventoryServerSlot(3, 2) == 31);
 }
 
@@ -196,10 +200,11 @@ TEST_CASE("A search has the server's layout after the request")
 {
     using GameLogic::Items::AuctionQuality;
     const std::vector<std::uint16_t> types{0, 1, 6145};
-    const auto search = Network::Auction::MakeSearchRequest(AuctionCategory::Armor, 0xFF, 2, AuctionQuality::Level9, types);
-    REQUIRE(search.size() == 28);
+    const auto search = Network::Auction::MakeSearchRequest(AuctionCategory::Armor, 0xFF, 2, AuctionQuality::Level9, types,
+                                                            GameLogic::Items::AuctionSort::EndingSoon);
+    REQUIRE(search.size() == 29);
     CHECK(search[0] == 0xC1);
-    CHECK(search[1] == 28);
+    CHECK(search[1] == 29);
     CHECK(search[2] == 0xFB);
     CHECK(search[3] == 0x05);
     CHECK(search[4] == 1);
@@ -208,18 +213,20 @@ TEST_CASE("A search has the server's layout after the request")
     CHECK(search[8] == 2);
     CHECK(search[20] == 5);
     CHECK(search[21] == 3);
-    CHECK(std::vector<std::uint8_t>(search.begin() + 22, search.end()) == std::vector<std::uint8_t>{0, 0, 1, 0, 0x01, 0x18});
+    CHECK(search[22] == 3);
+    CHECK(std::vector<std::uint8_t>(search.begin() + 23, search.end()) == std::vector<std::uint8_t>{0, 0, 1, 0, 0x01, 0x18});
 
     const auto any = Network::Auction::MakeSearchRequest(AuctionCategory::All, 0, 0, AuctionQuality::Any, std::nullopt);
-    REQUIRE(any.size() == 22);
-    CHECK(any[1] == 22);
+    REQUIRE(any.size() == 23);
+    CHECK(any[1] == 23);
     CHECK(any[20] == 0);
-    CHECK(any[21] == Network::Auction::NoNameSearch);
+    CHECK(any[21] == 0);
+    CHECK(any[22] == Network::Auction::NoNameSearch);
 
     const std::vector<std::uint16_t> many(200, 7);
     const auto capped = Network::Auction::MakeSearchRequest(AuctionCategory::All, 0, 0, AuctionQuality::Any, many);
-    CHECK(capped.size() == 22 + 2 * GameLogic::Items::AuctionMaximumSearchTypes);
-    CHECK(capped[21] == GameLogic::Items::AuctionMaximumSearchTypes);
+    CHECK(capped.size() == 23 + 2 * GameLogic::Items::AuctionMaximumSearchTypes);
+    CHECK(capped[22] == GameLogic::Items::AuctionMaximumSearchTypes);
     CHECK(capped.size() <= 255);
 }
 
@@ -249,6 +256,42 @@ TEST_CASE("A search finds the names in any case and without accents")
     CHECK((GameLogic::Items::MatchItemTypes(L"cris", 10, nameOf, 1) == std::vector<std::uint16_t>{0}));
     CHECK(GameLogic::Items::MatchItemTypes(L"arco", 10, nameOf, 10).empty());
     CHECK(GameLogic::Items::MatchItemTypes(L"  ", 10, nameOf, 10).empty());
+    CHECK((GameLogic::Items::MatchItemTypes(L"cris", 10, nameOf, 10, true) == std::vector<std::uint16_t>{0}));
+    CHECK((GameLogic::Items::MatchItemTypes(L"ESPADA CRISTALINA", 10, nameOf, 10, true) == std::vector<std::uint16_t>{3}));
+}
+
+TEST_CASE("The search suggests the names which start with the text first, each once")
+{
+    const auto nameOf = [](int type) -> std::wstring
+    {
+        switch (type)
+        {
+        case 1:
+            return L"Espada Cristalina";
+        case 2:
+            return L"Cristal";
+        case 4:
+            return L"Espada Cristalina";
+        case 6:
+            return L"Cris";
+        default:
+            return {};
+        }
+    };
+    using GameLogic::Items::SuggestItemNames;
+    CHECK((SuggestItemNames(L"cris", 10, nameOf, 6) == std::vector<std::wstring>{L"Cristal", L"Cris", L"Espada Cristalina"}));
+    CHECK((SuggestItemNames(L"cris", 10, nameOf, 2) == std::vector<std::wstring>{L"Cristal", L"Cris"}));
+    CHECK(SuggestItemNames(L"arco", 10, nameOf, 6).empty());
+    CHECK(SuggestItemNames(L" ", 10, nameOf, 6).empty());
+}
+
+TEST_CASE("The price column sorts the cheapest first, then the most expensive")
+{
+    using GameLogic::Items::AuctionSort;
+    CHECK(GameLogic::Items::NextPriceSort(AuctionSort::Newest) == AuctionSort::PriceLow);
+    CHECK(GameLogic::Items::NextPriceSort(AuctionSort::PriceLow) == AuctionSort::PriceHigh);
+    CHECK(GameLogic::Items::NextPriceSort(AuctionSort::PriceHigh) == AuctionSort::PriceLow);
+    CHECK(GameLogic::Items::NextPriceSort(AuctionSort::EndingSoon) == AuctionSort::PriceLow);
 }
 
 TEST_CASE("The qualities step around, the levels with their minimum")

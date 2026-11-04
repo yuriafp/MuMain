@@ -13,10 +13,8 @@ struct JewelBankRow
     Rml::String name;
     // The name's size: the native one, shrunk to fit its 108-unit box as RenderText() did.
     float namePx = 0.f;
-    // The jewel's icon (an RmlUi image source; empty without one), right after the drawn name at
-    // iconLeft, reference px from the row's left.
+    // The jewel's icon (an RmlUi image source; empty without one), in the column at the row's left.
     Rml::String icon;
-    float iconLeft = 0.f;
     Rml::String amount;
     bool selected = false;
     bool empty = true;

@@ -38,11 +38,12 @@ struct PageHeader
     std::uint8_t durationDays;
     std::uint8_t maxItemsPerAccount;
     std::uint8_t accountItems;
-    std::uint8_t reserved;
+    std::uint8_t sort;
     std::int64_t zenToClaim;
+    std::int32_t total;
 };
 
-// One entry of C2 FB 04; the entries follow the header from byte 38.
+// One entry of C2 FB 04; the entries follow the header from byte 42.
 struct PageEntry
 {
     std::int64_t id;
@@ -83,7 +84,7 @@ struct Request
 };
 #pragma pack(pop)
 
-static_assert(sizeof(PageHeader) == 38, "C2 FB 04 has its entries from byte 38");
+static_assert(sizeof(PageHeader) == 42, "C2 FB 04 has its entries from byte 42");
 static_assert(offsetof(PageHeader, view) == 5, "C2 FB 04 has view at byte 5");
 static_assert(offsetof(PageHeader, flags) == 6, "C2 FB 04 has flags at byte 6");
 static_assert(offsetof(PageHeader, kindFilter) == 7, "C2 FB 04 has kindFilter at byte 7");
@@ -97,7 +98,9 @@ static_assert(offsetof(PageHeader, buyerFee) == 22, "C2 FB 04 has buyerFee at by
 static_assert(offsetof(PageHeader, durationDays) == 26, "C2 FB 04 has durationDays at byte 26");
 static_assert(offsetof(PageHeader, maxItemsPerAccount) == 27, "C2 FB 04 has maxItemsPerAccount at byte 27");
 static_assert(offsetof(PageHeader, accountItems) == 28, "C2 FB 04 has accountItems at byte 28");
+static_assert(offsetof(PageHeader, sort) == 29, "C2 FB 04 has sort at byte 29");
 static_assert(offsetof(PageHeader, zenToClaim) == 30, "C2 FB 04 has zenToClaim at byte 30");
+static_assert(offsetof(PageHeader, total) == 38, "C2 FB 04 has total at byte 38");
 
 static_assert(sizeof(PageEntry) == 48, "C2 FB 04 has 48 bytes per entry");
 static_assert(offsetof(PageEntry, id) == 0, "PageEntry has id at byte 0");
@@ -139,10 +142,11 @@ Request MakeRequest(GameLogic::Items::AuctionAction action, std::uint8_t arg1 = 
 // The count of item types of a search without a search by name.
 constexpr std::uint8_t NoNameSearch = 0xFF;
 
-// C1 FB 05 of a search (Browse): the request, then the quality (byte 20), how many item types follow
-// (byte 21, NoNameSearch without a search by name) and the item types, 2 bytes each from byte 22.
-// More types than fit (GameLogic::Items::AuctionMaximumSearchTypes) are cut.
+// C1 FB 05 of a search (Browse): the request, then the quality (byte 20), the order (byte 21), how many
+// item types follow (byte 22, NoNameSearch without a search by name) and the item types, 2 bytes each
+// from byte 23. More types than fit (GameLogic::Items::AuctionMaximumSearchTypes) are cut.
 std::vector<std::uint8_t> MakeSearchRequest(GameLogic::Items::AuctionCategory kind, std::uint8_t currency,
                                             std::uint16_t page, GameLogic::Items::AuctionQuality quality,
-                                            const std::optional<std::vector<std::uint16_t>>& itemTypes);
+                                            const std::optional<std::vector<std::uint16_t>>& itemTypes,
+                                            GameLogic::Items::AuctionSort sort = GameLogic::Items::AuctionSort::Newest);
 } // namespace Network::Auction

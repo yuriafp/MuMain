@@ -95,7 +95,8 @@ std::wstring FoldSearchText(std::wstring_view text)
 }
 
 std::vector<std::uint16_t> MatchItemTypes(std::wstring_view query, int typeCount,
-                                          const std::function<std::wstring(int)>& nameOf, std::size_t limit)
+                                          const std::function<std::wstring(int)>& nameOf, std::size_t limit,
+                                          bool exact)
 {
     std::vector<std::uint16_t> types;
     const std::wstring folded = FoldSearchText(query);
@@ -104,10 +105,43 @@ std::vector<std::uint16_t> MatchItemTypes(std::wstring_view query, int typeCount
     for (int type = 0; type < typeCount && types.size() < limit; ++type)
     {
         const std::wstring name = nameOf(type);
-        if (!name.empty() && FoldSearchText(name).find(folded) != std::wstring::npos)
+        if (name.empty())
+            continue;
+        const std::wstring foldedName = FoldSearchText(name);
+        if (exact ? foldedName == folded : foldedName.find(folded) != std::wstring::npos)
             types.push_back(static_cast<std::uint16_t>(type));
     }
     return types;
+}
+
+std::vector<std::wstring> SuggestItemNames(std::wstring_view query, int typeCount,
+                                           const std::function<std::wstring(int)>& nameOf, std::size_t limit)
+{
+    std::vector<std::wstring> starting;
+    std::vector<std::wstring> holding;
+    const std::wstring folded = FoldSearchText(query);
+    if (folded.empty() || limit == 0)
+        return starting;
+    std::vector<std::wstring> seen;
+    for (int type = 0; type < typeCount && starting.size() < limit; ++type)
+    {
+        std::wstring name = nameOf(type);
+        if (name.empty())
+            continue;
+        const std::wstring foldedName = FoldSearchText(name);
+        const std::size_t at = foldedName.find(folded);
+        if (at == std::wstring::npos || std::find(seen.begin(), seen.end(), foldedName) != seen.end())
+            continue;
+        seen.push_back(foldedName);
+        (at == 0 ? starting : holding).push_back(std::move(name));
+    }
+    for (std::wstring& name : holding)
+    {
+        if (starting.size() >= limit)
+            break;
+        starting.push_back(std::move(name));
+    }
+    return starting;
 }
 
 std::wstring SellerName(const AuctionEntry& entry)

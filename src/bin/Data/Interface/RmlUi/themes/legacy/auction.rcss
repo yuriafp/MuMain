@@ -1,11 +1,27 @@
-/* Legacy theme for CAuctionWindow: the docked_panel_frame.rcss frame (linked first;
-   newui_item_back01 top), the title bold, the three tabs on the 53 x 23 newui_btn_empty_very_small
-   (the open one on its down row), the selectors with small dark arrow boxes, the search row (the name field and the quality), the list of six rows
-   on a dark well (name white, price in the gold of the original's gauges, seller or state grey; the
-   items of the account blue, the ended ones red), the pager, and the footer or the zen of the sales
-   with Receber on the 64 x 29 newui_btn_empty_small. A locked button is tinted (100, 100, 100) with
-   a grey label. Coordinates are reference px inside #panel. */
+/* Legacy theme for CAuctionWindow, 440 x 429: the docked_panel_frame.rcss frame (linked first) made
+   wider without stretching its art: the stone back repeats, and the top (newui_item_back01) and the
+   bottom keep their ornamented ends while their plain middles stretch (ninepatch); the side strips
+   stay as they are. The title bold; the three tabs on the 64 x 29 newui_btn_empty_small (the open
+   one on its down row); the account's items at the right. Comprar: a sidebar (titles in the gold of
+   the original's gauges, the kinds as a list whose selected one is framed in that gold, the currency
+   and the quality with small dark arrow boxes, Limpar filtros), the search field on a dark well with
+   its hint, its clear button and the suggestions over the list, the count of items, the heads of the
+   columns (the sorted one gold, with its arrow), then eight rows on a dark well: the item's name in
+   the color of its tooltip and its seller grey (the account's blue), the price gold over its
+   currency, the time left (an ended sale red). Meus itens: the zen of the sales and Receber, the
+   rows with their state and each its Retirar on the 53 x 23 newui_btn_empty_very_small. Vender: the
+   bag's rows (the selected one framed in gold) and the panel of the selected item: the item larger,
+   its name, the currency, the lowest price for sale, the fees and Anunciar on the 108 x 29
+   newui_btn_empty. The pager, then the footer. A locked button is tinted (100, 100, 100) with a grey
+   label. Coordinates are reference px inside #panel. */
 
+@spritesheet au-btn-wide-sheet
+{
+	src: "../../../newui_btn_empty.tga";
+	au-btn-wide-up: 0px 0px 108px 29px;
+	au-btn-wide-over: 0px 29px 108px 29px;
+	au-btn-wide-down: 0px 58px 108px 29px;
+}
 @spritesheet au-btn-small-sheet
 {
 	src: "../../../newui_btn_empty_small.tga";
@@ -20,34 +36,68 @@
 	au-btn-tiny-over: 0px 23px 53px 23px;
 	au-btn-tiny-down: 0px 46px 53px 23px;
 }
+/* The top and the bottom: their ornaments stay at both ends (about 60 px each), the middle stretches. */
+@spritesheet au-frame-top-sheet { src: "../../../newui_item_back01.tga"; au-frame-top: 0px 0px 190px 64px; au-frame-top-inner: 60px 0px 70px 64px; }
+@spritesheet au-frame-bottom-sheet { src: "../../../newui_item_back03.tga"; au-frame-bottom: 0px 0px 190px 45px; au-frame-bottom-inner: 60px 0px 70px 45px; }
 
-.frame-top { decorator: image(docked-bg-top-b); }
-#panel { pointer-events: auto; }
+#panel { width: 440px; height: 429px; decorator: image(docked-bg-fill repeat left top); pointer-events: auto; }
+.frame-top { decorator: ninepatch(au-frame-top, au-frame-top-inner); }
+.frame-bottom { decorator: ninepatch(au-frame-bottom, au-frame-bottom-inner); }
 
 .sharp-text { display: block; position: absolute; white-space: nowrap; text-align: center; pointer-events: none; }
 
-#title { left: 15px; top: 13px; font-weight: bold; color: #dcdcdc; }
+#title { left: 30px; top: 13px; font-weight: bold; color: #dcdcdc; }
 
 .au-btn { display: block; position: absolute; pointer-events: auto; }
 .btn-label { left: 0; color: #ffffff; }
 .au-btn.locked .btn-label { color: #808080; }
 
-/* The tabs. */
-.tab { top: 38px; width: 53px; height: 23px; decorator: image(au-btn-tiny-up); }
-.tab:hover { decorator: image(au-btn-tiny-over); }
-.tab.selected, .tab.selected:hover { decorator: image(au-btn-tiny-down); }
+/* The tabs, and the account's items at their right. */
+.tab { top: 34px; width: 64px; height: 29px; decorator: image(au-btn-small-up); }
+.tab:hover { decorator: image(au-btn-small-over); }
+.tab.selected, .tab.selected:hover { decorator: image(au-btn-small-down); }
 .tab .btn-label { color: #c8c8c8; }
 .tab.selected .btn-label { color: #ffd24a; }
 .tab.locked, .tab.locked:hover { image-color: #646464; }
-#tab_buy { left: 10px; }
-#tab_mine { left: 68px; }
-#tab_sell { left: 126px; }
+#tab_buy { left: 12px; }
+#tab_mine { left: 80px; }
+#tab_sell { left: 148px; }
+#account_items { left: 220px; top: 43px; text-align: right; color: #a0a0a0; }
+
+/* The dark wells: the list, the search field, the suggestions, the panel of Vender. */
+.rows, #search_back, .suggestions, #sell_panel {
+	display: block;
+	position: absolute;
+	background-color: #0b0b0bc0;
+	border: 1px #5a4a2a;
+}
+
+/* The sidebar of Comprar. */
+.side-title { text-align: left; font-weight: bold; color: #ffd24a; }
+#category_title { left: 12px; top: 70px; }
+.kinds { display: block; position: absolute; left: 12px; top: 84px; width: 100px; height: 180px; }
+.kind { display: block; position: absolute; left: 0; width: 100px; height: 20px; box-sizing: border-box; pointer-events: auto; }
+.kind:hover { background-color: #ffffff1a; }
+.kind.selected { background-color: #c8961e40; border: 1px #c8961e; }
+.kind.locked { pointer-events: none; }
+.kind-label { left: 6px; top: 4px; text-align: left; color: #dcdcdc; }
+.kind.selected .kind-label { color: #ffd24a; }
+.kind:nth-child(1) { top: 0; }
+.kind:nth-child(2) { top: 20px; }
+.kind:nth-child(3) { top: 40px; }
+.kind:nth-child(4) { top: 60px; }
+.kind:nth-child(5) { top: 80px; }
+.kind:nth-child(6) { top: 100px; }
+.kind:nth-child(7) { top: 120px; }
+.kind:nth-child(8) { top: 140px; }
+.kind:nth-child(9) { top: 160px; }
+#currency_title { left: 12px; top: 270px; }
+#quality_title { left: 12px; top: 306px; }
 
 /* The selectors: an arrow box at each end of the value. */
-.selector { display: block; position: absolute; top: 66px; width: 86px; height: 18px; }
-#kind_selector { left: 8px; }
-#currency_selector { left: 96px; }
-#sell_currency_selector { left: 52px; }
+.selector { display: block; position: absolute; width: 100px; height: 18px; }
+#currency_selector { left: 12px; top: 284px; }
+#quality_selector { left: 12px; top: 320px; }
 .arrow {
 	width: 16px;
 	height: 18px;
@@ -58,24 +108,26 @@
 .arrow.locked, .arrow.locked:hover { background-color: #121212c0; border-color: #3a3a3a; }
 .arrow-label { font-weight: bold; }
 .arrow-prev { left: 0; top: 0; }
-.arrow-next { left: 70px; top: 0; }
+.arrow-next { left: 84px; top: 0; }
 .selector-value { left: 16px; top: 3px; color: #ffd24a; }
 
-/* The search row: the name field on a dark well with its hint while empty, and the quality. */
-#search_back {
-	display: block;
-	position: absolute;
-	left: 8px;
-	top: 86px;
-	width: 86px;
+#btn_clear_filters {
+	left: 12px;
+	top: 346px;
+	width: 100px;
 	height: 18px;
-	background-color: #0b0b0bc0;
+	background-color: #1c1912e0;
 	border: 1px #5a4a2a;
 }
+#btn_clear_filters:hover { background-color: #322a1ce0; }
+#btn_clear_filters.locked, #btn_clear_filters.locked:hover { background-color: #121212c0; border-color: #3a3a3a; }
+
+/* The search row: the name field on a dark well with its hint while empty, its clear button, the count. */
+#search_back { left: 120px; top: 68px; width: 200px; height: 18px; }
 #search_field {
 	text-align: left;
-	left: 11px;
-	top: 89px;
+	left: 124px;
+	top: 71px;
 	padding: 0;
 	border-width: 0;
 	border-radius: 0;
@@ -83,85 +135,211 @@
 	color: rgba(255, 255, 230, 230);
 	pointer-events: auto;
 }
-#search_hint { left: 11px; top: 89px; text-align: left; color: #6e6e6e; }
-#quality_selector { left: 96px; top: 86px; }
+#search_hint { left: 124px; top: 71px; text-align: left; color: #6e6e6e; }
+#btn_clear_search { left: 302px; top: 69px; width: 16px; height: 16px; }
+#btn_clear_search .btn-label { color: #a0a0a0; }
+#btn_clear_search:hover .btn-label { color: #ffffff; }
+#result_count { left: 326px; top: 72px; text-align: right; color: #a0a0a0; }
 
-#account_items { left: 0; top: 69px; color: #dcdcdc; }
+/* The suggestions: up to six names under the field, over the list. */
+.suggestions { left: 120px; top: 87px; width: 200px; z-index: 2; background-color: #0b0b0bf0; }
+.suggestion { display: block; position: absolute; left: 0; width: 200px; height: 16px; pointer-events: auto; }
+.suggestion:hover { background-color: #c8961e40; }
+.suggestion-label { left: 6px; top: 2px; text-align: left; color: #dcdcdc; }
+.suggestion:hover .suggestion-label { color: #ffd24a; }
+.suggestion:nth-child(1) { top: 0; }
+.suggestion:nth-child(2) { top: 16px; }
+.suggestion:nth-child(3) { top: 32px; }
+.suggestion:nth-child(4) { top: 48px; }
+.suggestion:nth-child(5) { top: 64px; }
+.suggestion:nth-child(6) { top: 80px; }
 
-/* The list: six rows of 38 units from y 109 on a dark well. */
-.rows {
-	display: block;
-	position: absolute;
-	left: 8px;
-	top: 108px;
-	width: 174px;
-	height: 230px;
-	background-color: #0b0b0bc0;
-	border: 1px #5a4a2a;
-}
-.row {
-	display: block;
-	position: absolute;
-	left: 1px;
-	width: 172px;
-	height: 38px;
-	pointer-events: auto;
-}
-.row.clickable:hover { background-color: #ffffff1a; }
-.row-name { left: 36px; top: 2px; text-align: left; color: #ffffff; }
-.row-price { left: 36px; top: 14px; text-align: left; font-weight: bold; color: #ffd24a; }
-.row-detail { left: 36px; top: 26px; text-align: left; color: #a0a0a0; }
-.row.mine .row-detail { color: #8cb4ff; }
-.row.ended .row-detail { color: #ff7a6e; }
-.row.pending .row-detail { color: #e0c060; }
-.row:nth-child(1) { top: 1px; }
-.row:nth-child(2) { top: 39px; }
-.row:nth-child(3) { top: 77px; }
-.row:nth-child(4) { top: 115px; }
-.row:nth-child(5) { top: 153px; }
-.row:nth-child(6) { top: 191px; }
-#empty_text { left: 0; top: 120px; color: #969696; }
+/* The heads of the columns: on Comprar each sorts, the sorted one gold. */
+.col-head { display: block; position: absolute; height: 14px; }
+.col-head-label { left: 0; top: 1px; color: #a0a0a0; }
+.col-head.sortable { pointer-events: auto; }
+.col-head.sortable:hover .col-head-label { color: #ffffff; }
+.col-head.sorted .col-head-label { color: #ffd24a; }
+.col-head.locked { pointer-events: none; }
+#head_item .col-head-label { text-align: left; }
+#head_price .col-head-label, #head_time .col-head-label { text-align: right; }
+#panel.tab-buy #head_item { left: 156px; top: 92px; width: 128px; }
+#panel.tab-buy #head_price { left: 286px; top: 92px; width: 80px; }
+#panel.tab-buy #head_time { left: 370px; top: 92px; width: 54px; }
+#panel.tab-mine #head_item { left: 48px; top: 98px; width: 168px; }
+#panel.tab-mine #head_price { left: 222px; top: 98px; width: 80px; }
+#panel.tab-mine #head_state { left: 364px; top: 98px; width: 53px; }
+#head_state .col-head-label { text-align: center; }
 
-/* The items in 3D, at the left of their rows. */
-.row-item { display: block; position: absolute; left: 12px; width: 32px; height: 32px; pointer-events: none; }
-.row-item.hidden { visibility: hidden; }
-#auction_item_0 { top: 112px; }
-#auction_item_1 { top: 150px; }
-#auction_item_2 { top: 188px; }
-#auction_item_3 { top: 226px; }
-#auction_item_4 { top: 264px; }
-#auction_item_5 { top: 302px; }
-
-#pager_prev { left: 40px; top: 344px; }
-#pager_next { left: 134px; top: 344px; }
-#pager_text { left: 56px; top: 347px; color: #dcdcdc; }
-
-#footer {
-	left: 54px;
-	top: 368px;
-	--flow-w: 130px;
-	line-height: 1.1;
-	white-space: normal;
-	word-break: break-word;
-	color: #969696;
-}
-
-#zen_to_claim { left: 54px; top: 368px; color: #ffd24a; }
-#btn_claim { left: 118px; top: 386px; width: 64px; height: 29px; decorator: image(au-btn-small-up); }
+/* Meus itens: the zen of the sales, and Receber. */
+#zen_to_claim { left: 12px; top: 72px; text-align: left; font-weight: bold; color: #ffd24a; }
+#btn_claim { left: 364px; top: 64px; width: 64px; height: 29px; decorator: image(au-btn-small-up); }
 #btn_claim:hover { decorator: image(au-btn-small-over); }
 #btn_claim:active { decorator: image(au-btn-small-down); }
 #btn_claim.locked, #btn_claim.locked:hover, #btn_claim.locked:active { decorator: image(au-btn-small-up); image-color: #646464; }
 
+/* Vender: the bag's title. */
+#bag_title { left: 12px; top: 70px; }
+
+/* The list: eight rows of 32 units on its well, where the tab puts it. */
+#panel.tab-buy .rows { left: 120px; top: 108px; width: 308px; height: 258px; }
+#panel.tab-mine .rows { left: 12px; top: 112px; width: 416px; height: 258px; }
+#panel.tab-sell .rows { left: 12px; top: 86px; width: 236px; height: 258px; }
+.row {
+	display: block;
+	position: absolute;
+	left: 1px;
+	height: 32px;
+	pointer-events: auto;
+}
+#panel.tab-buy .row { width: 306px; }
+#panel.tab-mine .row { width: 414px; }
+#panel.tab-sell .row { width: 234px; }
+.row.clickable:hover { background-color: #ffffff1a; }
+.row.selected, .row.selected:hover { background-color: #c8961e40; }
+.row:nth-child(1) { top: 1px; }
+.row:nth-child(2) { top: 33px; }
+.row:nth-child(3) { top: 65px; }
+.row:nth-child(4) { top: 97px; }
+.row:nth-child(5) { top: 129px; }
+.row:nth-child(6) { top: 161px; }
+.row:nth-child(7) { top: 193px; }
+.row:nth-child(8) { top: 225px; }
+
+.row-name { left: 36px; top: 3px; text-align: left; }
+#panel.tab-sell .row-name { top: 10px; }
+.row-detail { left: 36px; top: 17px; text-align: left; color: #a0a0a0; }
+.row.mine .row-detail { color: #8cb4ff; }
+#panel.tab-mine .row-detail { color: #c8c8c8; }
+#panel.tab-mine .row.ended .row-detail { color: #ff7a6e; }
+#panel.tab-mine .row.pending .row-detail { color: #e0c060; }
+.row-price { top: 3px; text-align: right; color: #ffd24a; }
+.row-currency { top: 17px; text-align: right; color: #a0a0a0; }
+#panel.tab-buy .row-price, #panel.tab-buy .row-currency { left: 166px; }
+#panel.tab-mine .row-price, #panel.tab-mine .row-currency { left: 210px; }
+.row-time { left: 250px; top: 10px; text-align: right; color: #dcdcdc; }
+.row.ended .row-time { color: #ff7a6e; }
+.row-btn { left: 352px; top: 4px; width: 53px; height: 23px; decorator: image(au-btn-tiny-up); }
+.row.clickable:hover .row-btn { decorator: image(au-btn-tiny-over); }
+.row.clickable:active .row-btn { decorator: image(au-btn-tiny-down); }
+.row-btn.locked { image-color: #646464; }
+
+/* The colors of the items' names, as their tooltips write them. */
+.q-normal { color: #ffffff; }
+.q-blue { color: #80b3ff; }
+.q-yellow { color: #ffcc1a; }
+.q-exc { color: #1aff80; }
+.q-ancient { color: #00ff00; font-effect: glow(1px #3c3cc8); }
+.q-socket { color: #b366ff; }
+.q-purple { color: #ff1aff; }
+.q-orange { color: #e66b0a; }
+.q-red { color: #ff331a; }
+.q-gray { color: #666666; }
+
+#empty_text { left: 0; top: 120px; color: #969696; }
+
+/* The items in 3D, at the left of their rows. */
+.row-items { display: block; position: absolute; width: 28px; height: 256px; pointer-events: none; }
+#panel.tab-buy .row-items { left: 124px; top: 111px; }
+#panel.tab-mine .row-items { left: 16px; top: 115px; }
+#panel.tab-sell .row-items { left: 16px; top: 89px; }
+.row-item { display: block; position: absolute; left: 0; width: 28px; height: 28px; pointer-events: none; }
+.row-item.hidden { visibility: hidden; }
+#auction_item_0 { top: 0; }
+#auction_item_1 { top: 32px; }
+#auction_item_2 { top: 64px; }
+#auction_item_3 { top: 96px; }
+#auction_item_4 { top: 128px; }
+#auction_item_5 { top: 160px; }
+#auction_item_6 { top: 192px; }
+#auction_item_7 { top: 224px; }
+
+/* The pager, under the list of its tab. */
+#pager_prev, #pager_next { top: 370px; }
+#pager_text { top: 373px; color: #dcdcdc; }
+#panel.tab-buy #pager_prev { left: 222px; }
+#panel.tab-buy #pager_text { left: 240px; }
+#panel.tab-buy #pager_next { left: 310px; }
+#panel.tab-mine #pager_prev { left: 172px; top: 374px; }
+#panel.tab-mine #pager_text { left: 190px; top: 377px; }
+#panel.tab-mine #pager_next { left: 260px; top: 374px; }
+#panel.tab-sell #pager_prev { left: 80px; top: 350px; }
+#panel.tab-sell #pager_text { left: 98px; top: 353px; }
+#panel.tab-sell #pager_next { left: 168px; top: 350px; }
+
+/* Vender: the panel of the selected item. */
+#sell_panel { left: 256px; top: 68px; width: 172px; height: 308px; }
+#auction_preview { display: block; position: absolute; left: 310px; top: 76px; width: 64px; height: 64px; pointer-events: none; }
+#auction_preview.hidden { visibility: hidden; }
+#sell_choose {
+	left: 264px;
+	top: 136px;
+	--flow-w: 156px;
+	line-height: 1.1;
+	white-space: normal;
+	text-align: center;
+	color: #a0a0a0;
+}
+#sell_item_name { left: 260px; top: 146px; }
+#sell_currency_title { left: 256px; top: 168px; text-align: center; }
+#sell_currency_selector { left: 282px; top: 182px; width: 120px; }
+#sell_currency_selector .arrow-next { left: 104px; }
+#lowest_title { left: 256px; top: 208px; color: #a0a0a0; }
+#lowest_text { left: 256px; top: 222px; font-weight: bold; color: #a0a0a0; }
+#lowest_text.found { color: #ffd24a; }
+.sell-fee { left: 256px; color: #a0a0a0; }
+#sell_fee_listing { top: 248px; }
+#sell_fee_days { top: 262px; }
+#sell_fee_cancel { top: 276px; }
+#btn_list { left: 288px; top: 300px; width: 108px; height: 29px; decorator: image(au-btn-wide-up); }
+#btn_list:hover { decorator: image(au-btn-wide-over); }
+#btn_list:active { decorator: image(au-btn-wide-down); }
+#btn_list.locked, #btn_list.locked:hover, #btn_list.locked:active { decorator: image(au-btn-wide-up); image-color: #646464; }
+
+#footer {
+	left: 54px;
+	top: 396px;
+	--flow-w: 374px;
+	line-height: 1.1;
+	white-space: normal;
+	word-break: break-word;
+	text-align: left;
+	color: #969696;
+}
+
 /* Lengths inside counter-scaled layers: reference px times the panel's --root-scale. */
-#title { width: calc(160px * var(--root-scale)); }
-.tab-label { width: calc(53px * var(--root-scale)); }
+#title { width: calc(380px * var(--root-scale)); }
+.tab-label { width: calc(64px * var(--root-scale)); }
+#account_items { width: calc(208px * var(--root-scale)); }
+.side-title { width: calc(100px * var(--root-scale)); }
+#bag_title { width: calc(236px * var(--root-scale)); }
+.kind-label { width: calc(92px * var(--root-scale)); }
 .arrow-label { width: calc(16px * var(--root-scale)); }
-.selector-value { width: calc(54px * var(--root-scale)); }
-#account_items { width: calc(190px * var(--root-scale)); }
-#search_field { width: calc(80px * var(--root-scale)); height: calc(13px * var(--root-scale)); line-height: calc(13px * var(--root-scale)); }
-#search_hint { width: calc(80px * var(--root-scale)); }
-.row-name, .row-price, .row-detail { width: calc(134px * var(--root-scale)); }
-#empty_text { width: calc(174px * var(--root-scale)); }
-#pager_text { width: calc(78px * var(--root-scale)); }
-#zen_to_claim { width: calc(128px * var(--root-scale)); }
+.selector-value { width: calc(68px * var(--root-scale)); }
+#sell_currency_selector .selector-value { width: calc(88px * var(--root-scale)); }
+.clear-filters-label { width: calc(100px * var(--root-scale)); }
+#search_field { width: calc(176px * var(--root-scale)); height: calc(13px * var(--root-scale)); line-height: calc(13px * var(--root-scale)); }
+#search_hint { width: calc(176px * var(--root-scale)); }
+.clear-search-label { width: calc(16px * var(--root-scale)); }
+#result_count { width: calc(102px * var(--root-scale)); }
+.suggestion-label { width: calc(188px * var(--root-scale)); }
+#head_item .col-head-label { width: calc(168px * var(--root-scale)); }
+#panel.tab-buy #head_item .col-head-label { width: calc(128px * var(--root-scale)); }
+#head_price .col-head-label { width: calc(80px * var(--root-scale)); }
+#head_time .col-head-label { width: calc(54px * var(--root-scale)); }
+#head_state .col-head-label { width: calc(53px * var(--root-scale)); }
+#zen_to_claim { width: calc(340px * var(--root-scale)); }
 .claim-label { width: calc(64px * var(--root-scale)); }
+#panel.tab-buy .row-name, #panel.tab-buy .row-detail { width: calc(128px * var(--root-scale)); }
+#panel.tab-mine .row-name, #panel.tab-mine .row-detail { width: calc(168px * var(--root-scale)); }
+#panel.tab-sell .row-name { width: calc(196px * var(--root-scale)); }
+.row-price, .row-currency { width: calc(80px * var(--root-scale)); }
+.row-time { width: calc(52px * var(--root-scale)); }
+.row-btn-label { width: calc(53px * var(--root-scale)); }
+#panel.tab-buy #empty_text { width: calc(308px * var(--root-scale)); }
+#panel.tab-mine #empty_text { width: calc(416px * var(--root-scale)); }
+#panel.tab-sell #empty_text { width: calc(236px * var(--root-scale)); }
+#pager_text { width: calc(68px * var(--root-scale)); }
+#sell_item_name { width: calc(164px * var(--root-scale)); }
+#sell_currency_title, #lowest_title, #lowest_text, .sell-fee { width: calc(172px * var(--root-scale)); }
+.list-label { width: calc(108px * var(--root-scale)); }

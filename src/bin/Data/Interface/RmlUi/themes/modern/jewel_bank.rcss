@@ -17,7 +17,7 @@
 	left: 8px;
 	top: 72px;
 	width: 174px;
-	height: 194px;
+	height: 212px;
 	background-color: token(surface-recessed);
 	border: 1px token(border-frame);
 	border-radius: token(radius-sm)px;
@@ -27,27 +27,27 @@
 	position: absolute;
 	left: 1px;
 	width: 172px;
-	height: 19px;
+	height: 21px;
 	pointer-events: auto;
 }
 .row:hover { background-color: token(surface-raised); }
 .row.selected { background-color: token(surface-raised); border: 1px token(accent-steel-hover); }
-.row-name { left: 4px; top: 3px; text-align: left; color: token(text-primary); }
-.row-amount { left: 112px; top: 3px; text-align: right; font-weight: bold; color: token(accent-gold); }
+.row-name { left: 25px; top: 4px; text-align: left; color: token(text-primary); }
+.row-amount { left: 116px; top: 4px; text-align: right; font-weight: bold; color: token(accent-gold); }
 .row.empty .row-name, .row.empty .row-amount { color: token(text-muted); font-weight: normal; }
-/* The jewel's icon right after its name; left comes from the window (the drawn name's width). */
-.row-icon { display: block; position: absolute; top: 1px; width: 16px; height: 16px; pointer-events: none; }
+/* The jewel's icon in a column at the left of its row. */
+.row-icon { display: block; position: absolute; left: 3px; top: 1px; width: 19px; height: 19px; pointer-events: none; }
 .row.empty .row-icon { opacity: 0.45; }
 .row:nth-child(1) { top: 1px; }
-.row:nth-child(2) { top: 20px; }
-.row:nth-child(3) { top: 39px; }
-.row:nth-child(4) { top: 58px; }
-.row:nth-child(5) { top: 77px; }
-.row:nth-child(6) { top: 96px; }
-.row:nth-child(7) { top: 115px; }
-.row:nth-child(8) { top: 134px; }
-.row:nth-child(9) { top: 153px; }
-.row:nth-child(10) { top: 172px; }
+.row:nth-child(2) { top: 22px; }
+.row:nth-child(3) { top: 43px; }
+.row:nth-child(4) { top: 64px; }
+.row:nth-child(5) { top: 85px; }
+.row:nth-child(6) { top: 106px; }
+.row:nth-child(7) { top: 127px; }
+.row:nth-child(8) { top: 148px; }
+.row:nth-child(9) { top: 169px; }
+.row:nth-child(10) { top: 190px; }
 
 .jb-btn {
 	display: block;
@@ -62,12 +62,12 @@
 .jb-btn.locked, .jb-btn.locked:hover { background-color: token(surface-recessed); border-color: token(border-frame); }
 .jb-btn.locked .btn-label { color: token(text-muted); }
 
-#btn_keep { left: 8px; top: 272px; width: 64px; height: 28px; }
-#btn_keep_all { left: 76px; top: 272px; width: 108px; height: 28px; }
+#btn_keep { left: 8px; top: 290px; width: 64px; height: 28px; }
+#btn_keep_all { left: 76px; top: 290px; width: 108px; height: 28px; }
 
-#jb_withdraw_title { left: 0; top: 310px; color: token(text-primary); }
+#jb_withdraw_title { left: 0; top: 326px; color: token(text-primary); }
 .withdraw-buttons { position: static; }
-.withdraw-btn { top: 326px; width: 53px; height: 22px; background-color: token(surface-recessed); }
+.withdraw-btn { top: 342px; width: 53px; height: 22px; background-color: token(surface-recessed); }
 .withdraw-btn:hover { border-color: token(border-frame); }
 .withdraw-btn.enabled { background-color: token(surface-raised); }
 .withdraw-btn.enabled:hover { border-color: token(accent-steel-hover); }
@@ -79,7 +79,7 @@
 
 #jb_hint {
 	left: 6px;
-	top: 362px;
+	top: 374px;
 	--flow-w: 178px;
 	line-height: 1.1;
 	white-space: normal;
@@ -90,8 +90,8 @@
 /* Lengths inside counter-scaled layers: reference px times the panel's --root-scale. */
 #title { width: calc(160px * var(--root-scale)); }
 .fee { width: calc(190px * var(--root-scale)); }
-.row-name { width: calc(108px * var(--root-scale)); }
-.row-amount { width: calc(56px * var(--root-scale)); }
+.row-name { width: calc(88px * var(--root-scale)); }
+.row-amount { width: calc(52px * var(--root-scale)); }
 .keep-label { width: calc(64px * var(--root-scale)); }
 .keep-all-label { width: calc(108px * var(--root-scale)); }
 #jb_withdraw_title { width: calc(190px * var(--root-scale)); }

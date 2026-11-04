@@ -1574,6 +1574,14 @@ static ItemTooltipName GetItemTooltipName(const ITEM& item, int level, const Ite
     return name;
 }
 
+int GetItemNameColor(const ITEM& item)
+{
+    if (!Data::Items::IsValidItemType(item.Type))
+        return TEXT_COLOR_WHITE;
+    const ItemTooltipValues values = Engine::Items::TooltipValues::ComputeItemTooltipValues(item);
+    return GetItemTooltipName(item, item.Level, values).color;
+}
+
 std::wstring GetItemNameText(int type, int level, const ITEM* item)
 {
     if (!Data::Items::IsValidItemType(type))

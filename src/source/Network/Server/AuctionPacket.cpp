@@ -31,6 +31,9 @@ bool ReadPage(const std::uint8_t* data, std::size_t size, GameLogic::Items::Auct
     page.maxItemsPerAccount = header.maxItemsPerAccount;
     page.accountItems = header.accountItems;
     page.zenToClaim = header.zenToClaim;
+    page.sort = header.sort < GameLogic::Items::AuctionSortCount ? static_cast<GameLogic::Items::AuctionSort>(header.sort)
+                                                                 : GameLogic::Items::AuctionSort::Newest;
+    page.total = header.total;
 
     page.entries.clear();
     page.entries.reserve(header.entryCount);
@@ -90,22 +93,26 @@ Request MakeRequest(GameLogic::Items::AuctionAction action, std::uint8_t arg1, s
 
 std::vector<std::uint8_t> MakeSearchRequest(GameLogic::Items::AuctionCategory kind, std::uint8_t currency,
                                             std::uint16_t page, GameLogic::Items::AuctionQuality quality,
-                                            const std::optional<std::vector<std::uint16_t>>& itemTypes)
+                                            const std::optional<std::vector<std::uint16_t>>& itemTypes,
+                                            GameLogic::Items::AuctionSort sort)
 {
+    constexpr std::size_t Types = GameLogic::Items::AuctionSearchLength;
+    static_assert(Types == sizeof(Request) + 3, "the quality, the order and the count follow the request");
     const std::size_t count =
         itemTypes ? std::min(itemTypes->size(), GameLogic::Items::AuctionMaximumSearchTypes) : 0;
-    std::vector<std::uint8_t> data(sizeof(Request) + 2 + count * 2);
+    std::vector<std::uint8_t> data(Types + count * 2);
     const Request request = MakeRequest(GameLogic::Items::AuctionAction::Browse, static_cast<std::uint8_t>(kind),
                                         currency, page, 0);
     std::memcpy(data.data(), &request, sizeof(Request));
     data[1] = static_cast<std::uint8_t>(data.size());
     data[sizeof(Request)] = static_cast<std::uint8_t>(quality);
-    data[sizeof(Request) + 1] = itemTypes ? static_cast<std::uint8_t>(count) : NoNameSearch;
+    data[sizeof(Request) + 1] = static_cast<std::uint8_t>(sort);
+    data[sizeof(Request) + 2] = itemTypes ? static_cast<std::uint8_t>(count) : NoNameSearch;
     for (std::size_t i = 0; i < count; ++i)
     {
         const std::uint16_t type = (*itemTypes)[i];
-        data[sizeof(Request) + 2 + i * 2] = static_cast<std::uint8_t>(type & 0xFF);
-        data[sizeof(Request) + 3 + i * 2] = static_cast<std::uint8_t>(type >> 8);
+        data[Types + i * 2] = static_cast<std::uint8_t>(type & 0xFF);
+        data[Types + 1 + i * 2] = static_cast<std::uint8_t>(type >> 8);
     }
     return data;
 }

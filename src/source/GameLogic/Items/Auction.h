@@ -62,6 +62,23 @@ enum class AuctionQuality : std::uint8_t
 
 constexpr int AuctionQualityCount = 8;
 
+// The order of the items for sale (MUnique.OpenMU.Tbt.Auction.AuctionSort).
+enum class AuctionSort : std::uint8_t
+{
+    Newest = 0,
+    PriceLow = 1,
+    PriceHigh = 2,
+    EndingSoon = 3,
+};
+
+constexpr int AuctionSortCount = 4;
+
+// The order after a click on the price column: the cheapest first, then the most expensive.
+constexpr AuctionSort NextPriceSort(AuctionSort current)
+{
+    return current == AuctionSort::PriceLow ? AuctionSort::PriceHigh : AuctionSort::PriceLow;
+}
+
 // The lowest level of a level quality, 0 for the others.
 constexpr int AuctionQualityLevel(AuctionQuality quality)
 {
@@ -83,16 +100,24 @@ constexpr int AuctionQualityLevel(AuctionQuality quality)
 // The search by name: the server keeps no translated names, so the client finds the item types
 // whose name in its language holds the text, and sends them (group * 512 + number).
 constexpr std::size_t AuctionMinimumSearchLength = 2;
-// The most item types a search sends: what fits in a C1 packet after its 22 bytes.
-constexpr std::size_t AuctionMaximumSearchTypes = (255 - 22) / 2;
+// The most item types a search sends: what fits in a C1 packet after its 23 bytes.
+constexpr std::size_t AuctionSearchLength = 23;
+constexpr std::size_t AuctionMaximumSearchTypes = (255 - AuctionSearchLength) / 2;
 
 // The text folded for a search: lower case, the accents of Latin-1 dropped, spaces trimmed.
 std::wstring FoldSearchText(std::wstring_view text);
 
 // The item types below `typeCount` whose name (`nameOf`, empty for none) holds the folded `query`,
-// at most `limit` of them, in order.
+// or is it when `exact`, at most `limit` of them, in order.
 std::vector<std::uint16_t> MatchItemTypes(std::wstring_view query, int typeCount,
-                                          const std::function<std::wstring(int)>& nameOf, std::size_t limit);
+                                          const std::function<std::wstring(int)>& nameOf, std::size_t limit,
+                                          bool exact = false);
+
+// The names which the search field suggests while the player types: the different names of the item
+// types below `typeCount` which hold the folded `query`, those which start with it first, each group
+// in the order of the types, at most `limit` of them.
+std::vector<std::wstring> SuggestItemNames(std::wstring_view query, int typeCount,
+                                           const std::function<std::wstring(int)>& nameOf, std::size_t limit);
 
 // Currency codes in C2 FB 04 and C1 FB 05 (MUnique.OpenMU.Tbt.Auction.AuctionCurrency).
 constexpr std::uint8_t AuctionCurrencyZen = 0;
@@ -158,6 +183,9 @@ struct AuctionPage
     std::uint8_t maxItemsPerAccount = 0;
     std::uint8_t accountItems = 0;
     std::int64_t zenToClaim = 0;
+    AuctionSort sort = AuctionSort::Newest;
+    // How many items the search found, on all pages.
+    std::int32_t total = 0;
     std::vector<AuctionEntry> entries;
 
     bool operator==(const AuctionPage&) const = default;
@@ -197,7 +225,7 @@ std::string FormatTimeLeft(std::int32_t secondsLeft);
 std::wstring SellerName(const AuctionEntry& entry);
 
 // How many rows the window shows at once: a page of the server is shown in parts of this many.
-constexpr int AuctionRowsPerPage = 6;
+constexpr int AuctionRowsPerPage = 8;
 
 // How many parts of AuctionRowsPerPage rows `count` rows take, at least one.
 constexpr int AuctionRowPages(std::size_t count)

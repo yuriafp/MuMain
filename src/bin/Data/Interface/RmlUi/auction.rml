@@ -6,14 +6,21 @@
 	<link type="text/rcss" href="auction.rcss"/>
 </head>
 <body>
-	<!-- Otto, the auctioneer of our server (CAuctionWindow), docked right next to the inventory: three
-	     tabs, Comprar (the items for sale, by kind, currency, quality or level, and name), Meus itens (the
-	     items of the account with him and the zen of its sales) and Vender (the items of the main bag),
-	     each a list of six rows with a pager. A row is the item in 3D, its name, and its price and seller or state; a
-	     click asks the confirm dialog. The workspace slot places and scales #panel; everything inside
-	     is reference px; text is .sharp-text at the native size, counter-scaled out of the panel. C++
-	     keeps the items and the requests; everything locks while a request waits. -->
-	<div id="panel" data-model="auction">
+	<!-- Otto, the auctioneer of our server (CAuctionWindow), docked right next to the inventory, 440
+	     wide like an auction house beside the bags. Three tabs:
+	     Comprar: a sidebar of kinds, the currency and the quality (and a reset of the filters); the
+	       search by name, which suggests the names of the items while the player types; the items for
+	       sale in columns (the item with its seller, the price with its currency, the time left), whose
+	       heads sort them (the newest, the price up or down, the time left), eight rows with a pager.
+	     Meus itens: the zen of the sales with Receber, the items of the account each with Retirar.
+	     Vender: the items of the main bag; the panel of the selected one shows it larger, the currency
+	       of the price, the lowest price of the same item for sale, the fees and Anunciar.
+	     A row is the item in 3D and its name in the color of its tooltip; a click asks the confirm
+	     dialog (Vender: selects it). The workspace slot places and scales #panel; everything inside is
+	     reference px; text is .sharp-text at the native size, counter-scaled out of the panel. C++ keeps
+	     the items and the requests; everything locks while a request waits. -->
+	<div id="panel" data-model="auction" data-class-tab-buy="active_tab == 0" data-class-tab-mine="active_tab == 1"
+	     data-class-tab-sell="active_tab == 2">
 		<div class="frame-piece frame-top"></div>
 		<div class="frame-piece frame-left"></div>
 		<div class="frame-piece frame-right"></div>
@@ -36,19 +43,19 @@
 			<span class="sharp-text sharp-middle btn-label tab-label" data-style-font-size="text_px + 'px'"
 			      data-style-line-height="label_line_px + 'px'">{{tab_sell_text}}</span>
 		</div>
+		<span class="sharp-text" id="account_items" data-style-font-size="text_px + 'px'">{{account_items_text}}</span>
 
-		<!-- Comprar: the kind and the currency, each with its arrows. -->
-		<div id="kind_selector" class="selector" data-if="active_tab == 0">
-			<div class="au-btn arrow arrow-prev" data-class-locked="busy" data-event-click="auction_kind_step(-1)">
-				<span class="sharp-text sharp-middle btn-label arrow-label" data-style-font-size="bold_text_px + 'px'"
-				      data-style-line-height="label_line_px + 'px'">&lt;</span>
-			</div>
-			<span class="sharp-text selector-value" data-style-font-size="text_px + 'px'">{{kind_text}}</span>
-			<div class="au-btn arrow arrow-next" data-class-locked="busy" data-event-click="auction_kind_step(1)">
-				<span class="sharp-text sharp-middle btn-label arrow-label" data-style-font-size="bold_text_px + 'px'"
-				      data-style-line-height="label_line_px + 'px'">&gt;</span>
+		<!-- Comprar: the sidebar. -->
+		<span class="sharp-text side-title" id="category_title" data-if="active_tab == 0"
+		      data-style-font-size="bold_text_px + 'px'">{{category_title}}</span>
+		<div class="kinds" data-if="active_tab == 0">
+			<div class="kind" data-for="k : kinds" data-class-selected="k.selected" data-class-locked="busy"
+			     data-event-click="auction_kind(k.kind)">
+				<span class="sharp-text kind-label" data-style-font-size="text_px + 'px'">{{k.label}}</span>
 			</div>
 		</div>
+		<span class="sharp-text side-title" id="currency_title" data-if="active_tab == 0"
+		      data-style-font-size="bold_text_px + 'px'">{{currency_title}}</span>
 		<div id="currency_selector" class="selector" data-if="active_tab == 0">
 			<div class="au-btn arrow arrow-prev" data-class-locked="busy" data-event-click="auction_currency_step(-1)">
 				<span class="sharp-text sharp-middle btn-label arrow-label" data-style-font-size="bold_text_px + 'px'"
@@ -60,13 +67,8 @@
 				      data-style-line-height="label_line_px + 'px'">&gt;</span>
 			</div>
 		</div>
-
-		<!-- Comprar: the search by name (the server gets the item types the name matches) and the quality. -->
-		<div id="search_back" data-if="active_tab == 0"></div>
-		<input id="search_field" data-if="active_tab == 0" data-value="search_text" type="text" class="text-field sharp-text"
-		       maxlength="20" data-style-font-size="text_px + 'px'"/>
-		<span class="sharp-text" id="search_hint" data-if="active_tab == 0 &amp;&amp; search_text == ''"
-		      data-style-font-size="text_px + 'px'">{{search_hint}}</span>
+		<span class="sharp-text side-title" id="quality_title" data-if="active_tab == 0"
+		      data-style-font-size="bold_text_px + 'px'">{{quality_title}}</span>
 		<div id="quality_selector" class="selector" data-if="active_tab == 0">
 			<div class="au-btn arrow arrow-prev" data-class-locked="busy" data-event-click="auction_quality_step(-1)">
 				<span class="sharp-text sharp-middle btn-label arrow-label" data-style-font-size="bold_text_px + 'px'"
@@ -78,43 +80,95 @@
 				      data-style-line-height="label_line_px + 'px'">&gt;</span>
 			</div>
 		</div>
-
-		<!-- Meus itens: how many items the account has with Otto. -->
-		<span class="sharp-text" id="account_items" data-if="active_tab == 1"
-		      data-style-font-size="text_px + 'px'">{{account_items_text}}</span>
-
-		<!-- Vender: the currency of the price. -->
-		<div id="sell_currency_selector" class="selector" data-if="active_tab == 2">
-			<div class="au-btn arrow arrow-prev" data-class-locked="busy" data-event-click="auction_currency_step(-1)">
-				<span class="sharp-text sharp-middle btn-label arrow-label" data-style-font-size="bold_text_px + 'px'"
-				      data-style-line-height="label_line_px + 'px'">&lt;</span>
-			</div>
-			<span class="sharp-text selector-value" data-style-font-size="text_px + 'px'">{{sell_currency_text}}</span>
-			<div class="au-btn arrow arrow-next" data-class-locked="busy" data-event-click="auction_currency_step(1)">
-				<span class="sharp-text sharp-middle btn-label arrow-label" data-style-font-size="bold_text_px + 'px'"
-				      data-style-line-height="label_line_px + 'px'">&gt;</span>
-			</div>
+		<div class="au-btn" id="btn_clear_filters" data-if="active_tab == 0" data-class-locked="!can_clear_filters"
+		     data-event-click="auction_clear_filters">
+			<span class="sharp-text sharp-middle btn-label clear-filters-label" data-style-font-size="text_px + 'px'"
+			      data-style-line-height="label_line_px + 'px'">{{clear_filters_text}}</span>
 		</div>
 
-		<!-- Six rows on a dark well; the theme puts each on its line. -->
+		<!-- Comprar: the search by name (the server gets the item types the name matches), its clear
+		     button, Enter to search at once, and how many items the search found. -->
+		<div id="search_back" data-if="active_tab == 0"></div>
+		<input id="search_field" data-if="active_tab == 0" data-value="search_text" type="text" class="text-field sharp-text"
+		       maxlength="24" data-style-font-size="text_px + 'px'" data-event-keydown="auction_search_key"/>
+		<span class="sharp-text" id="search_hint" data-if="active_tab == 0 &amp;&amp; search_text == ''"
+		      data-style-font-size="text_px + 'px'">{{search_hint}}</span>
+		<div class="au-btn" id="btn_clear_search" data-if="active_tab == 0 &amp;&amp; search_text != ''"
+		     data-class-locked="busy" data-event-click="auction_clear_search">
+			<span class="sharp-text sharp-middle btn-label clear-search-label" data-style-font-size="bold_text_px + 'px'"
+			      data-style-line-height="label_line_px + 'px'">&#215;</span>
+		</div>
+		<span class="sharp-text" id="result_count" data-if="active_tab == 0"
+		      data-style-font-size="text_px + 'px'">{{result_count_text}}</span>
+
+		<!-- The heads of the columns: on Comprar a click sorts by them, the arrow shows the order. -->
+		<div class="col-head" id="head_item" data-if="active_tab != 2" data-class-sortable="active_tab == 0"
+		     data-class-sorted="active_tab == 0 &amp;&amp; sort_column == 0" data-class-locked="busy"
+		     data-event-click="auction_sort(0)">
+			<span class="sharp-text col-head-label" data-style-font-size="text_px + 'px'">{{column_item_text}}</span>
+		</div>
+		<div class="col-head" id="head_price" data-if="active_tab != 2" data-class-sortable="active_tab == 0"
+		     data-class-sorted="active_tab == 0 &amp;&amp; sort_column == 1" data-class-locked="busy"
+		     data-event-click="auction_sort(1)">
+			<span class="sharp-text col-head-label" data-style-font-size="text_px + 'px'">{{column_price_text}}</span>
+		</div>
+		<div class="col-head" id="head_time" data-if="active_tab == 0" data-class-sortable="active_tab == 0"
+		     data-class-sorted="sort_column == 2" data-class-locked="busy" data-event-click="auction_sort(2)">
+			<span class="sharp-text col-head-label" data-style-font-size="text_px + 'px'">{{column_time_text}}</span>
+		</div>
+		<div class="col-head" id="head_state" data-if="active_tab == 1">
+			<span class="sharp-text col-head-label" data-style-font-size="text_px + 'px'">{{column_state_text}}</span>
+		</div>
+
+		<!-- Meus itens: the zen of the sales, and Receber. -->
+		<span class="sharp-text" id="zen_to_claim" data-if="active_tab == 1"
+		      data-style-font-size="bold_text_px + 'px'">{{zen_to_claim_text}}</span>
+		<div class="au-btn" id="btn_claim" data-if="active_tab == 1" data-class-locked="!can_claim_zen"
+		     data-event-click="auction_claim_zen">
+			<span class="sharp-text sharp-middle btn-label claim-label" data-style-font-size="text_px + 'px'"
+			      data-style-line-height="label_line_px + 'px'">{{claim_button_text}}</span>
+		</div>
+
+		<!-- Vender: the bag's title. -->
+		<span class="sharp-text side-title" id="bag_title" data-if="active_tab == 2"
+		      data-style-font-size="bold_text_px + 'px'">{{bag_title}}</span>
+
+		<!-- Eight rows on a dark well; the theme puts each on its line and its columns by tab. -->
 		<div class="rows">
 			<div class="row" data-for="row : rows" data-class-mine="row.mine" data-class-ended="row.ended"
-			     data-class-pending="row.pending" data-class-clickable="row.clickable"
+			     data-class-pending="row.pending" data-class-clickable="row.clickable" data-class-selected="row.selected"
 			     data-event-click="auction_row_click(row.index)" data-event-mouseover="auction_row_hover(row.index)"
 			     data-event-mouseout="auction_row_unhover">
-				<span class="sharp-text row-name" data-style-font-size="row.name_px + 'px'">{{row.name}}</span>
-				<span class="sharp-text row-price" data-style-font-size="text_px + 'px'">{{row.price}}</span>
-				<span class="sharp-text row-detail" data-style-font-size="text_px + 'px'">{{row.detail}}</span>
+				<span data-attr-class="'sharp-text row-name ' + row.name_class" data-style-font-size="row.name_px + 'px'">{{row.name}}</span>
+				<span class="sharp-text row-detail" data-if="active_tab != 2" data-style-font-size="text_px + 'px'">{{row.detail}}</span>
+				<span class="sharp-text row-price" data-if="active_tab != 2" data-style-font-size="row.price_px + 'px'">{{row.price}}</span>
+				<span class="sharp-text row-currency" data-if="active_tab != 2" data-style-font-size="text_px + 'px'">{{row.currency}}</span>
+				<span class="sharp-text row-time" data-if="active_tab == 0" data-style-font-size="text_px + 'px'">{{row.time}}</span>
+				<div class="au-btn row-btn" data-if="active_tab == 1" data-class-locked="!row.clickable">
+					<span class="sharp-text sharp-middle btn-label row-btn-label" data-style-font-size="text_px + 'px'"
+					      data-style-line-height="label_line_px + 'px'">{{return_button_text}}</span>
+				</div>
 			</div>
 			<span class="sharp-text" id="empty_text" data-if="empty" data-style-font-size="text_px + 'px'">{{empty_text}}</span>
 		</div>
 		<!-- The item of each row in 3D (CAuctionWindow draws them), over the rows' left. -->
-		<img class="row-item" id="auction_item_0"/>
-		<img class="row-item" id="auction_item_1"/>
-		<img class="row-item" id="auction_item_2"/>
-		<img class="row-item" id="auction_item_3"/>
-		<img class="row-item" id="auction_item_4"/>
-		<img class="row-item" id="auction_item_5"/>
+		<div class="row-items">
+			<img class="row-item" id="auction_item_0"/>
+			<img class="row-item" id="auction_item_1"/>
+			<img class="row-item" id="auction_item_2"/>
+			<img class="row-item" id="auction_item_3"/>
+			<img class="row-item" id="auction_item_4"/>
+			<img class="row-item" id="auction_item_5"/>
+			<img class="row-item" id="auction_item_6"/>
+			<img class="row-item" id="auction_item_7"/>
+		</div>
+
+		<!-- Comprar: the names the field suggests, over the list; a press takes one. -->
+		<div class="suggestions" data-if="active_tab == 0 &amp;&amp; show_suggestions">
+			<div class="suggestion" data-for="s : suggestions" data-event-mousedown="auction_suggestion(s.index)">
+				<span class="sharp-text suggestion-label" data-style-font-size="text_px + 'px'">{{s.name}}</span>
+			</div>
+		</div>
 
 		<div class="au-btn arrow" id="pager_prev" data-class-locked="!can_prev_page" data-event-click="auction_page_step(-1)">
 			<span class="sharp-text sharp-middle btn-label arrow-label" data-style-font-size="bold_text_px + 'px'"
@@ -126,16 +180,43 @@
 			      data-style-line-height="label_line_px + 'px'">&gt;</span>
 		</div>
 
-		<div class="sharp-text sharp-flow" id="footer" data-if="active_tab != 1" data-style-font-size="text_px + 'px'">{{footer_text}}</div>
-
-		<!-- Meus itens: the zen of the sales, and Receber. -->
-		<span class="sharp-text" id="zen_to_claim" data-if="active_tab == 1"
-		      data-style-font-size="text_px + 'px'">{{zen_to_claim_text}}</span>
-		<div class="au-btn" id="btn_claim" data-if="active_tab == 1" data-class-locked="!can_claim_zen"
-		     data-event-click="auction_claim_zen">
-			<span class="sharp-text sharp-middle btn-label claim-label" data-style-font-size="text_px + 'px'"
-			      data-style-line-height="label_line_px + 'px'">{{claim_button_text}}</span>
+		<!-- Vender: the panel of the selected item. -->
+		<div id="sell_panel" data-if="active_tab == 2"></div>
+		<img id="auction_preview" class="hidden"/>
+		<div class="sharp-text sharp-flow" id="sell_choose" data-if="active_tab == 2 &amp;&amp; !has_sell_item"
+		     data-style-font-size="text_px + 'px'">{{sell_choose_text}}</div>
+		<span data-if="active_tab == 2 &amp;&amp; has_sell_item" id="sell_item_name"
+		      data-attr-class="'sharp-text ' + sell_item_class" data-style-font-size="sell_item_name_px + 'px'">{{sell_item_name}}</span>
+		<span class="sharp-text side-title" id="sell_currency_title" data-if="active_tab == 2"
+		      data-style-font-size="bold_text_px + 'px'">{{currency_title}}</span>
+		<div id="sell_currency_selector" class="selector" data-if="active_tab == 2">
+			<div class="au-btn arrow arrow-prev" data-class-locked="busy" data-event-click="auction_currency_step(-1)">
+				<span class="sharp-text sharp-middle btn-label arrow-label" data-style-font-size="bold_text_px + 'px'"
+				      data-style-line-height="label_line_px + 'px'">&lt;</span>
+			</div>
+			<span class="sharp-text selector-value" data-style-font-size="text_px + 'px'">{{sell_currency_text}}</span>
+			<div class="au-btn arrow arrow-next" data-class-locked="busy" data-event-click="auction_currency_step(1)">
+				<span class="sharp-text sharp-middle btn-label arrow-label" data-style-font-size="bold_text_px + 'px'"
+				      data-style-line-height="label_line_px + 'px'">&gt;</span>
+			</div>
 		</div>
+		<span class="sharp-text" id="lowest_title" data-if="active_tab == 2 &amp;&amp; has_sell_item"
+		      data-style-font-size="text_px + 'px'">{{lowest_title}}</span>
+		<span class="sharp-text" id="lowest_text" data-if="active_tab == 2 &amp;&amp; has_sell_item"
+		      data-class-found="lowest_found" data-style-font-size="bold_text_px + 'px'">{{lowest_text}}</span>
+		<span class="sharp-text sell-fee" id="sell_fee_listing" data-if="active_tab == 2"
+		      data-style-font-size="text_px + 'px'">{{sell_fee_listing_text}}</span>
+		<span class="sharp-text sell-fee" id="sell_fee_days" data-if="active_tab == 2"
+		      data-style-font-size="text_px + 'px'">{{sell_fee_days_text}}</span>
+		<span class="sharp-text sell-fee" id="sell_fee_cancel" data-if="active_tab == 2"
+		      data-style-font-size="text_px + 'px'">{{sell_fee_cancel_text}}</span>
+		<div class="au-btn" id="btn_list" data-if="active_tab == 2" data-class-locked="!can_list"
+		     data-event-click="auction_list">
+			<span class="sharp-text sharp-middle btn-label list-label" data-style-font-size="text_px + 'px'"
+			      data-style-line-height="label_line_px + 'px'">{{list_button_text}}</span>
+		</div>
+
+		<div class="sharp-text sharp-flow" id="footer" data-if="footer_text != ''" data-style-font-size="text_px + 'px'">{{footer_text}}</div>
 
 		<div id="frame_corner_close" data-event-click="window_close"></div>
 	</div>

@@ -1,5 +1,4 @@
 <rml>
-	<!-- bound-geometry: a jewel's icon follows its name, at the width the native font draws it -->
 <head>
 	<title>Jewel Bank</title>
 	<link type="text/rcss" href="base.rcss"/>
@@ -8,7 +7,7 @@
 </head>
 <body>
 	<!-- Ella, the Banqueira of our server (CJewelBankWindow), docked right next to the inventory: her
-	     fees, the jewels which the account keeps (a click selects one), Keep for the selected kind
+	     fees, the jewels which the account keeps, each with its icon at the left (a click selects one), Keep for the selected kind
 	     and Keep all, then the withdrawals of the selected jewel (1, 10 or 30), and a hint. The
 	     workspace slot places and scales #panel; everything inside is reference px; text is
 	     .sharp-text at the native size, counter-scaled out of the panel. C++ keeps the jewels the
@@ -27,8 +26,8 @@
 		<div class="rows">
 			<div class="row" data-for="row : rows" data-class-selected="row.selected" data-class-empty="row.empty"
 			     data-event-click="jewel_bank_select(row.index)">
+				<img class="row-icon" data-if="row.icon != ''" data-attr-src="row.icon"/>
 				<span class="sharp-text row-name" data-style-font-size="row.name_px + 'px'">{{row.name}}</span>
-				<img class="row-icon" data-if="row.icon != ''" data-attr-src="row.icon" data-style-left="row.icon_left + 'px'"/>
 				<span class="sharp-text row-amount" data-style-font-size="text_px + 'px'">{{row.amount}}</span>
 			</div>
 		</div>

@@ -9406,7 +9406,7 @@
     <value>Pedra Maior</value>
   </data>
   <data name="AuctionPageNumber" xml:space="preserve">
-    <value>página %d / %d</value>
+    <value>%d / %d</value>
   </data>
   <data name="AuctionEmpty" xml:space="preserve">
     <value>Nada aqui.</value>
@@ -9422,9 +9422,6 @@
   </data>
   <data name="AuctionClaimButton" xml:space="preserve">
     <value>Receber</value>
-  </data>
-  <data name="AuctionSellFooter" xml:space="preserve">
-    <value>Taxa de entrada: %ls zen. Fica %d dias à venda. Retirar antes custa %ls zen.</value>
   </data>
   <data name="AuctionSellerYours" xml:space="preserve">
     <value>%ls (seu)</value>
@@ -9472,6 +9469,69 @@
     <value>+%d ou mais</value>
   </data>
   <data name="AuctionSearchHint" xml:space="preserve">
-    <value>buscar nome</value>
+    <value>Buscar item pelo nome</value>
+  </data>
+  <data name="AuctionCategoryTitle" xml:space="preserve">
+    <value>Categoria</value>
+  </data>
+  <data name="AuctionCurrencyTitle" xml:space="preserve">
+    <value>Moeda</value>
+  </data>
+  <data name="AuctionQualityTitle" xml:space="preserve">
+    <value>Qualidade</value>
+  </data>
+  <data name="AuctionClearFilters" xml:space="preserve">
+    <value>Limpar filtros</value>
+  </data>
+  <data name="AuctionResultCount" xml:space="preserve">
+    <value>%d itens</value>
+  </data>
+  <data name="AuctionResultOne" xml:space="preserve">
+    <value>1 item</value>
+  </data>
+  <data name="AuctionColumnItem" xml:space="preserve">
+    <value>Item</value>
+  </data>
+  <data name="AuctionColumnPrice" xml:space="preserve">
+    <value>Preço</value>
+  </data>
+  <data name="AuctionColumnTime" xml:space="preserve">
+    <value>Tempo</value>
+  </data>
+  <data name="AuctionColumnState" xml:space="preserve">
+    <value>Situação</value>
+  </data>
+  <data name="AuctionReturnButton" xml:space="preserve">
+    <value>Retirar</value>
+  </data>
+  <data name="AuctionListButton" xml:space="preserve">
+    <value>Anunciar</value>
+  </data>
+  <data name="AuctionBagTitle" xml:space="preserve">
+    <value>Itens da bolsa</value>
+  </data>
+  <data name="AuctionSellChoose" xml:space="preserve">
+    <value>Escolha um item da bolsa ao lado.</value>
+  </data>
+  <data name="AuctionLowestTitle" xml:space="preserve">
+    <value>Menor preço à venda deste item:</value>
+  </data>
+  <data name="AuctionLowestSearching" xml:space="preserve">
+    <value>procurando...</value>
+  </data>
+  <data name="AuctionLowestNone" xml:space="preserve">
+    <value>nenhum outro à venda</value>
+  </data>
+  <data name="AuctionSellFeeListing" xml:space="preserve">
+    <value>Taxa de entrada: %ls zen</value>
+  </data>
+  <data name="AuctionSellFeeDays" xml:space="preserve">
+    <value>Fica %d dias à venda</value>
+  </data>
+  <data name="AuctionSellFeeCancel" xml:space="preserve">
+    <value>Retirar antes: %ls zen</value>
+  </data>
+  <data name="AuctionMineFooter" xml:space="preserve">
+    <value>Retirar antes do prazo custa %ls zen; depois, é grátis.</value>
   </data>
 </root>

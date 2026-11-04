@@ -9801,7 +9801,7 @@
     <value>Higher Stone</value>
   </data>
   <data name="AuctionPageNumber" xml:space="preserve">
-    <value>page %d / %d</value>
+    <value>%d / %d</value>
   </data>
   <data name="AuctionEmpty" xml:space="preserve">
     <value>Nothing here.</value>
@@ -9817,9 +9817,6 @@
   </data>
   <data name="AuctionClaimButton" xml:space="preserve">
     <value>Collect</value>
-  </data>
-  <data name="AuctionSellFooter" xml:space="preserve">
-    <value>Listing fee: %ls zen. On sale for %d days. Taking it back earlier costs %ls zen.</value>
   </data>
   <data name="AuctionSellerYours" xml:space="preserve">
     <value>%ls (yours)</value>
@@ -9867,6 +9864,69 @@
     <value>+%d or more</value>
   </data>
   <data name="AuctionSearchHint" xml:space="preserve">
-    <value>search name</value>
+    <value>Search an item by name</value>
+  </data>
+  <data name="AuctionCategoryTitle" xml:space="preserve">
+    <value>Category</value>
+  </data>
+  <data name="AuctionCurrencyTitle" xml:space="preserve">
+    <value>Currency</value>
+  </data>
+  <data name="AuctionQualityTitle" xml:space="preserve">
+    <value>Quality</value>
+  </data>
+  <data name="AuctionClearFilters" xml:space="preserve">
+    <value>Clear filters</value>
+  </data>
+  <data name="AuctionResultCount" xml:space="preserve">
+    <value>%d items</value>
+  </data>
+  <data name="AuctionResultOne" xml:space="preserve">
+    <value>1 item</value>
+  </data>
+  <data name="AuctionColumnItem" xml:space="preserve">
+    <value>Item</value>
+  </data>
+  <data name="AuctionColumnPrice" xml:space="preserve">
+    <value>Price</value>
+  </data>
+  <data name="AuctionColumnTime" xml:space="preserve">
+    <value>Time</value>
+  </data>
+  <data name="AuctionColumnState" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="AuctionReturnButton" xml:space="preserve">
+    <value>Take back</value>
+  </data>
+  <data name="AuctionListButton" xml:space="preserve">
+    <value>List it</value>
+  </data>
+  <data name="AuctionBagTitle" xml:space="preserve">
+    <value>Items in the bag</value>
+  </data>
+  <data name="AuctionSellChoose" xml:space="preserve">
+    <value>Choose an item of the bag beside.</value>
+  </data>
+  <data name="AuctionLowestTitle" xml:space="preserve">
+    <value>Lowest price of this item for sale:</value>
+  </data>
+  <data name="AuctionLowestSearching" xml:space="preserve">
+    <value>searching...</value>
+  </data>
+  <data name="AuctionLowestNone" xml:space="preserve">
+    <value>none other for sale</value>
+  </data>
+  <data name="AuctionSellFeeListing" xml:space="preserve">
+    <value>Listing fee: %ls zen</value>
+  </data>
+  <data name="AuctionSellFeeDays" xml:space="preserve">
+    <value>For sale for %d days</value>
+  </data>
+  <data name="AuctionSellFeeCancel" xml:space="preserve">
+    <value>Taking it back early: %ls zen</value>
+  </data>
+  <data name="AuctionMineFooter" xml:space="preserve">
+    <value>Taking an item back before its time costs %ls zen; afterwards it is free.</value>
   </data>
 </root>

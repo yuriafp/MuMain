@@ -37,14 +37,14 @@
 #jb_deposit_fee { top: 40px; }
 #jb_withdrawal_fee { top: 54px; }
 
-/* The list: ten rows of 19 units from y 73 on a dark well. */
+/* The list: ten rows of 21 units from y 73 on a dark well, each jewel's icon at its left. */
 .rows {
 	display: block;
 	position: absolute;
 	left: 8px;
 	top: 72px;
 	width: 174px;
-	height: 194px;
+	height: 212px;
 	background-color: #0b0b0bc0;
 	border: 1px #5a4a2a;
 }
@@ -53,36 +53,36 @@
 	position: absolute;
 	left: 1px;
 	width: 172px;
-	height: 19px;
+	height: 21px;
 	pointer-events: auto;
 }
 .row:hover { background-color: #ffffff1a; }
 .row.selected { background-color: #c8961e40; }
-.row-name { left: 4px; top: 3px; text-align: left; color: #ffffff; }
-.row-amount { left: 112px; top: 3px; text-align: right; font-weight: bold; color: #ffd24a; }
+.row-name { left: 25px; top: 4px; text-align: left; color: #ffffff; }
+.row-amount { left: 116px; top: 4px; text-align: right; font-weight: bold; color: #ffd24a; }
 .row.empty .row-name { color: #a0a0a0; }
 .row.empty .row-amount { color: #808080; font-weight: normal; }
-/* The jewel's icon right after its name; left comes from the window (the drawn name's width). */
-.row-icon { display: block; position: absolute; top: 1px; width: 16px; height: 16px; pointer-events: none; }
+/* The jewel's icon in a column at the left of its row. */
+.row-icon { display: block; position: absolute; left: 3px; top: 1px; width: 19px; height: 19px; pointer-events: none; }
 .row.empty .row-icon { opacity: 0.45; }
 .row:nth-child(1) { top: 1px; }
-.row:nth-child(2) { top: 20px; }
-.row:nth-child(3) { top: 39px; }
-.row:nth-child(4) { top: 58px; }
-.row:nth-child(5) { top: 77px; }
-.row:nth-child(6) { top: 96px; }
-.row:nth-child(7) { top: 115px; }
-.row:nth-child(8) { top: 134px; }
-.row:nth-child(9) { top: 153px; }
-.row:nth-child(10) { top: 172px; }
+.row:nth-child(2) { top: 22px; }
+.row:nth-child(3) { top: 43px; }
+.row:nth-child(4) { top: 64px; }
+.row:nth-child(5) { top: 85px; }
+.row:nth-child(6) { top: 106px; }
+.row:nth-child(7) { top: 127px; }
+.row:nth-child(8) { top: 148px; }
+.row:nth-child(9) { top: 169px; }
+.row:nth-child(10) { top: 190px; }
 
 .jb-btn { display: block; position: absolute; pointer-events: auto; }
 .btn-label { left: 0; color: #ffffff; }
 
-#btn_keep { left: 8px; top: 272px; width: 64px; height: 29px; decorator: image(jb-btn-small-up); }
+#btn_keep { left: 8px; top: 290px; width: 64px; height: 29px; decorator: image(jb-btn-small-up); }
 #btn_keep:hover { decorator: image(jb-btn-small-over); }
 #btn_keep:active { decorator: image(jb-btn-small-down); }
-#btn_keep_all { left: 76px; top: 272px; width: 108px; height: 29px; decorator: image(jb-btn-wide-up); }
+#btn_keep_all { left: 76px; top: 290px; width: 108px; height: 29px; decorator: image(jb-btn-wide-up); }
 #btn_keep_all:hover { decorator: image(jb-btn-wide-over); }
 #btn_keep_all:active { decorator: image(jb-btn-wide-down); }
 /* CButton::Lock(): the up frame, grey, no hover. */
@@ -90,9 +90,9 @@
 #btn_keep_all.locked, #btn_keep_all.locked:hover, #btn_keep_all.locked:active { decorator: image(jb-btn-wide-up); image-color: #646464; }
 .jb-btn.locked .btn-label { color: #808080; }
 
-#jb_withdraw_title { left: 0; top: 310px; color: #dcdcdc; }
+#jb_withdraw_title { left: 0; top: 326px; color: #dcdcdc; }
 .withdraw-buttons { position: static; }
-.withdraw-btn { top: 326px; width: 53px; height: 23px; decorator: image(jb-btn-tiny-up); image-color: #646464; }
+.withdraw-btn { top: 342px; width: 53px; height: 23px; decorator: image(jb-btn-tiny-up); image-color: #646464; }
 .withdraw-btn.enabled { image-color: #ffffff; }
 .withdraw-btn.enabled:hover { decorator: image(jb-btn-tiny-over); }
 .withdraw-btn.enabled:active { decorator: image(jb-btn-tiny-down); }
@@ -104,7 +104,7 @@
 
 #jb_hint {
 	left: 6px;
-	top: 362px;
+	top: 374px;
 	--flow-w: 178px;
 	line-height: 1.1;
 	white-space: normal;
@@ -115,8 +115,8 @@
 /* Lengths inside counter-scaled layers: reference px times the panel's --root-scale. */
 #title { width: calc(160px * var(--root-scale)); }
 .fee { width: calc(190px * var(--root-scale)); }
-.row-name { width: calc(108px * var(--root-scale)); }
-.row-amount { width: calc(56px * var(--root-scale)); }
+.row-name { width: calc(88px * var(--root-scale)); }
+.row-amount { width: calc(52px * var(--root-scale)); }
 .keep-label { width: calc(64px * var(--root-scale)); }
 .keep-all-label { width: calc(108px * var(--root-scale)); }
 #jb_withdraw_title { width: calc(190px * var(--root-scale)); }

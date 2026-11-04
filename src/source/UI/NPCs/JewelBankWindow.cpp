@@ -31,15 +31,10 @@ namespace
 // some requests (a trade open, a failed save) with a message and no jewels.
 constexpr auto AnswerTimeout = std::chrono::seconds(3);
 
-// The width of a jewel's name in its row (jewel_bank.rcss), reference px.
-constexpr int NameBoxWidth = 108;
+// The width of a jewel's name in its row, after its icon (jewel_bank.rcss), reference px.
+constexpr int NameBoxWidth = 88;
 
-// Where a jewel's name starts in its row, and the gap between the name and the jewel's icon after
-// it (jewel_bank.rcss), reference px.
-constexpr float NameLeft = 4.f;
-constexpr float IconGap = 3.f;
-
-// The icon of each jewel, after its name: Interface/JewelBank/<file>.OZT, rendered from the jewel's
+// The icon of each jewel, at the left of its row: Interface/JewelBank/<file>.OZT, rendered from the jewel's
 // model (scratchpad scripts/render-item-icons.py). By the server's group and number.
 struct JewelIcon
 {
@@ -242,7 +237,6 @@ void CJewelBankWindow::BindRmlModel(Rml::DataModelConstructor& c, JewelBankRmlMo
     row.RegisterMember("name", &JewelBankRow::name);
     row.RegisterMember("name_px", &JewelBankRow::namePx);
     row.RegisterMember("icon", &JewelBankRow::icon);
-    row.RegisterMember("icon_left", &JewelBankRow::iconLeft);
     row.RegisterMember("amount", &JewelBankRow::amount);
     row.RegisterMember("selected", &JewelBankRow::selected);
     row.RegisterMember("empty", &JewelBankRow::empty);
@@ -337,9 +331,7 @@ void CJewelBankWindow::SyncRmlModel()
         const std::wstring name = JewelName(jewel);
         entry.name = StringUtils::WideToNarrow(name.c_str());
         entry.namePx = TextPxInBox(name, NameBoxWidth);
-        // Right after the name as drawn: a name wider than its box is shrunk to the box.
         entry.icon = JewelIconSource(jewel);
-        entry.iconLeft = NameLeft + std::min(TextWidth(name), static_cast<float>(NameBoxWidth)) + IconGap;
         entry.amount = GroupedNumber(jewel.amount);
         entry.selected = i == m_Selected;
         entry.empty = jewel.amount <= 0;
