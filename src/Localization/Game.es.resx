@@ -9363,4 +9363,115 @@
   <data name="JewelBankHint" xml:space="preserve">
     <value>Guardar lleva del inventario las joyas y los paquetes del tipo elegido; un paquete cuenta sus joyas.</value>
   </data>
+  <data name="AuctionTitle" xml:space="preserve">
+    <value>Otto el Subastador</value>
+  </data>
+  <data name="AuctionTabBuy" xml:space="preserve">
+    <value>Comprar</value>
+  </data>
+  <data name="AuctionTabMine" xml:space="preserve">
+    <value>Mis objetos</value>
+  </data>
+  <data name="AuctionTabSell" xml:space="preserve">
+    <value>Vender</value>
+  </data>
+  <data name="AuctionKindAll" xml:space="preserve">
+    <value>Todos</value>
+  </data>
+  <data name="AuctionKindWeapons" xml:space="preserve">
+    <value>Armas</value>
+  </data>
+  <data name="AuctionKindShields" xml:space="preserve">
+    <value>Escudos</value>
+  </data>
+  <data name="AuctionKindArmor" xml:space="preserve">
+    <value>Armaduras</value>
+  </data>
+  <data name="AuctionKindWings" xml:space="preserve">
+    <value>Alas</value>
+  </data>
+  <data name="AuctionKindJewels" xml:space="preserve">
+    <value>Joyas</value>
+  </data>
+  <data name="AuctionKindOthers" xml:space="preserve">
+    <value>Otros</value>
+  </data>
+  <data name="AuctionCurrencyAll" xml:space="preserve">
+    <value>Todas</value>
+  </data>
+  <data name="AuctionCurrencyLowerStone" xml:space="preserve">
+    <value>Piedra Menor</value>
+  </data>
+  <data name="AuctionCurrencyHigherStone" xml:space="preserve">
+    <value>Piedra Mayor</value>
+  </data>
+  <data name="AuctionPageNumber" xml:space="preserve">
+    <value>página %d / %d</value>
+  </data>
+  <data name="AuctionEmpty" xml:space="preserve">
+    <value>Nada aquí.</value>
+  </data>
+  <data name="AuctionBuyerFooter" xml:space="preserve">
+    <value>Tasa del comprador: %ls zen. Las joyas salen del banco de Ella.</value>
+  </data>
+  <data name="AuctionAccountItems" xml:space="preserve">
+    <value>%d / %d objetos con Otto</value>
+  </data>
+  <data name="AuctionZenToClaim" xml:space="preserve">
+    <value>Zen por recibir: %ls</value>
+  </data>
+  <data name="AuctionClaimButton" xml:space="preserve">
+    <value>Recibir</value>
+  </data>
+  <data name="AuctionSellFooter" xml:space="preserve">
+    <value>Tasa de entrada: %ls zen. A la venta %d días. Retirarlo antes cuesta %ls zen.</value>
+  </data>
+  <data name="AuctionSellerYours" xml:space="preserve">
+    <value>%ls (tuyo)</value>
+  </data>
+  <data name="AuctionStateForSale" xml:space="preserve">
+    <value>a la venta (%ls)</value>
+  </data>
+  <data name="AuctionStateEnded" xml:space="preserve">
+    <value>plazo terminado</value>
+  </data>
+  <data name="AuctionStatePending" xml:space="preserve">
+    <value>en curso</value>
+  </data>
+  <data name="AuctionConfirmBuy" xml:space="preserve">
+    <value>¿Comprar %ls por %ls + tasa de %ls zen?</value>
+  </data>
+  <data name="AuctionConfirmReturnFee" xml:space="preserve">
+    <value>¿Retirar %ls? Tasa de %ls zen.</value>
+  </data>
+  <data name="AuctionConfirmReturnFree" xml:space="preserve">
+    <value>¿Retirar %ls? Sin tasa.</value>
+  </data>
+  <data name="AuctionConfirmSell" xml:space="preserve">
+    <value>Precio de %ls en %ls:</value>
+  </data>
+  <data name="AuctionKindAccessories" xml:space="preserve">
+    <value>Accesorios</value>
+  </data>
+  <data name="AuctionKindPets" xml:space="preserve">
+    <value>Mascotas</value>
+  </data>
+  <data name="AuctionQualityAny" xml:space="preserve">
+    <value>Cualquiera</value>
+  </data>
+  <data name="AuctionQualityExcellent" xml:space="preserve">
+    <value>Excelente</value>
+  </data>
+  <data name="AuctionQualityAncient" xml:space="preserve">
+    <value>Ancient</value>
+  </data>
+  <data name="AuctionQualitySocket" xml:space="preserve">
+    <value>Socket</value>
+  </data>
+  <data name="AuctionQualityLevel" xml:space="preserve">
+    <value>+%d o más</value>
+  </data>
+  <data name="AuctionSearchHint" xml:space="preserve">
+    <value>buscar nombre</value>
+  </data>
 </root>

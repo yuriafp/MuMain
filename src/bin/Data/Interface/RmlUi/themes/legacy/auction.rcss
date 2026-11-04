@@ -1,0 +1,167 @@
+/* Legacy theme for CAuctionWindow: the docked_panel_frame.rcss frame (linked first;
+   newui_item_back01 top), the title bold, the three tabs on the 53 x 23 newui_btn_empty_very_small
+   (the open one on its down row), the selectors with small dark arrow boxes, the search row (the name field and the quality), the list of six rows
+   on a dark well (name white, price in the gold of the original's gauges, seller or state grey; the
+   items of the account blue, the ended ones red), the pager, and the footer or the zen of the sales
+   with Receber on the 64 x 29 newui_btn_empty_small. A locked button is tinted (100, 100, 100) with
+   a grey label. Coordinates are reference px inside #panel. */
+
+@spritesheet au-btn-small-sheet
+{
+	src: "../../../newui_btn_empty_small.tga";
+	au-btn-small-up: 0px 0px 64px 29px;
+	au-btn-small-over: 0px 29px 64px 29px;
+	au-btn-small-down: 0px 58px 64px 29px;
+}
+@spritesheet au-btn-tiny-sheet
+{
+	src: "../../../newui_btn_empty_very_small.tga";
+	au-btn-tiny-up: 0px 0px 53px 23px;
+	au-btn-tiny-over: 0px 23px 53px 23px;
+	au-btn-tiny-down: 0px 46px 53px 23px;
+}
+
+.frame-top { decorator: image(docked-bg-top-b); }
+#panel { pointer-events: auto; }
+
+.sharp-text { display: block; position: absolute; white-space: nowrap; text-align: center; pointer-events: none; }
+
+#title { left: 15px; top: 13px; font-weight: bold; color: #dcdcdc; }
+
+.au-btn { display: block; position: absolute; pointer-events: auto; }
+.btn-label { left: 0; color: #ffffff; }
+.au-btn.locked .btn-label { color: #808080; }
+
+/* The tabs. */
+.tab { top: 38px; width: 53px; height: 23px; decorator: image(au-btn-tiny-up); }
+.tab:hover { decorator: image(au-btn-tiny-over); }
+.tab.selected, .tab.selected:hover { decorator: image(au-btn-tiny-down); }
+.tab .btn-label { color: #c8c8c8; }
+.tab.selected .btn-label { color: #ffd24a; }
+.tab.locked, .tab.locked:hover { image-color: #646464; }
+#tab_buy { left: 10px; }
+#tab_mine { left: 68px; }
+#tab_sell { left: 126px; }
+
+/* The selectors: an arrow box at each end of the value. */
+.selector { display: block; position: absolute; top: 66px; width: 86px; height: 18px; }
+#kind_selector { left: 8px; }
+#currency_selector { left: 96px; }
+#sell_currency_selector { left: 52px; }
+.arrow {
+	width: 16px;
+	height: 18px;
+	background-color: #1c1912e0;
+	border: 1px #5a4a2a;
+}
+.arrow:hover { background-color: #322a1ce0; }
+.arrow.locked, .arrow.locked:hover { background-color: #121212c0; border-color: #3a3a3a; }
+.arrow-label { font-weight: bold; }
+.arrow-prev { left: 0; top: 0; }
+.arrow-next { left: 70px; top: 0; }
+.selector-value { left: 16px; top: 3px; color: #ffd24a; }
+
+/* The search row: the name field on a dark well with its hint while empty, and the quality. */
+#search_back {
+	display: block;
+	position: absolute;
+	left: 8px;
+	top: 86px;
+	width: 86px;
+	height: 18px;
+	background-color: #0b0b0bc0;
+	border: 1px #5a4a2a;
+}
+#search_field {
+	text-align: left;
+	left: 11px;
+	top: 89px;
+	padding: 0;
+	border-width: 0;
+	border-radius: 0;
+	background-color: transparent;
+	color: rgba(255, 255, 230, 230);
+	pointer-events: auto;
+}
+#search_hint { left: 11px; top: 89px; text-align: left; color: #6e6e6e; }
+#quality_selector { left: 96px; top: 86px; }
+
+#account_items { left: 0; top: 69px; color: #dcdcdc; }
+
+/* The list: six rows of 38 units from y 109 on a dark well. */
+.rows {
+	display: block;
+	position: absolute;
+	left: 8px;
+	top: 108px;
+	width: 174px;
+	height: 230px;
+	background-color: #0b0b0bc0;
+	border: 1px #5a4a2a;
+}
+.row {
+	display: block;
+	position: absolute;
+	left: 1px;
+	width: 172px;
+	height: 38px;
+	pointer-events: auto;
+}
+.row.clickable:hover { background-color: #ffffff1a; }
+.row-name { left: 36px; top: 2px; text-align: left; color: #ffffff; }
+.row-price { left: 36px; top: 14px; text-align: left; font-weight: bold; color: #ffd24a; }
+.row-detail { left: 36px; top: 26px; text-align: left; color: #a0a0a0; }
+.row.mine .row-detail { color: #8cb4ff; }
+.row.ended .row-detail { color: #ff7a6e; }
+.row.pending .row-detail { color: #e0c060; }
+.row:nth-child(1) { top: 1px; }
+.row:nth-child(2) { top: 39px; }
+.row:nth-child(3) { top: 77px; }
+.row:nth-child(4) { top: 115px; }
+.row:nth-child(5) { top: 153px; }
+.row:nth-child(6) { top: 191px; }
+#empty_text { left: 0; top: 120px; color: #969696; }
+
+/* The items in 3D, at the left of their rows. */
+.row-item { display: block; position: absolute; left: 12px; width: 32px; height: 32px; pointer-events: none; }
+.row-item.hidden { visibility: hidden; }
+#auction_item_0 { top: 112px; }
+#auction_item_1 { top: 150px; }
+#auction_item_2 { top: 188px; }
+#auction_item_3 { top: 226px; }
+#auction_item_4 { top: 264px; }
+#auction_item_5 { top: 302px; }
+
+#pager_prev { left: 40px; top: 344px; }
+#pager_next { left: 134px; top: 344px; }
+#pager_text { left: 56px; top: 347px; color: #dcdcdc; }
+
+#footer {
+	left: 54px;
+	top: 368px;
+	--flow-w: 130px;
+	line-height: 1.1;
+	white-space: normal;
+	word-break: break-word;
+	color: #969696;
+}
+
+#zen_to_claim { left: 54px; top: 368px; color: #ffd24a; }
+#btn_claim { left: 118px; top: 386px; width: 64px; height: 29px; decorator: image(au-btn-small-up); }
+#btn_claim:hover { decorator: image(au-btn-small-over); }
+#btn_claim:active { decorator: image(au-btn-small-down); }
+#btn_claim.locked, #btn_claim.locked:hover, #btn_claim.locked:active { decorator: image(au-btn-small-up); image-color: #646464; }
+
+/* Lengths inside counter-scaled layers: reference px times the panel's --root-scale. */
+#title { width: calc(160px * var(--root-scale)); }
+.tab-label { width: calc(53px * var(--root-scale)); }
+.arrow-label { width: calc(16px * var(--root-scale)); }
+.selector-value { width: calc(54px * var(--root-scale)); }
+#account_items { width: calc(190px * var(--root-scale)); }
+#search_field { width: calc(80px * var(--root-scale)); height: calc(13px * var(--root-scale)); line-height: calc(13px * var(--root-scale)); }
+#search_hint { width: calc(80px * var(--root-scale)); }
+.row-name, .row-price, .row-detail { width: calc(134px * var(--root-scale)); }
+#empty_text { width: calc(174px * var(--root-scale)); }
+#pager_text { width: calc(78px * var(--root-scale)); }
+#zen_to_claim { width: calc(128px * var(--root-scale)); }
+.claim-label { width: calc(64px * var(--root-scale)); }

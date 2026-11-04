@@ -473,6 +473,7 @@ bool mu::ui::window::CHotKey::IsKeyTakingWindowVisible()
         || g_pNewUISystem->IsVisible(mu::ui::window::INTERFACE_EMPIREGUARDIAN_NPC)
         || g_pNewUISystem->IsVisible(mu::ui::window::INTERFACE_UNITEDMARKETPLACE_NPC_JULIA)
         || g_pNewUISystem->IsVisible(mu::ui::window::INTERFACE_JEWEL_BANK)
+        || g_pNewUISystem->IsVisible(mu::ui::window::INTERFACE_AUCTION)
         )
     {
         return true;

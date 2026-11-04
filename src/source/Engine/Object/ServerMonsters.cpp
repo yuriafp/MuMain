@@ -321,6 +321,14 @@ CHARACTER* Create(EMonsterType type, int positionX, int positionY, int key)
         c->Object.Scale = JewelBankerScale;
         return c;
     }
+    case MONSTER_AUCTIONEER:
+    {
+        // As Jeweler Raul (MONSTER_JEWELER_RAUL in ZzzCharacter.cpp), without the smoke of his pipe,
+        // which only the Loren Market draws.
+        CHARACTER* c = CreateNpc(MODEL_UNITEDMARKETPLACE_RAUL, L"Otto, o Leiloeiro", positionX, positionY, key);
+        c->Object.m_fEdgeScale = 1.15f;
+        return c;
+    }
     case MONSTER_TREASURE_CHEST:
         return CreateTreasureChest(MODEL_TREASURE_CHEST_NPC, L"Treasure Chest", TreasureChestScale, positionX,
                                    positionY, key);

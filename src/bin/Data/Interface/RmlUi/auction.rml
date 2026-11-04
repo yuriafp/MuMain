@@ -1,0 +1,143 @@
+<rml>
+<head>
+	<title>Auction</title>
+	<link type="text/rcss" href="base.rcss"/>
+	<link type="text/rcss" href="docked_panel_frame.rcss"/>
+	<link type="text/rcss" href="auction.rcss"/>
+</head>
+<body>
+	<!-- Otto, the auctioneer of our server (CAuctionWindow), docked right next to the inventory: three
+	     tabs, Comprar (the items for sale, by kind, currency, quality or level, and name), Meus itens (the
+	     items of the account with him and the zen of its sales) and Vender (the items of the main bag),
+	     each a list of six rows with a pager. A row is the item in 3D, its name, and its price and seller or state; a
+	     click asks the confirm dialog. The workspace slot places and scales #panel; everything inside
+	     is reference px; text is .sharp-text at the native size, counter-scaled out of the panel. C++
+	     keeps the items and the requests; everything locks while a request waits. -->
+	<div id="panel" data-model="auction">
+		<div class="frame-piece frame-top"></div>
+		<div class="frame-piece frame-left"></div>
+		<div class="frame-piece frame-right"></div>
+		<div class="frame-piece frame-bottom"></div>
+
+		<span class="sharp-text" id="title" data-style-font-size="bold_text_px + 'px'">{{title}}</span>
+
+		<div class="au-btn tab" id="tab_buy" data-class-selected="active_tab == 0" data-class-locked="busy"
+		     data-event-click="auction_tab(0)">
+			<span class="sharp-text sharp-middle btn-label tab-label" data-style-font-size="text_px + 'px'"
+			      data-style-line-height="label_line_px + 'px'">{{tab_buy_text}}</span>
+		</div>
+		<div class="au-btn tab" id="tab_mine" data-class-selected="active_tab == 1" data-class-locked="busy"
+		     data-event-click="auction_tab(1)">
+			<span class="sharp-text sharp-middle btn-label tab-label" data-style-font-size="text_px + 'px'"
+			      data-style-line-height="label_line_px + 'px'">{{tab_mine_text}}</span>
+		</div>
+		<div class="au-btn tab" id="tab_sell" data-class-selected="active_tab == 2" data-class-locked="busy"
+		     data-event-click="auction_tab(2)">
+			<span class="sharp-text sharp-middle btn-label tab-label" data-style-font-size="text_px + 'px'"
+			      data-style-line-height="label_line_px + 'px'">{{tab_sell_text}}</span>
+		</div>
+
+		<!-- Comprar: the kind and the currency, each with its arrows. -->
+		<div id="kind_selector" class="selector" data-if="active_tab == 0">
+			<div class="au-btn arrow arrow-prev" data-class-locked="busy" data-event-click="auction_kind_step(-1)">
+				<span class="sharp-text sharp-middle btn-label arrow-label" data-style-font-size="bold_text_px + 'px'"
+				      data-style-line-height="label_line_px + 'px'">&lt;</span>
+			</div>
+			<span class="sharp-text selector-value" data-style-font-size="text_px + 'px'">{{kind_text}}</span>
+			<div class="au-btn arrow arrow-next" data-class-locked="busy" data-event-click="auction_kind_step(1)">
+				<span class="sharp-text sharp-middle btn-label arrow-label" data-style-font-size="bold_text_px + 'px'"
+				      data-style-line-height="label_line_px + 'px'">&gt;</span>
+			</div>
+		</div>
+		<div id="currency_selector" class="selector" data-if="active_tab == 0">
+			<div class="au-btn arrow arrow-prev" data-class-locked="busy" data-event-click="auction_currency_step(-1)">
+				<span class="sharp-text sharp-middle btn-label arrow-label" data-style-font-size="bold_text_px + 'px'"
+				      data-style-line-height="label_line_px + 'px'">&lt;</span>
+			</div>
+			<span class="sharp-text selector-value" data-style-font-size="text_px + 'px'">{{filter_currency_text}}</span>
+			<div class="au-btn arrow arrow-next" data-class-locked="busy" data-event-click="auction_currency_step(1)">
+				<span class="sharp-text sharp-middle btn-label arrow-label" data-style-font-size="bold_text_px + 'px'"
+				      data-style-line-height="label_line_px + 'px'">&gt;</span>
+			</div>
+		</div>
+
+		<!-- Comprar: the search by name (the server gets the item types the name matches) and the quality. -->
+		<div id="search_back" data-if="active_tab == 0"></div>
+		<input id="search_field" data-if="active_tab == 0" data-value="search_text" type="text" class="text-field sharp-text"
+		       maxlength="20" data-style-font-size="text_px + 'px'"/>
+		<span class="sharp-text" id="search_hint" data-if="active_tab == 0 &amp;&amp; search_text == ''"
+		      data-style-font-size="text_px + 'px'">{{search_hint}}</span>
+		<div id="quality_selector" class="selector" data-if="active_tab == 0">
+			<div class="au-btn arrow arrow-prev" data-class-locked="busy" data-event-click="auction_quality_step(-1)">
+				<span class="sharp-text sharp-middle btn-label arrow-label" data-style-font-size="bold_text_px + 'px'"
+				      data-style-line-height="label_line_px + 'px'">&lt;</span>
+			</div>
+			<span class="sharp-text selector-value" data-style-font-size="text_px + 'px'">{{quality_text}}</span>
+			<div class="au-btn arrow arrow-next" data-class-locked="busy" data-event-click="auction_quality_step(1)">
+				<span class="sharp-text sharp-middle btn-label arrow-label" data-style-font-size="bold_text_px + 'px'"
+				      data-style-line-height="label_line_px + 'px'">&gt;</span>
+			</div>
+		</div>
+
+		<!-- Meus itens: how many items the account has with Otto. -->
+		<span class="sharp-text" id="account_items" data-if="active_tab == 1"
+		      data-style-font-size="text_px + 'px'">{{account_items_text}}</span>
+
+		<!-- Vender: the currency of the price. -->
+		<div id="sell_currency_selector" class="selector" data-if="active_tab == 2">
+			<div class="au-btn arrow arrow-prev" data-class-locked="busy" data-event-click="auction_currency_step(-1)">
+				<span class="sharp-text sharp-middle btn-label arrow-label" data-style-font-size="bold_text_px + 'px'"
+				      data-style-line-height="label_line_px + 'px'">&lt;</span>
+			</div>
+			<span class="sharp-text selector-value" data-style-font-size="text_px + 'px'">{{sell_currency_text}}</span>
+			<div class="au-btn arrow arrow-next" data-class-locked="busy" data-event-click="auction_currency_step(1)">
+				<span class="sharp-text sharp-middle btn-label arrow-label" data-style-font-size="bold_text_px + 'px'"
+				      data-style-line-height="label_line_px + 'px'">&gt;</span>
+			</div>
+		</div>
+
+		<!-- Six rows on a dark well; the theme puts each on its line. -->
+		<div class="rows">
+			<div class="row" data-for="row : rows" data-class-mine="row.mine" data-class-ended="row.ended"
+			     data-class-pending="row.pending" data-class-clickable="row.clickable"
+			     data-event-click="auction_row_click(row.index)" data-event-mouseover="auction_row_hover(row.index)"
+			     data-event-mouseout="auction_row_unhover">
+				<span class="sharp-text row-name" data-style-font-size="row.name_px + 'px'">{{row.name}}</span>
+				<span class="sharp-text row-price" data-style-font-size="text_px + 'px'">{{row.price}}</span>
+				<span class="sharp-text row-detail" data-style-font-size="text_px + 'px'">{{row.detail}}</span>
+			</div>
+			<span class="sharp-text" id="empty_text" data-if="empty" data-style-font-size="text_px + 'px'">{{empty_text}}</span>
+		</div>
+		<!-- The item of each row in 3D (CAuctionWindow draws them), over the rows' left. -->
+		<img class="row-item" id="auction_item_0"/>
+		<img class="row-item" id="auction_item_1"/>
+		<img class="row-item" id="auction_item_2"/>
+		<img class="row-item" id="auction_item_3"/>
+		<img class="row-item" id="auction_item_4"/>
+		<img class="row-item" id="auction_item_5"/>
+
+		<div class="au-btn arrow" id="pager_prev" data-class-locked="!can_prev_page" data-event-click="auction_page_step(-1)">
+			<span class="sharp-text sharp-middle btn-label arrow-label" data-style-font-size="bold_text_px + 'px'"
+			      data-style-line-height="label_line_px + 'px'">&lt;</span>
+		</div>
+		<span class="sharp-text" id="pager_text" data-style-font-size="text_px + 'px'">{{page_text}}</span>
+		<div class="au-btn arrow" id="pager_next" data-class-locked="!can_next_page" data-event-click="auction_page_step(1)">
+			<span class="sharp-text sharp-middle btn-label arrow-label" data-style-font-size="bold_text_px + 'px'"
+			      data-style-line-height="label_line_px + 'px'">&gt;</span>
+		</div>
+
+		<div class="sharp-text sharp-flow" id="footer" data-if="active_tab != 1" data-style-font-size="text_px + 'px'">{{footer_text}}</div>
+
+		<!-- Meus itens: the zen of the sales, and Receber. -->
+		<span class="sharp-text" id="zen_to_claim" data-if="active_tab == 1"
+		      data-style-font-size="text_px + 'px'">{{zen_to_claim_text}}</span>
+		<div class="au-btn" id="btn_claim" data-if="active_tab == 1" data-class-locked="!can_claim_zen"
+		     data-event-click="auction_claim_zen">
+			<span class="sharp-text sharp-middle btn-label claim-label" data-style-font-size="text_px + 'px'"
+			      data-style-line-height="label_line_px + 'px'">{{claim_button_text}}</span>
+		</div>
+
+		<div id="frame_corner_close" data-event-click="window_close"></div>
+	</div>
+</body>
+</rml>

@@ -5124,6 +5124,10 @@ enum EMonsterType : int
     // later seasons, with her model.
     MONSTER_JEWEL_BANKER = 669,
 
+    // The auctioneer of our server, who keeps a market between the players: a number free in the
+    // original game, with the model of Jeweler Raul of the Loren Market.
+    MONSTER_AUCTIONEER = 999,
+
     // The NPCs of our server, outside the original numbers.
     MONSTER_WORKSHOP = 1000,
     MONSTER_TREASURE_CHEST = 1001,

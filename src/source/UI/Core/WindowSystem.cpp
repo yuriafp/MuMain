@@ -64,6 +64,7 @@ CSystem::CSystem()
     m_pNewGateSwitchWindow = nullptr;
     m_pNewWeeklyGoalWindow = nullptr;
     m_pNewJewelBankWindow = nullptr;
+    m_pNewAuctionWindow = nullptr;
     m_pNewStorageInventory = nullptr;
     m_pNewStorageInventoryExt = nullptr;
     m_pNewGuildInfoWindow = nullptr;
@@ -268,6 +269,10 @@ bool CSystem::LoadMainSceneInterface()
 
     m_pNewJewelBankWindow = new CJewelBankWindow;
     if (m_pNewJewelBankWindow->Create(m_pNewUIMng) == false)
+        return false;
+
+    m_pNewAuctionWindow = new CAuctionWindow;
+    if (m_pNewAuctionWindow->Create(m_pNewUIMng) == false)
         return false;
 
     m_pNewStorageInventory = new CStorageInventory;
@@ -598,6 +603,7 @@ bool CSystem::LoadMainSceneInterface()
     slot(INTERFACE_STORAGE_EXT, "storage_extension", m_pNewStorageInventoryExt, "storage_ext.rml");
     slot(INTERFACE_NPCSHOP, "npc_shop", m_pNewNPCShop, "npc_shop.rml");
     slot(INTERFACE_JEWEL_BANK, "jewel_bank", m_pNewJewelBankWindow, "jewel_bank.rml");
+    slot(INTERFACE_AUCTION, "auction", m_pNewAuctionWindow, "auction.rml");
     slot(INTERFACE_MIXINVENTORY, "mix", m_pNewMixInventory, "mix_inventory.rml");
     slot(INTERFACE_TRADE, "trade", m_pNewTrade, "trade.rml");
     slot(INTERFACE_MYSHOP_INVENTORY, "my_shop", m_pNewMyShopInventory, "my_shop.rml");
@@ -672,6 +678,7 @@ void CSystem::UnloadMainSceneInterface()
     SAFE_DELETE(m_pNewGateSwitchWindow);
     SAFE_DELETE(m_pNewWeeklyGoalWindow);
     SAFE_DELETE(m_pNewJewelBankWindow);
+    SAFE_DELETE(m_pNewAuctionWindow);
     SAFE_DELETE(m_pNewNPCShop);
     SAFE_DELETE(m_pNewPetInfoWindow);
     SAFE_DELETE(m_pNewMyInventory);
@@ -968,6 +975,14 @@ void CSystem::Show(DWORD dwKey)
         m_pNewUIMng->ShowInterface(INTERFACE_INVENTORY);
         g_pMainFrame->SetBtnState(MAINFRAME_BTN_MYINVEN, true);
     }
+    else if (dwKey == INTERFACE_AUCTION)
+    {
+        // Next to the inventory, like a shop: the items to sell are there.
+        HideAllGroupA();
+        m_pNewAuctionWindow->OpeningProcess();
+        m_pNewUIMng->ShowInterface(INTERFACE_INVENTORY);
+        g_pMainFrame->SetBtnState(MAINFRAME_BTN_MYINVEN, true);
+    }
     else if (dwKey == INTERFACE_NPCGUILDMASTER)
     {
         HideAllGroupA();
@@ -1210,6 +1225,11 @@ void CSystem::Hide(DWORD dwKey)
         {
             m_pNewJewelBankWindow->ClosingProcess();
             m_pNewUIMng->ShowInterface(INTERFACE_JEWEL_BANK, false);
+        }
+        if (IsVisible(INTERFACE_AUCTION))
+        {
+            m_pNewAuctionWindow->ClosingProcess();
+            m_pNewUIMng->ShowInterface(INTERFACE_AUCTION, false);
         }
         if (IsVisible(INTERFACE_MYSHOP_INVENTORY))
         {
@@ -1485,6 +1505,16 @@ void CSystem::Hide(DWORD dwKey)
         g_pMainFrame->SetBtnState(MAINFRAME_BTN_MYINVEN, false);
         m_pNewUIMng->ShowInterface(INTERFACE_INVENTORY, false);
     }
+    else if (dwKey == INTERFACE_AUCTION)
+    {
+        if (IsVisible(INTERFACE_INVENTORY_EXT))
+        {
+            Hide(INTERFACE_INVENTORY_EXT);
+        }
+        m_pNewAuctionWindow->ClosingProcess();
+        g_pMainFrame->SetBtnState(MAINFRAME_BTN_MYINVEN, false);
+        m_pNewUIMng->ShowInterface(INTERFACE_INVENTORY, false);
+    }
     else if (dwKey == INTERFACE_DUELWATCH_MAINFRAME)
     {
         m_pNewDuelWatchMainFrameWindow->ClosingProcess();
@@ -1623,6 +1653,7 @@ void CSystem::HideAllGroupA()
         INTERFACE_UNITEDMARKETPLACE_NPC_JULIA,
         INTERFACE_WEEKLY_GOAL,
         INTERFACE_JEWEL_BANK,
+        INTERFACE_AUCTION,
 
         mu::ui::window::INTERFACE_LUCKYITEMWND,
 
@@ -1674,6 +1705,7 @@ void CSystem::HideAllGroupB()
 #endif //PBG_ADD_GENSRANKING
         INTERFACE_UNITEDMARKETPLACE_NPC_JULIA,
         INTERFACE_JEWEL_BANK,
+        INTERFACE_AUCTION,
         mu::ui::window::INTERFACE_LUCKYITEMWND,
 
         0,
@@ -2040,6 +2072,10 @@ void CSystem::UpdateSendMoveInterface()
     if (IsVisible(INTERFACE_JEWEL_BANK))
     {
         Hide(INTERFACE_JEWEL_BANK);
+    }
+    if (IsVisible(INTERFACE_AUCTION))
+    {
+        Hide(INTERFACE_AUCTION);
     }
 }
 

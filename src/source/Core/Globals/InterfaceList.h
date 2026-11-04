@@ -137,6 +137,9 @@ enum INTERFACE_LIST
     // CJewelBankWindow (UI/NPCs/JewelBankWindow.h) -- Ella, the Banqueira of our server, opened by
     // talking to her. Same reasoning as INTERFACE_CREDITS above.
     INTERFACE_JEWEL_BANK,
+    // CAuctionWindow (UI/NPCs/AuctionWindow.h) -- Otto, the auctioneer of our server, opened by
+    // talking to him. Same reasoning as INTERFACE_CREDITS above.
+    INTERFACE_AUCTION,
     INTERFACE_END,
     INTERFACE_COUNT = INTERFACE_END - 2,
 };

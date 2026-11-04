@@ -73,6 +73,14 @@ mu_add_test(
 )
 
 mu_add_test(
+    NAME auction_tests
+    SOURCES
+        test_auction.cpp
+        ${CMAKE_SOURCE_DIR}/src/source/GameLogic/Items/Auction.cpp
+        ${CMAKE_SOURCE_DIR}/src/source/Network/Server/AuctionPacket.cpp
+)
+
+mu_add_test(
     NAME buy_option_selection_tests
     SOURCES
         test_buy_option_selection.cpp

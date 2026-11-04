@@ -3855,6 +3855,12 @@
       "model": "MODEL_JEWEL_BANKER"
     },
     {
+      "number": 999,
+      "name": {"en": "Otto the Auctioneer", "es": "Otto el Subastador", "pt": "Otto, o Leiloeiro"},
+      "kind": "npc",
+      "model": "MODEL_UNITEDMARKETPLACE_RAUL"
+    },
+    {
       "number": 1000,
       "name": {"en": "Lyra the Alchemist", "es": "Lyra la Alquimista", "pt": "Lyra, a Alquimista"},
       "kind": "npc",

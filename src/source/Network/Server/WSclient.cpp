@@ -60,6 +60,8 @@
 #include "GameLogic/Events/WeeklyGoal.h"
 #include "Network/Server/JewelBankPacket.h"
 #include "GameLogic/Items/JewelBank.h"
+#include "Network/Server/AuctionPacket.h"
+#include "GameLogic/Items/Auction.h"
 #include "GameLogic/NPCs/npcGateSwitch.h"
 #include "GameLogic/Items/CComGem.h"
 #include "GameLogic/Items/InventoryUtils.h"
@@ -13398,6 +13400,28 @@ static void ReceiveJewelBank(std::span<const BYTE> ReceiveBuffer)
         UI::Windows::Show(mu::ui::window::INTERFACE_JEWEL_BANK);
 }
 
+// A page of the window of Otto, the auctioneer of our server (Network/Server/AuctionPacket.h): keep
+// it, and open his window when the player talked to him.
+static void ReceiveAuctionPage(std::span<const BYTE> ReceiveBuffer)
+{
+    GameLogic::Items::AuctionPage page;
+    bool open = false;
+    if (!Network::Auction::ReadPage(ReceiveBuffer.data(), ReceiveBuffer.size(), page, open))
+        return;
+
+    GameLogic::Items::SetCurrentAuctionPage(std::move(page));
+    if (open)
+        UI::Windows::Show(mu::ui::window::INTERFACE_AUCTION);
+}
+
+// The answer of Otto to a request of his window: the window asks again for what it shows.
+static void ReceiveAuctionResult(std::span<const BYTE> ReceiveBuffer)
+{
+    GameLogic::Items::AuctionResult result;
+    if (Network::Auction::ReadResult(ReceiveBuffer.data(), ReceiveBuffer.size(), result))
+        GameLogic::Items::SetLastAuctionResult(result);
+}
+
 void ReceiveDarkside(const BYTE* ReceiveBuffer)
 {
     auto Data = (LPPRECEIVE_DARKSIDE_INDEX)ReceiveBuffer;
@@ -14928,11 +14952,21 @@ static void ProcessPacket(const BYTE* ReceiveBuffer, int32_t Size)
         break;
     case Network::WeeklyGoal::HeadCode:
     {
+        // The only C2 packet of the head code, a page of Otto, has its sub code at [4].
+        if (!bIsC1C3)
+        {
+            if (Size > 4 && ReceiveBuffer[4] == Network::Auction::PageSubCode)
+                ReceiveAuctionPage(received_span);
+            break;
+        }
+
         auto Data = (LPPHEADER_DEFAULT_SUBCODE)ReceiveBuffer;
         if (Data->SubCode == Network::WeeklyGoal::SubCode)
             ReceiveWeeklyGoal(received_span);
         else if (Data->SubCode == Network::JewelBank::ContentsSubCode)
             ReceiveJewelBank(received_span);
+        else if (Data->SubCode == Network::Auction::ResultSubCode)
+            ReceiveAuctionResult(received_span);
     }
     break;
     default:
