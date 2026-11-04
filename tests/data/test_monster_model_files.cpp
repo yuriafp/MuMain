@@ -45,6 +45,9 @@ const std::set<std::string> LocalOnlyModels = {
     "MONSTER_MODEL_NORMUS",
     "MONSTER_MODEL_MUFF",
     "MONSTER_MODEL_REAPER",
+    "MONSTER_MODEL_DEVILFAIRY",
+    "MONSTER_MODEL_UBAID_DEVILFAIRY",
+    "MONSTER_MODEL_HELLRAISER",
 };
 
 std::string Messages(const std::vector<ItemDataIssue>& issues)
@@ -182,7 +185,7 @@ TEST_CASE("Monster models: the shipped model list loads; its only warning is Mol
     REQUIRE(issues.size() == 1);
     CHECK(issues[0].severity == ItemDataIssueSeverity::Warning);
     CHECK(issues[0].field == "model MONSTER_MODEL_MOLT file");
-    CHECK(result.models.size() == 306);
+    CHECK(result.models.size() == 309);
 }
 
 TEST_CASE("Monster models: the shipped model list is written as its writer writes it [data][monsters]")

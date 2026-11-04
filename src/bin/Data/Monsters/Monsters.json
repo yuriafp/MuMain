@@ -3951,7 +3951,7 @@
     },
     {
       "number": 1010,
-      "name": {"en": "Forge Gorgon", "es": "Gorgona da Forja", "pt": "Górgone da Forja"},
+      "name": {"en": "Forge Gorgon", "es": "Gorgona de la Forja", "pt": "Górgone da Forja"},
       "kind": "monster",
       "model": "MONSTER_MODEL_GORGON"
     },
@@ -3984,6 +3984,24 @@
       "name": {"en": "Balrog Lord", "es": "Señor Balrog", "pt": "Senhor Balrog"},
       "kind": "monster",
       "model": "MONSTER_MODEL_BALROG"
+    },
+    {
+      "number": 1016,
+      "name": {"en": "Devilfairy", "es": "Devilfairy", "pt": "Devilfairy"},
+      "kind": "monster",
+      "model": "MONSTER_MODEL_DEVILFAIRY"
+    },
+    {
+      "number": 1017,
+      "name": {"en": "Ubaid Devilfairy", "es": "Ubaid Devilfairy", "pt": "Ubaid Devilfairy"},
+      "kind": "monster",
+      "model": "MONSTER_MODEL_UBAID_DEVILFAIRY"
+    },
+    {
+      "number": 1018,
+      "name": {"en": "Hellraiser", "es": "Hellraiser", "pt": "Hellraiser"},
+      "kind": "monster",
+      "model": "MONSTER_MODEL_HELLRAISER"
     }
   ]
 }

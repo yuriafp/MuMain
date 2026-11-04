@@ -3512,6 +3512,53 @@
       "textureFolders": ["Monster"]
     },
     {
+      "slot": "MONSTER_MODEL_DEVILFAIRY",
+      "file": "Data/Monster/Monster218.bmd",
+      "textureFolders": ["Monster"],
+      "sounds": [
+        {"file": "Data/Sound/mDAngelIdle.wav", "channels": 2, "spatial": true},
+        {"file": "Data/Sound/mDAngelAttack.wav", "channels": 2, "spatial": true},
+        {"file": "Data/Sound/mDAngelDeath.wav", "channels": 2, "spatial": true}
+      ],
+      "soundSlots": {
+        "idle": ["Data/Sound/mDAngelIdle.wav", "Data/Sound/mDAngelIdle.wav"],
+        "attack": ["Data/Sound/mDAngelAttack.wav", "Data/Sound/mDAngelAttack.wav"],
+        "die": "Data/Sound/mDAngelDeath.wav"
+      }
+    },
+    {
+      "slot": "MONSTER_MODEL_UBAID_DEVILFAIRY",
+      "file": "Data/Monster/Monster221.bmd",
+      "textureFolders": ["Monster"],
+      "sounds": [
+        {"file": "Data/Sound/mDAngelIdle.wav", "channels": 2, "spatial": true},
+        {"file": "Data/Sound/mDAngelAttack.wav", "channels": 2, "spatial": true},
+        {"file": "Data/Sound/mDAngelDeath.wav", "channels": 2, "spatial": true}
+      ],
+      "soundSlots": {
+        "idle": ["Data/Sound/mDAngelIdle.wav", "Data/Sound/mDAngelIdle.wav"],
+        "attack": ["Data/Sound/mDAngelAttack.wav", "Data/Sound/mDAngelAttack.wav"],
+        "die": "Data/Sound/mDAngelDeath.wav"
+      }
+    },
+    {
+      "slot": "MONSTER_MODEL_HELLRAISER",
+      "file": "Data/Monster/Monster228.bmd",
+      "textureFolders": ["Monster"],
+      "sounds": [
+        {"file": "Data/Sound/mBalrog1.wav", "channels": 2, "spatial": true},
+        {"file": "Data/Sound/mBalrog2.wav", "channels": 2, "spatial": true},
+        {"file": "Data/Sound/mWizardAttack2.wav", "channels": 2, "spatial": true},
+        {"file": "Data/Sound/mGorgonAttack2.wav", "channels": 2, "spatial": true},
+        {"file": "Data/Sound/mBalrogDie.wav", "channels": 2, "spatial": true}
+      ],
+      "soundSlots": {
+        "idle": ["Data/Sound/mBalrog1.wav", "Data/Sound/mBalrog2.wav"],
+        "attack": ["Data/Sound/mWizardAttack2.wav", "Data/Sound/mGorgonAttack2.wav"],
+        "die": "Data/Sound/mBalrogDie.wav"
+      }
+    },
+    {
       "slot": "MODEL_MERCHANT_FEMALE",
       "file": "Data/NPC/Female01.bmd",
       "textureFolders": ["NPC"],

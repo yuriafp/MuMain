@@ -124,6 +124,43 @@ constexpr MonsterVariant MonsterVariants[] = {
     {MONSTER_BALROG_LORD, MONSTER_METAL_BALROG, 2.2f},
 };
 
+struct ModelMonster
+{
+    EMonsterType type;
+    EMonsterModelType modelType;
+    float scale;
+};
+
+// The monsters of the Forge of Icarus 2 from the Season 8 client, around the Balrog Lord. Their
+// models measure 215 to 310 units; these scales make them about 345 to 440, between the Metal
+// Balrog (about 335) and the Balrog Lord (about 735).
+constexpr ModelMonster ModelMonsters[] = {
+    {MONSTER_DEVILFAIRY, MONSTER_MODEL_DEVILFAIRY, 1.6f},
+    {MONSTER_UBAID_DEVILFAIRY, MONSTER_MODEL_UBAID_DEVILFAIRY, 1.7f},
+    {MONSTER_HELLRAISER, MONSTER_MODEL_HELLRAISER, 1.4f},
+};
+
+const ModelMonster* FindModelMonster(EMonsterType type)
+{
+    for (const ModelMonster& monster : ModelMonsters)
+    {
+        if (monster.type == type)
+            return &monster;
+    }
+    return nullptr;
+}
+
+CHARACTER* CreateModelMonster(const ModelMonster& monster, int positionX, int positionY, int key)
+{
+    OpenMonsterModel(monster.modelType);
+    CHARACTER* c = CreateCharacter(key, static_cast<int>(MODEL_MONSTER01) + monster.modelType, positionX,
+                                   positionY);
+    c->Object.Scale = monster.scale;
+    c->Weapon[0].Type = NoWeapon;
+    c->Weapon[1].Type = NoWeapon;
+    return c;
+}
+
 const MonsterVariant* FindVariant(EMonsterType type)
 {
     for (const MonsterVariant& variant : MonsterVariants)
@@ -295,9 +332,12 @@ CHARACTER* Create(EMonsterType type, int positionX, int positionY, int key)
     }
 
     const InvasionBoss* boss = FindInvasionBoss(type);
-    if (boss == nullptr)
-        return nullptr;
-    return CreateInvasionBoss(*boss, positionX, positionY, key);
+    if (boss != nullptr)
+        return CreateInvasionBoss(*boss, positionX, positionY, key);
+    const ModelMonster* monster = FindModelMonster(type);
+    if (monster != nullptr)
+        return CreateModelMonster(*monster, positionX, positionY, key);
+    return nullptr;
 }
 
 bool GetVariant(EMonsterType type, EMonsterType& base, float& scaleFactor)

@@ -98,7 +98,7 @@ TEST_CASE("Shipped monster list: loads, with only the warning about 252's empty 
     REQUIRE_MESSAGE(loaded.issues.size() == 1, Messages(loaded.issues));
     CHECK(loaded.issues[0].severity == ItemDataIssueSeverity::Warning);
     CHECK(loaded.issues[0].number == 252);
-    CHECK(loaded.monsters.size() == 564);
+    CHECK(loaded.monsters.size() == 567);
 }
 
 TEST_CASE("Shipped monster list: written in the writer's format [data][monsters]")
@@ -233,6 +233,20 @@ TEST_CASE("Shipped monster list: the monsters of Icarus 2 (1010-1015) have the m
     CHECK(gorgon->model == "MONSTER_MODEL_GORGON");
     CHECK(lord->model == "MONSTER_MODEL_BALROG");
     CHECK(lord->names.Get("pt") == "Senhor Balrog");
+}
+
+TEST_CASE("Shipped monster list: the Forge monsters of Icarus 2 (1016-1018) are monsters of Season 8 [data][monsters]")
+{
+    const Data::Monsters::MonsterDataLoadResult loaded =
+        Data::Monsters::LoadMonstersFile(ClientData / "Monsters" / "Monsters.json");
+
+    const MonsterDefinition* devilfairy = FindMonster(loaded.monsters, 1016);
+    const MonsterDefinition* hellraiser = FindMonster(loaded.monsters, 1018);
+    REQUIRE(devilfairy != nullptr);
+    REQUIRE(hellraiser != nullptr);
+    CHECK(devilfairy->kind == Data::Monsters::MonsterKind::Monster);
+    CHECK(devilfairy->model == "MONSTER_MODEL_DEVILFAIRY");
+    CHECK(hellraiser->model == "MONSTER_MODEL_HELLRAISER");
 }
 
 TEST_CASE("Monster data: the game's load fills the table, errors stop it [data][monsters]")

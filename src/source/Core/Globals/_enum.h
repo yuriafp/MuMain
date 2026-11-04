@@ -4563,6 +4563,10 @@ enum EMonsterModelType : int
     MONSTER_MODEL_NORMUS = 221,
     MONSTER_MODEL_MUFF = 222,
     MONSTER_MODEL_REAPER = 223,
+    // The monsters of the Forge of Icarus 2, from the Season 8 client.
+    MONSTER_MODEL_DEVILFAIRY = 224,
+    MONSTER_MODEL_UBAID_DEVILFAIRY = 225,
+    MONSTER_MODEL_HELLRAISER = 226,
     MONSTER_MODEL_COUNT,            // keep last: number of monster models
 };
 
@@ -5141,6 +5145,11 @@ enum EMonsterType : int
     MONSTER_FORGE_METAL_BALROG = 1013,
     MONSTER_FORGE_METAL_BALROG_ELITE = 1014,
     MONSTER_BALROG_LORD = 1015,
+
+    // The monsters of the Forge of Icarus 2, from the Season 8 client.
+    MONSTER_DEVILFAIRY = 1016,
+    MONSTER_UBAID_DEVILFAIRY = 1017,
+    MONSTER_HELLRAISER = 1018,
 
     MONSTER_END = 668
 };
