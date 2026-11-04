@@ -226,10 +226,8 @@ TEST_CASE("Maps: a map's files folder, one for all rounds of an event (D67) [map
     }
 }
 
-TEST_CASE("Maps: Icarus 2 loads its own World44 and the scenery models of Icarus [maps]")
+TEST_CASE("Maps: Icarus 2 loads its own World44 and Object44, not Icarus's [maps]")
 {
     CHECK(gMapManager.GetFilesFolder(WD_43ICARUS2) == 44);
-    CHECK(gMapManager.GetObjectsFolder(WD_43ICARUS2) == WD_10HEAVEN + 1);
-    CHECK(gMapManager.GetObjectsFolder(WD_0LORENCIA) == 1);
-    CHECK(gMapManager.GetObjectsFolder(WD_11BLOODCASTLE1 + 6) == 12);
+    CHECK(gMapManager.GetFilesFolder(WD_10HEAVEN) == 11);
 }

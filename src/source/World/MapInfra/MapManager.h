@@ -121,9 +121,6 @@ public:
     // loads: one for all rounds of Blood Castle, Chaos Castle, Kalima, Illusion
     // Temple and Devil Square.
     int GetFilesFolder(int serverMap);
-    // The number n of the Data/Object<n> folder of a server map's scenery models: its files
-    // folder, but Icarus's for Icarus 2, which has its own World44 and the models of Icarus.
-    int GetObjectsFolder(int serverMap);
 
 public:
     int WorldActive;
